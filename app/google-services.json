@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "894790754054",
+    "firebase_url": "https://wasfah-126bf-default-rtdb.firebaseio.com",
+    "project_id": "wasfah-126bf",
+    "storage_bucket": "wasfah-126bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894790754054:android:727a89ac5f2993d8c74887",
+        "android_client_info": {
+          "package_name": "com.example.wasfah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894790754054-gosm6n7gn2nvu1ejclf2ani8ucpkhmlv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7C1uDoOrhyg-Lyct7A_Ylrzg-FO6n7qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894790754054-gosm6n7gn2nvu1ejclf2ani8ucpkhmlv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
