@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.ReceiverCallNotAllowedException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -16,9 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.wasfah.database.AuthenticationManager;
+import com.example.wasfah.database.RecipeFirebaseManager;
+import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.RecipeModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -33,41 +41,27 @@ import java.util.List;
 
 public class PublishRecipeActivity extends AppCompatActivity {
 
-    private Button uploadButton;
+    public static final int GALLERY_ACT_REQ_CODE = 2;
+    RecipeFirebaseManager recipeFirebaseManager = new RecipeFirebaseManager();
+    private Button publishButton;
     private ImageView picture;
-    private ProgressBar bar;
+    private String currentModelPic;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Recipes");
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
+
     private Uri picURI;
-    private LinearLayout layoutList;
     private Button buttonAdd;
-    private Button buttonSubmitList;
-    List<String> QList = new ArrayList<>();
-    //ArrayList<RecipeHelperClass> cricketersList = new ArrayList<>();
+    private List<IngredientModel> ingredientsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_recipe);
 
-        uploadButton = findViewById(R.id.uploadBut);
+        publishButton = findViewById(R.id.uploadBut);
         picture = findViewById(R.id.uploadedP);
-        bar = findViewById(R.id.pB);
-        layoutList = findViewById(R.id.layout_list);
+
         buttonAdd = findViewById(R.id.add);
-        //buttonSubmitList = findViewById(R.id.button_submit_list);
-
-        buttonAdd.setOnClickListener((View.OnClickListener) this);
-        buttonSubmitList.setOnClickListener((View.OnClickListener) this);
-
-
-        QList.add("1");
-        QList.add("2");
-        QList.add("3");
-        QList.add("4");
-
-
-        bar.setVisibility(View.VISIBLE);
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,18 +69,22 @@ public class PublishRecipeActivity extends AppCompatActivity {
                 Intent galleryIntent = new Intent();
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, 2);
+                startActivityForResult(galleryIntent, GALLERY_ACT_REQ_CODE);
             }
         });
 
-        uploadButton.setOnClickListener(new View.OnClickListener() {
+        publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (picURI != null) {
                     uploadToFirebase(picURI);
+
                 } else {
                     Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT);
+
                 }
+
+                publishRecipe(v);
 
             }
         });
@@ -94,71 +92,73 @@ public class PublishRecipeActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addView();
+                addIngredientRow(v);
             }
         });
+        this.setCategoriesSpinnerItems();
+        this.setIngredientsListModel(this.ingredientsList);
+    }
+
+    private void setCategoriesSpinnerItems()
+    {
+        Spinner spinner = (Spinner) findViewById(R.id.cats_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.ingredient_categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
     }
 
-    private void addView() {
-        final View ingView = getLayoutInflater().inflate(R.layout.row_add,null,false);
+    private void setIngredientsListModel(List<IngredientModel> models)
+    {
+        ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
+        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+                R.layout.row_add, models);
 
-        EditText editText = (EditText)ingView.findViewById(R.id.edit_cricketer_name);
-        AppCompatSpinner spinnerTeam = (AppCompatSpinner)ingView.findViewById(R.id.spinner_team);
-        ImageView imageClose = (ImageView)ingView.findViewById(R.id.image_remove);
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item,QList);
-        spinnerTeam.setAdapter(arrayAdapter);
-
-        imageClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeView(ingView);
-            }
-        });
-
-        layoutList.addView(ingView);
+        ingredientsListView .setAdapter(adapter);
+    }
+    public void addIngredientRow(View view)
+    {
+        this.addBlankIngredientsListView(new IngredientModel());
     }
 
-    private void removeView(View view) {
-        layoutList.removeView(view);
-    }
+
 
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == GALLERY_ACT_REQ_CODE && resultCode == RESULT_OK && data != null) {
             picURI = data.getData();
             picture.setImageURI(picURI);
+            this.currentModelPic = picURI.toString();
         }
+
+    }
+
+    private void addBlankIngredientsListView(IngredientModel model)
+    {
+        this.ingredientsList.add(model);
+        this.setIngredientsListModel(this.ingredientsList);
     }
 
     private void uploadToFirebase(Uri uri) {
-        StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
+
+      StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                currentModelPic = uri.toString();
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        RecipeHelperClass recU = new RecipeHelperClass(uri.toString());
-                        String ID = ref.push().getKey();
-                        ref.child(ID).setValue(recU);
-                        bar.setVisibility(View.INVISIBLE);
                         Toast.makeText(PublishRecipeActivity.this,"Uploaded Successfully", Toast.LENGTH_SHORT);
                     }
                 });
             }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                bar.setVisibility(View.VISIBLE);
-            }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                bar.setVisibility(View.INVISIBLE);
                 Toast.makeText(PublishRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT);
             }
         });
@@ -168,5 +168,33 @@ public class PublishRecipeActivity extends AppCompatActivity {
         ContentResolver cr = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
+
+    public void publishRecipe(View view)
+    {
+        RecipeModel model = getRecipe();
+        model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
+        model.setPicUri(currentModelPic);
+        recipeFirebaseManager.SaveRecipe(model,this);
+    }
+
+    private RecipeModel getRecipe()
+    {
+        RecipeModel model = new RecipeModel();
+        Spinner catSpinner = findViewById(R.id.cats_spinner);
+        EditText titleEdit = findViewById(R.id.recipe_title);
+        EditText descEdit = findViewById(R.id.recipe_steps);
+
+        String category = (String)catSpinner.getSelectedItem();
+        String title = titleEdit.getText().toString();
+        String steps = descEdit.getText().toString();
+
+        model.setCategory(category);
+        model.setTitle(title);
+        model.setPreparationSteps(steps);
+        model.setIngredients(this.ingredientsList);
+
+        return model;
     }
 }
