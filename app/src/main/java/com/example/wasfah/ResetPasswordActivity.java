@@ -3,6 +3,7 @@ package com.example.wasfah;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -61,8 +62,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+
+                startLoginActivity();
             }
         });
+    }
+
+    public void startLoginActivity()
+    {
+        Intent i = new Intent(this, LoginActivity.class);
+        //no need to combe back to login
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 }

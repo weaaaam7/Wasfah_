@@ -1,12 +1,12 @@
-package com.example.wasfah;
+package com.example.wasfah.model;
 
-public class UserHelperClass {
+public class UserModel {
     private String name, email, password;
 
-    public UserHelperClass() {
+    public UserModel() {
     }
 
-    public UserHelperClass(String name,String email, String password) {
+    public UserModel(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
