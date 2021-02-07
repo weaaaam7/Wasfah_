@@ -1,7 +1,8 @@
 package com.example.wasfah;
-
+// weeeeem
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +14,9 @@ import java.util.regex.Pattern;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+
+import com.example.wasfah.database.AuthenticationManager;
+import com.example.wasfah.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.Task;
@@ -101,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 fullName = checkFName + " " + checkLName;
 
-                final UserHelperClass helper = new UserHelperClass(fullName, checkEmail, checkPass);
+                final UserModel helper = new UserModel(fullName, checkEmail, checkPass);
 
                 fAuth.createUserWithEmailAndPassword(checkEmail, checkPass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -110,7 +114,8 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            //startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            AuthenticationManager.CURRENT_USER_EMAIL = checkEmail;
+                            startActivity(new Intent(SignupActivity.this, PublishRecipeActivity.class));
                         }
 
                         FirebaseUser user = fAuth.getCurrentUser();
@@ -127,7 +132,7 @@ public class SignupActivity extends AppCompatActivity {
         logBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
         });
 

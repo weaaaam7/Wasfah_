@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Wasfah</string>
+
+    <string-array name="ingredient_categories">
+        <item>Healthy</item>
+        <item>Italian</item>
+        <item>Indian</item>
+        <item>Saudi</item>
+        <item>Japanese</item>
+        <item>Chinese</item>
+        <item>American</item>
+        <item>French</item>
+        <item>Drinks</item>
+        <item>Deserts</item>
+        <item>Bakeries</item>
+        <item>Others</item>
+    </string-array>
+
+    <string-array name="uoms">
+        <item>KG</item>
+        <item>GM</item>
+        <item>LTR</item>
+        <item>ML</item>
+        <item>MM</item>
+    </string-array>
+
 </resources>
