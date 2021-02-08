@@ -67,28 +67,29 @@
 
     <TextView
         android:id="@+id/signup"
-        android:layout_width="57dp"
-        android:layout_height="20dp"
+        android:layout_width="56dp"
+        android:layout_height="19dp"
         android:gravity="center"
         android:text="Sign up!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.706"
+        app:layout_constraintHorizontal_bias="0.704"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.817" />
+        app:layout_constraintVertical_bias="0.814" />
 
     <TextView
         android:id="@+id/reset"
-        android:layout_width="69dp"
-        android:layout_height="23dp"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
+        android:gravity="center"
         android:text="Click Here"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.406"
+        app:layout_constraintHorizontal_bias="0.419"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.629" />
+        app:layout_constraintVertical_bias="0.627" />
 
     <TextView
         android:id="@+id/textView4"
@@ -100,7 +101,8 @@
         app:layout_constraintHorizontal_bias="0.058"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.627" />
+        app:layout_constraintVertical_bias="0.627"
+        android:gravity="center"/>
 
     <EditText
         android:id="@+id/password"

@@ -144,14 +144,29 @@
 
     <TextView
         android:id="@+id/Acreate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Already registered? Login!"
+        android:layout_width="52dp"
+        android:layout_height="19dp"
+        android:gravity="center"
+        android:text="Log in!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.626"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.803" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="131dp"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:text="Already registered?"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.335"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.804" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
