@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                             AuthenticationManager.CURRENT_USER_EMAIL=email;
                             startPublishActivity();
                         } else {
-                            Toast.makeText(LoginActivity.this, "Login Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Login error! incorrect email or password.", Toast.LENGTH_SHORT).show();
                         }
 
                     }
