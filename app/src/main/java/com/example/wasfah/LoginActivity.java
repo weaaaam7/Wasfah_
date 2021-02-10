@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
         public void startPublishActivity()
         {
-            Intent i = new Intent(this, PublishRecipeActivity.class);
+            Intent i = new Intent(this, MainActivity.class);
             //no need to combe back to login
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);

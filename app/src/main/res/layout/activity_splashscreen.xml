@@ -14,7 +14,7 @@
         android:layout_marginTop="100dp"
         android:layout_marginBottom="100dp"
         android:transitionName="logo_trans"
-        android:src="@drawable/wasfahlogo"
+        app:srcCompat="@drawable/wasfahlogo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"

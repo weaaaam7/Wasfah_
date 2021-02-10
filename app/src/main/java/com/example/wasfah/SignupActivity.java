@@ -115,7 +115,7 @@ public class SignupActivity extends AppCompatActivity {
 
                         } else {
                             AuthenticationManager.CURRENT_USER_EMAIL = checkEmail;
-                            startActivity(new Intent(SignupActivity.this, PublishRecipeActivity.class));
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
                         }
 
                         FirebaseUser user = fAuth.getCurrentUser();
