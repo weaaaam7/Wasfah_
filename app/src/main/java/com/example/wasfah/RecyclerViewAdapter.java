@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
@@ -39,7 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
         holder.tv_title.setText(mData.get(position).getTitle());
-        holder.img.setImageResource(mData.get(position).getImg());
+        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
 
         // set Click lisner
         holder.cardView.setOnClickListener(new View.OnClickListener() {
