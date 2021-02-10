@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp">
+
+    <TextView
+        android:id="@+id/step_order_tv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:hint=""
+        android:ems="10"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"></TextView>
+
+    <EditText
+        android:id="@+id/step_desc_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="6"
+        android:ems="10"
+        android:hint="Desc"
+        android:paddingVertical="10dp"
+        android:inputType="textMultiLine"/>
+
+    <ImageButton
+        android:id="@+id/image_remove_step"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:maxHeight="25dp"
+        android:backgroundTint="@color/yellow"
+        android:background="@drawable/ic_baseline_close_24"
+        ></ImageButton>
+
+
+
+</LinearLayout>

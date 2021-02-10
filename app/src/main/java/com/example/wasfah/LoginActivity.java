@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
                             AuthenticationManager.CURRENT_USER_EMAIL=email;
-                            startPublishActivity();
+                            startMainActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Login error! incorrect email or password.", Toast.LENGTH_SHORT).show();
                         }
@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(i);
         }
 
-        public void startPublishActivity()
+        public void startMainActivity()
         {
             Intent i = new Intent(this, MainActivity.class);
             //no need to combe back to login
