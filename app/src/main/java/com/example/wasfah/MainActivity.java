@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, new home())
                     .commit();
-            return true;
+            //return true;
         }
         return false;
     }

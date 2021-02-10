@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
                             AuthenticationManager.CURRENT_USER_EMAIL=email;
-                            startPublishActivity();
+                            startMainActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Login error! incorrect email or password.", Toast.LENGTH_SHORT).show();
                         }
@@ -124,25 +124,33 @@ public class LoginActivity extends AppCompatActivity {
         public void startSignupActivity()
         {
             Intent i = new Intent(this, SignupActivity.class);
-            //no need to combe back to login
+            //no need to come back to login
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
 
-        public void startPublishActivity()
+//        public void startPublishActivity()
+//        {
+//            Intent i = new Intent(this, PublishRecipeActivity.class);
+//            //no need to come back to login
+//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(i);
+//        }
+
+
+        public void startMainActivity()
         {
-            Intent i = new Intent(this, PublishRecipeActivity.class);
-            //no need to combe back to login
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent i = new Intent(this, MainActivity.class);
+            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
 
-    public void startResetActivity()
-    {
-        Intent i = new Intent(this, ResetPasswordActivity.class);
-        //no need to combe back to login
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-    }
+         public void startResetActivity()
+         {
+            Intent i = new Intent(this, ResetPasswordActivity.class);
+            //no need to come back to login
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
 
     }
