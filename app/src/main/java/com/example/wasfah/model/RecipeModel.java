@@ -7,9 +7,9 @@ public class RecipeModel {
 
     private String recipeId;
     private String title;
-    private String preparationSteps;
     private String category;
     private List<IngredientModel> ingredients;
+    private List<StepModel> preparationSteps;
     private String createdBy;
     private String picUri;
 
@@ -34,11 +34,11 @@ public class RecipeModel {
         this.title = title;
     }
 
-    public String getPreparationSteps() {
+    public List<StepModel> getPreparationSteps() {
         return preparationSteps;
     }
 
-    public void setPreparationSteps(String preparationSteps) {
+    public void setPreparationSteps(List<StepModel> preparationSteps) {
         this.preparationSteps = preparationSteps;
     }
 
