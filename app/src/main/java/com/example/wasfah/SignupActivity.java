@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +58,13 @@ public class SignupActivity extends AppCompatActivity {
 
         root = FirebaseDatabase.getInstance();
         ref = root.getReference("Users");
+
+        //Underline "Log in!" text view.
+        String loginText = "Log in!";
+        SpannableString sLogin = new SpannableString(loginText);
+        UnderlineSpan unLogin = new UnderlineSpan();
+        sLogin.setSpan(unLogin, 0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        logBtn.setText(sLogin);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
 

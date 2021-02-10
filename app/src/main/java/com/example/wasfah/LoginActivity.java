@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.opengl.ETC1;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -42,6 +45,22 @@ public class LoginActivity extends AppCompatActivity {
         mLogin = findViewById(R.id.login);
         mCreateAccount = findViewById(R.id.signup);
         mReset = findViewById(R.id.reset);
+
+        //Underline "Click Here!" text view.
+        String resetText = "Click Here!";
+        SpannableString sReset = new SpannableString(resetText);
+        UnderlineSpan unReset = new UnderlineSpan();
+        sReset.setSpan(unReset, 0,11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mReset.setText(sReset);
+
+        //Underline "Sign up!" text view.
+        String signupText = "Sign up!";
+        SpannableString sSignup = new SpannableString(signupText);
+        UnderlineSpan unSignup = new UnderlineSpan();
+        sSignup.setSpan(unSignup, 0,8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mCreateAccount.setText(sSignup);
+
+
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,8 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         public void startPublishActivity()
         {
             Intent i = new Intent(this, MainActivity.class);
-            //no need to combe back to login
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
 

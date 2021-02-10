@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
@@ -46,12 +47,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private Button publishButton;
     private ImageView picture;
     private String currentModelPic;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Recipes");
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
-
     private Uri picURI;
     private Button buttonAdd;
     private List<IngredientModel> ingredientsList = new ArrayList<>();
+    private ImageView backHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
 
         publishButton = findViewById(R.id.uploadBut);
         picture = findViewById(R.id.uploadedP);
-
+        backHome = findViewById(R.id.back);
         buttonAdd = findViewById(R.id.add);
 
         picture.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +89,13 @@ public class PublishRecipeActivity extends AppCompatActivity {
             }
         });
 
+        backHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +119,8 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
+       // ingredientsListView.canScrollVertically(0);
+
         IngredientsListAdapter adapter = new IngredientsListAdapter(this,
                 R.layout.row_add, models);
 
