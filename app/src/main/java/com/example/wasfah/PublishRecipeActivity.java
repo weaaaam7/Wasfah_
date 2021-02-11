@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.content.ReceiverCallNotAllowedException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PatternMatcher;
+import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -28,6 +31,7 @@ import com.example.wasfah.database.AuthenticationManager;
 import com.example.wasfah.database.RecipeFirebaseManager;
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.RecipeModel;
+import com.example.wasfah.model.StepModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -39,18 +43,22 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
     RecipeFirebaseManager recipeFirebaseManager = new RecipeFirebaseManager();
     private Button publishButton;
+
     private ImageView picture;
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
     private Uri picURI;
     private Button buttonAdd;
+    private Button addStepButton;
     private List<IngredientModel> ingredientsList = new ArrayList<>();
+    private List<StepModel> stepsList = new ArrayList<>();
     private ImageView backHome;
 
     @Override
@@ -62,6 +70,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         picture = findViewById(R.id.uploadedP);
         backHome = findViewById(R.id.back);
         buttonAdd = findViewById(R.id.add);
+        this.addStepButton = findViewById(R.id.add_step_bt);
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,8 +111,17 @@ public class PublishRecipeActivity extends AppCompatActivity {
                 addIngredientRow(v);
             }
         });
+
+        this.addStepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addStepRow(v);
+            }
+        });
         this.setCategoriesSpinnerItems();
         this.setIngredientsListModel(this.ingredientsList);
+        this.setStepsListModel(this.stepsList);
     }
 
     private void setCategoriesSpinnerItems()
@@ -119,8 +137,6 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-       // ingredientsListView.canScrollVertically(0);
-
         IngredientsListAdapter adapter = new IngredientsListAdapter(this,
                 R.layout.row_add, models);
 
@@ -128,11 +144,35 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
     public void addIngredientRow(View view)
     {
-        this.addBlankIngredientsListView(new IngredientModel());
+        this.addBlankIngredientToListView(new IngredientModel());
+    }
+    private void addBlankIngredientToListView(IngredientModel model)
+    {
+        this.ingredientsList.add(model);
+        this.setIngredientsListModel(this.ingredientsList);
     }
 
+    private void setStepsListModel(List<StepModel> models)
+    {
+        ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
 
+        StepsListAdapter adapter = new StepsListAdapter(this,
+                R.layout.steps_row, models);
+        stepsListView.setAdapter(adapter);
+    }
 
+    public void addStepRow(View view)
+    {
+        this.addBlankStepToListView(new StepModel());
+    }
+
+    private void addBlankStepToListView(StepModel model)
+    {
+        int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
+        model.setOrder(order);
+        this.stepsList.add(model);
+        this.setStepsListModel(this.stepsList);
+    }
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,15 +185,10 @@ public class PublishRecipeActivity extends AppCompatActivity {
 
     }
 
-    private void addBlankIngredientsListView(IngredientModel model)
-    {
-        this.ingredientsList.add(model);
-        this.setIngredientsListModel(this.ingredientsList);
-    }
 
     private void uploadToFirebase(Uri uri) {
 
-      StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
+        StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -185,7 +220,9 @@ public class PublishRecipeActivity extends AppCompatActivity {
         RecipeModel model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
-        recipeFirebaseManager.SaveRecipe(model,this);
+        if(this.validateModel(model)) {
+            recipeFirebaseManager.SaveRecipe(model, this);
+        }
     }
 
     private RecipeModel getRecipe()
@@ -193,17 +230,118 @@ public class PublishRecipeActivity extends AppCompatActivity {
         RecipeModel model = new RecipeModel();
         Spinner catSpinner = findViewById(R.id.cats_spinner);
         EditText titleEdit = findViewById(R.id.recipe_title);
-        EditText descEdit = findViewById(R.id.recipe_steps);
+
 
         String category = (String)catSpinner.getSelectedItem();
-        String title = titleEdit.getText().toString();
-        String steps = descEdit.getText().toString();
-
+        String title = getTextOrEmpty(titleEdit);
         model.setCategory(category);
         model.setTitle(title);
-        model.setPreparationSteps(steps);
         model.setIngredients(this.ingredientsList);
-
+        model.setPreparationSteps(this.stepsList);
         return model;
+    }
+
+    //the validation.
+    private boolean validateModel(RecipeModel model)
+    {
+        boolean isValid = true;
+        //validations
+        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+        {
+            Toast.makeText(this,"Title is not valid", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        {
+            Toast.makeText(this,"Category is not valid", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+       /* else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
+        {
+            Toast.makeText(this,"Picture is not valid", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }*/
+        else if(!this.isIngredientListValid(model.getIngredients()))
+        {
+            Toast.makeText(this,"Ingredients are not valid", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        else if(!this.isStepsListValid(model.getPreparationSteps()))
+        {
+            Toast.makeText(this,"Prepartion steps are not valid", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private String getTextOrEmpty(EditText edit)
+    {
+        return edit.getText() != null ? edit.getText().toString() : "";
+    }
+
+    /**
+     * checks if the text is not null or empty and only contains characters
+     * no special characters or numbers.
+     * @param text
+     * @return
+     */
+    private boolean isNotEmptyAndOnlyCharacters(String text)
+    {
+        boolean isValid = true;
+        if(text == null || text.length() <= 0)
+        {
+            isValid = false;
+        }
+        else if(!Pattern.matches("([A-Za-z])+",text))
+        {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private boolean isIngredientListValid(List<IngredientModel> models)
+    {
+        boolean isValid = true;
+        if(models == null || models.size() <= 0)
+        {
+            isValid = false;
+
+        }
+        else
+        {
+            for(IngredientModel model: models)
+            {
+                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())
+                        || !this.isNotEmptyAndOnlyCharacters(model.getName())
+                        || model.getQuantity() <= 0)
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        return isValid;
+    }
+    private boolean isStepsListValid(List<StepModel> models)
+    {
+        boolean isValid = true;
+        if(models == null || models.size() <= 0)
+        {
+            isValid = false;
+
+        }
+        else
+        {
+            for(StepModel model: models)
+            {
+                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription())
+                        ||  model.getOrder() <= 0)
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        return isValid;
     }
 }
