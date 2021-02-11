@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditProfile">
+    tools:context=".editprofile">
 
     <EditText
         android:id="@+id/EditFirstName"
@@ -75,9 +75,8 @@
         android:id="@+id/DeleteAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="27dp"
-        android:layout_marginRight="27dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="48dp"
         android:text="Delete Account"
         app:backgroundTint="#FCE6A2"
         app:layout_constraintBottom_toBottomOf="parent"
