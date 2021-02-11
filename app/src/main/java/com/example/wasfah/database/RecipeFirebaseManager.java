@@ -21,15 +21,15 @@ public class RecipeFirebaseManager {
     {
         db.child(recipe.getRecipeId()).setValue(recipe)
                 .addOnCompleteListener(context, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
-                    Toast.makeText(context,"Recipe Published Successfully..",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful())
+                        {
+                            Toast.makeText(context,"Recipe Published Successfully..",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
 
     }
 

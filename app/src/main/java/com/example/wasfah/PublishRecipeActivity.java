@@ -237,6 +237,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         model.setCategory(category);
         model.setTitle(title);
         model.setIngredients(this.ingredientsList);
+        model.setPreparationSteps(this.stepsList);
         return model;
     }
 
@@ -255,11 +256,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
             Toast.makeText(this,"Category is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-         else if(!isNotEmptyAndOnlyCharacters(model.getPicUri()))
+       /* else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
         {
-            Toast.makeText(this,"Picture is required.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Picture is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
-        }
+        }*/
         else if(!this.isIngredientListValid(model.getIngredients()))
         {
             Toast.makeText(this,"Ingredients are not valid", Toast.LENGTH_LONG).show();
@@ -278,14 +279,20 @@ public class PublishRecipeActivity extends AppCompatActivity {
         return edit.getText() != null ? edit.getText().toString() : "";
     }
 
+    /**
+     * checks if the text is not null or empty and only contains characters
+     * no special characters or numbers.
+     * @param text
+     * @return
+     */
     private boolean isNotEmptyAndOnlyCharacters(String text)
     {
         boolean isValid = true;
-        if(text == null || text.length() < 0)
+        if(text == null || text.length() <= 0)
         {
             isValid = false;
         }
-        else if(!Pattern.matches("^[a-zA-Z]*$",text))
+        else if(!Pattern.matches("([A-Za-z])+",text))
         {
             isValid = false;
         }
@@ -304,8 +311,8 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             for(IngredientModel model: models)
             {
-                if(this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())
-                        || this.isNotEmptyAndOnlyCharacters(model.getName())
+                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())
+                        || !this.isNotEmptyAndOnlyCharacters(model.getName())
                         || model.getQuantity() <= 0)
                 {
                     isValid = false;
@@ -327,7 +334,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             for(StepModel model: models)
             {
-                if(this.isNotEmptyAndOnlyCharacters(model.getDescription())
+                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription())
                         ||  model.getOrder() <= 0)
                 {
                     isValid = false;
