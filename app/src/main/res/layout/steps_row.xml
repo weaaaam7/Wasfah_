@@ -23,9 +23,9 @@
         android:id="@+id/step_desc_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="6"
+        android:layout_weight="6.8"
         android:ems="10"
-        android:hint="Desc"
+        android:hint="Step"
         android:paddingVertical="10dp"
         android:inputType="textMultiLine"/>
 
