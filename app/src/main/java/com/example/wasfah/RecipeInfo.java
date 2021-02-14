@@ -2,12 +2,17 @@ package com.example.wasfah;
 
 import android.net.Uri;
 
+import java.util.List;
+
 public class RecipeInfo {
 
     private String title;
     private String category;
     private String img;
     private String email;
+    private List<Ingredients> ingredients;
+    private List<Steps> steps;
+    private String recipeId;
 
 
     public String getEmail() {
@@ -18,10 +23,37 @@ public class RecipeInfo {
         this.email = email;
     }
 
-    public RecipeInfo(String title, String category, String img) {
+    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId) {
         this.title = title;
         this.img = img;
         this.category=category;
+        this.ingredients=ingredients;
+        this.steps=steps;
+        this.recipeId=recipeId;
+    }
+
+    public String getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(String recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    public List<Steps> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Steps> steps) {
+        this.steps = steps;
+    }
+
+    public List<Ingredients> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredients> ingredients) {
+        this.ingredients = ingredients;
     }
 
     public String getTitle() {

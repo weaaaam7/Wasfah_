@@ -2,6 +2,8 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +15,23 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
      private Context mcontext;
      private List<RecipeInfo> mData;
+     private String name;
+     private String recipeId;
 
-    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData) {
+    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String userName) {
         this.mcontext = mcontext;
         this.mData = mData;
+        this.name=userName;
     }
 
     @NonNull
@@ -41,7 +49,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
         holder.tv_title.setText(mData.get(position).getTitle());
-        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
+//        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
+        Picasso.get().load(mData.get(position).getImg()).into(holder.img);
 
         // set Click lisner
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +58,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View view) {
                 Intent inten = new Intent(mcontext, recepe.class);
                 inten.putExtra("title",mData.get(position).getTitle());
+                inten.putExtra("category",mData.get(position).getCategory());
+                inten.putExtra("ingredients", (Serializable) mData.get(position).getIngredients());
+                inten.putExtra("steps", (Serializable) mData.get(position).getSteps());
                 inten.putExtra("img",mData.get(position).getImg());
+                inten.putExtra("userName",name);
+                inten.putExtra("recipeId",mData.get(position).getRecipeId());
                 mcontext.startActivity(inten);
 
             }
