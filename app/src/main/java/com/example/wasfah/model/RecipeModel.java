@@ -1,5 +1,8 @@
 package com.example.wasfah.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +15,8 @@ public class RecipeModel {
     private List<StepModel> preparationSteps;
     private String createdBy;
     private String picUri;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userID = user.getUid();
 
     public RecipeModel()
     {

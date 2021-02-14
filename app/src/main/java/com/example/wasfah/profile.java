@@ -40,6 +40,8 @@ public class profile extends Fragment {
     private Button edit;
    private String email;
     List<RecipeInfo> recipieList;
+    String name11;
+    private String recipeId;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Users");
@@ -48,6 +50,7 @@ public class profile extends Fragment {
 //    StorageReference storageRef = storage.getReferenceFromUrl("gs://wasfah-126bf.appspot.com");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +68,7 @@ recipieList=new ArrayList<>();
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
 
-                        String name11 = dataSnapshot.child("name").getValue(String.class);
+                        name11 = dataSnapshot.child("name").getValue(String.class);
                         email= dataSnapshot.child("email").getValue(String.class);
                         if (name11 != null) {
                             nameTv.setText(name11);
@@ -80,14 +83,14 @@ recipieList=new ArrayList<>();
                 }
             });
 
-            recipeRef.child(userID).addValueEventListener(new ValueEventListener() {
+            recipeRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     getUpdate(dataSnapshot);
                     RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                     if (recipieList.size()>0)
                     {
-                        RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList);
+                        RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,name11);
                         rs.setLayoutManager(new GridLayoutManager(getContext(),3));
                         rs.setAdapter(recAdap);
                     }
@@ -140,18 +143,32 @@ recipieList=new ArrayList<>();
     }
 
     private void getUpdate(@NonNull DataSnapshot snapshot) {
-        if(recipieList!=null && recipieList.size() >0) {
+        if (recipieList != null && recipieList.size() > 0) {
             recipieList.clear();
         }
 
-       String email2=snapshot.child("createdBy").getValue(String.class);
-            if (email2!=null&&email!=null&&email2.equalsIgnoreCase(email)){
+        for (DataSnapshot ds : snapshot.getChildren()) {
+            String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
+            if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
+                List<Ingredients> ingredients=new ArrayList<>();
+                List<Steps> steps=new ArrayList<>();
+                for (DataSnapshot ds2: ds.child("ingredients").getChildren())
+                {
+                    Ingredients ingredients1=new Ingredients(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
+                   ingredients.add(ingredients1);
+                }
 
+                for (DataSnapshot ds2: ds.child("preparationSteps").getChildren())
+                {
+                    Steps s=new Steps(ds2.child("description").getValue(String.class));
+                    steps.add(s);
+                }
 
-                RecipeInfo recipe = new RecipeInfo(snapshot.child("title").getValue(String.class),snapshot.child("category").getValue(String.class),snapshot.child("picUri").getValue(String.class));
+                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class),ingredients,steps,ds.child("recipeId").getValue(String.class));
                 recipieList.add(recipe);
             }
 
+        }
     }
 
 

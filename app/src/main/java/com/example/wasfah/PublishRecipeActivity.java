@@ -93,7 +93,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
 
                 }
 
-                publishRecipe(v);
+
 
             }
         });
@@ -180,7 +180,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         if (requestCode == GALLERY_ACT_REQ_CODE && resultCode == RESULT_OK && data != null) {
             picURI = data.getData();
             picture.setImageURI(picURI);
-            this.currentModelPic = picURI.toString();
+//            this.currentModelPic = picURI.toString();
         }
 
     }
@@ -192,10 +192,17 @@ public class PublishRecipeActivity extends AppCompatActivity {
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                currentModelPic = uri.toString();
+//                currentModelPic = uri.toString();
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                            @Override
+                            public void onSuccess(Uri downloadUrl) {
+                                currentModelPic= downloadUrl.toString();
+                                publishRecipe();
+                            }
+                        });
                         Toast.makeText(PublishRecipeActivity.this,"Uploaded Successfully", Toast.LENGTH_SHORT);
                     }
                 });
@@ -215,7 +222,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
 
 
-    public void publishRecipe(View view)
+    public void publishRecipe()
     {
         RecipeModel model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
