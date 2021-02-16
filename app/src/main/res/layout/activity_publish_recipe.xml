@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@drawable/add"
-    android:layout_height="match_parent"   android:isScrollContainer="true">
+    android:layout_height="match_parent"
+    android:isScrollContainer="true">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
