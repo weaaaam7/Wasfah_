@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.StepModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,7 +36,6 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         this.dataSource = objects;
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null)
@@ -49,7 +50,6 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         {
             TextView orderTextView = (TextView) convertView.findViewById(R.id.step_order_tv);
             orderTextView.setText(model.getOrder() + "");
-
             EditText descEditText = (EditText) convertView.findViewById(R.id.step_desc_et);
             descEditText.setText(model.getDescription());
             descEditText.addTextChangedListener(new TextWatcher() {
@@ -67,10 +67,8 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
                 public void afterTextChanged(Editable s) {
                     StepModel model = getItem(itemPosition);
                     model.setDescription(s.toString());
-
                 }
             });
-
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.image_remove_step);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,18 +77,116 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
                 }
             });
 
+            ImageButton up = (ImageButton)convertView.findViewById(R.id.stepUpBtn);
+            up.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    moveItemUp(model.getModelId());
+
+                }
+            });
+
+            ImageButton down = (ImageButton)convertView.findViewById(R.id.stepDownBtn);
+
+            down.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    moveItemDown(model.getModelId());
+
+                }
+            });
+
         }
         return convertView;
     }
     private void removeItemFromDS(String modelId)
     {
-
         List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
         this.dataSource.clear();
         this.dataSource.addAll(temp);
-
         notifyDataSetChanged();
     }
 
+    private void moveItemUp(String modelId)
+    {
 
+        int index = -1;
+        if(this.dataSource != null)
+        {
+            for(int i = 0; i < this.dataSource.size(); i++)
+            {
+                StepModel model = this.dataSource.get(i);
+                if(model.getModelId().equals(modelId))
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        if(index > 0)
+        {
+            List<StepModel> temps = new ArrayList<>();
+            temps.addAll(this.dataSource);
+
+            StepModel temp = temps.get(index);
+            StepModel temp1 = temps.get(index - 1);
+
+            int tempOrder = temp.getOrder();
+            int temp1Order = temp1.getOrder();
+
+            temp.setOrder(temp1Order);
+            temp1.setOrder(tempOrder);
+
+            temps.set(index, temp1);
+            temps.set(index - 1, temp);
+
+            this.dataSource.clear();
+            this.dataSource.addAll(temps);
+            notifyDataSetChanged();
+        }
+
+    }
+
+    private void moveItemDown(String modelId)
+    {
+
+        int index = -1;
+        if(this.dataSource != null)
+        {
+
+            for(int i = 0; i < this.dataSource.size(); i++)
+            {
+                StepModel model = this.dataSource.get(i);
+                if(model.getModelId().equals(modelId))
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        if(index < this.dataSource.size() - 1 && index >= 0)
+        {
+            List<StepModel> temps = new ArrayList<>();
+            temps.addAll(this.dataSource);
+
+            StepModel temp = temps.get(index);
+            StepModel temp1 = temps.get(index + 1);
+
+            int tempOrder = temp.getOrder();
+            int temp1Order = temp1.getOrder();
+
+            temp.setOrder(temp1Order);
+            temp1.setOrder(tempOrder);
+
+            temps.set(index, temp1);
+            temps.set(index + 1, temp);
+
+            this.dataSource.clear();
+            this.dataSource.addAll(temps);
+            notifyDataSetChanged();
+        }
+
+    }
 }

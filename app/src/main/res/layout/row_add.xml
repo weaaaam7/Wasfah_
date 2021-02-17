@@ -12,7 +12,7 @@
         android:id="@+id/ingredient_name_lv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="7"
+        android:layout_weight="9.8"
         android:hint="Ingredient"
         android:ems="10"
 
@@ -50,7 +50,7 @@
     <ImageButton
         android:id="@+id/image_remove"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1.5"
         android:backgroundTint="@color/yellow"
         android:background="@drawable/ic_baseline_close_24"
