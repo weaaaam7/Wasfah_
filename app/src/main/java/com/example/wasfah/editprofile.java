@@ -80,6 +80,52 @@ public class editprofile extends AppCompatActivity {
         dbreference=FirebaseDatabase.getInstance().getReference().child("Users");
         storageReference= FirebaseStorage.getInstance().getReference();
 
+<<<<<<< Updated upstream
+=======
+        reference=FirebaseDatabase.getInstance().getReference().child("Users").child("JJn5mHzyKeh49dcZKvUyxvHkbci2");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String email=dataSnapshot.child("email").getValue().toString();
+                String name=dataSnapshot.child("name").getValue().toString();
+                String password=dataSnapshot.child("password").getValue().toString();
+
+
+                String[] parts = name.split(" ");
+                String part1 = parts[0];
+                String part2 = parts[1];
+
+
+                profileEmail.setText(email);
+                profileFirstName.setText(part1);
+                profileLastName.setText(part2);
+                profilePassword.setText(password);
+                profileConfirmPass.setText(password);
+                profilePassword.setTransformationMethod(null);
+                profileConfirmPass.setTransformationMethod(null);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        backProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ProfileView.class));
+            }
+        });
+
+
+
+
+>>>>>>> Stashed changes
         uimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
