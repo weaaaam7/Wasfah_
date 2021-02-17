@@ -65,6 +65,8 @@ public class editprofile extends AppCompatActivity {
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
