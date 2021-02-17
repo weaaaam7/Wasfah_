@@ -12,12 +12,12 @@
         android:id="@+id/step_order_tv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="7dp"
         android:layout_weight="1"
         android:hint=""
-        android:ems="10"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textSize="14sp"></TextView>
+        android:textAlignment="center"
+        android:textColor="#575757"
+        android:textSize="20sp"></TextView>
 
     <EditText
         android:id="@+id/step_desc_et"
@@ -28,7 +28,22 @@
         android:hint="Step"
         android:paddingVertical="10dp"
         android:inputType="textMultiLine"/>
-
+    <ImageButton
+        android:id="@+id/stepUpBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:backgroundTint="@color/yellow"
+        android:background="@drawable/ic_baseline_arrow_upward_24"
+        ></ImageButton>
+    <ImageButton
+        android:id="@+id/stepDownBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:backgroundTint="@color/yellow"
+        android:background="@drawable/ic_baseline_arrow_downward_24"
+        ></ImageButton>
     <ImageButton
         android:id="@+id/image_remove_step"
         android:layout_width="0dp"
