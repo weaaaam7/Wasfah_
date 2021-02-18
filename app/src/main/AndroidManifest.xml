@@ -19,16 +19,12 @@
         <activity android:name=".editprofile"
             android:exported="true" />
         <activity android:name=".SignupActivity" />
-<<<<<<< Updated upstream
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".recepe"/>
-=======
-        <activity android:name=".MainActivity" />
->>>>>>> Stashed changes
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".LoginActivity"
             />
         <activity android:name=".PublishRecipeActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".recepe" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
