@@ -34,6 +34,8 @@ import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -227,6 +229,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         RecipeModel model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
+        model.setTimestamp();
         if(this.validateModel(model)) {
             recipeFirebaseManager.SaveRecipe(model, this);
         }

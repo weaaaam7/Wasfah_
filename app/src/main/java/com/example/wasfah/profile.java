@@ -164,7 +164,7 @@ recipieList=new ArrayList<>();
                     steps.add(s);
                 }
 
-                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class),ingredients,steps,ds.child("recipeId").getValue(String.class));
+                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class),ingredients,steps,ds.child("recipeId").getValue(String.class),ds.child("timestamp").getValue(String.class));
                 recipieList.add(recipe);
             }
 

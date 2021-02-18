@@ -15,11 +15,42 @@
         android:padding="10dp"
        >
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="-20dp">
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="330dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="left"
+                    android:text="publish date"
+                    android:textSize="14sp" />
+
+
+                <Button
+                    android:id="@+id/b1"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_more_horiz_24"
+                    app:backgroundTint="#E8CA68"
+                    android:onClick="showPopup"
+                 />
+
+
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/img2"
@@ -45,6 +76,7 @@
                 android:text=" category"
                 android:textSize="16sp" />
 
+
             <TextView
                 android:id="@+id/Ingred_label"
                 android:layout_width="match_parent"
@@ -54,7 +86,6 @@
                 android:textAllCaps="true"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/Ingred_val"
                 android:layout_width="match_parent"
