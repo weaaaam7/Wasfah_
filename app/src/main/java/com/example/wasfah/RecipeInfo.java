@@ -13,7 +13,34 @@ public class RecipeInfo {
     private List<Ingredients> ingredients;
     private List<Steps> steps;
     private String recipeId;
+    private String timestamp;
+    private String name;
+    private boolean isPublishedByUser;
 
+
+    public void setPublishedByUser(boolean publishedByUser) {
+        isPublishedByUser = publishedByUser;
+    }
+
+    public boolean isPublishedByUser() {
+        return isPublishedByUser;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public String getEmail() {
         return email;
@@ -23,15 +50,28 @@ public class RecipeInfo {
         this.email = email;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId) {
+    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
         this.title = title;
         this.img = img;
         this.category=category;
         this.ingredients=ingredients;
         this.steps=steps;
         this.recipeId=recipeId;
+        this.timestamp=timestamp;
+        this.isPublishedByUser=true;
     }
 
+    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser) {
+        this.title = title;
+        this.img = img;
+        this.category=category;
+        this.ingredients=ingredients;
+        this.steps=steps;
+        this.recipeId=recipeId;
+        this.timestamp=timestamp;
+        this.name=name;
+        this.isPublishedByUser=isPublishedByUser;
+    }
     public String getRecipeId() {
         return recipeId;
     }

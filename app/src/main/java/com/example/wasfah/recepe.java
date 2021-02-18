@@ -2,10 +2,12 @@ package com.example.wasfah;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,16 +30,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class recepe extends AppCompatActivity {
+public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView title_tv;
     private ImageView image;
     private TextView tv_ingrediants;
     private TextView tv_category;
     private TextView tv_steps;
+    private TextView tv_timestamp;
     private String str="";
     private EditText comment;
-    private Button addComment;
+    private Button addComment,dots;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -45,6 +48,7 @@ public class recepe extends AppCompatActivity {
     commentAdapter adapter;
     List<Comment> listComment;
     String recpieId;
+    boolean publishedByUser=true;
 
 
     @Override
@@ -58,7 +62,9 @@ public class recepe extends AppCompatActivity {
         String tilte = intent.getExtras().getString("title");
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
+        String timestamp = intent.getExtras().getString("timestamp");
         recpieId = intent.getExtras().getString("recipeId");
+        publishedByUser=intent.getExtras().getBoolean("publishedByUser");
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
 
@@ -71,6 +77,18 @@ public class recepe extends AppCompatActivity {
         comment=(EditText) findViewById(R.id.editText);
         addComment=(Button) findViewById(R.id.button);
         RvComment=(RecyclerView) findViewById(R.id.commentRec);
+        tv_timestamp=(TextView) findViewById(R.id.date);
+        dots=(Button) findViewById(R.id.b1);
+
+
+        //hide and display 3 dots
+
+        if (publishedByUser){
+            dots.setVisibility(View.VISIBLE);
+        }
+        else{
+            dots.setVisibility(View.GONE);
+        }
 
 
         //Firebase
@@ -112,6 +130,7 @@ public class recepe extends AppCompatActivity {
 
         //add values
         title_tv.setText(tilte);
+        tv_timestamp.setText(timestamp);
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
         for (int i=0;i<ingredients.size();i++){
@@ -135,6 +154,35 @@ public class recepe extends AppCompatActivity {
 
 
 
+
+    }
+
+    //show popup
+
+    public void showPopup(View v){
+        PopupMenu popup = new PopupMenu(this,v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.edit_recepie_menu);
+        popup.show();
+
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item){
+
+        switch (item.getItemId())
+        {
+            case R.id.edit:
+                Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                return true;
+
+
+            case R.id.delete:
+                Toast.makeText(this,"Delete recepe is clicked",Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:return false;
+        }
 
     }
 
@@ -164,4 +212,5 @@ public class recepe extends AppCompatActivity {
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
+
 }
