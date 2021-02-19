@@ -232,6 +232,10 @@ public class PublishRecipeActivity extends AppCompatActivity {
         model.setTimestamp();
         if(this.validateModel(model)) {
             recipeFirebaseManager.SaveRecipe(model, this);
+            Intent i = new Intent(this, MainActivity.class);
+            //no need to combe back to login
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         }
     }
 
@@ -266,11 +270,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
             Toast.makeText(this,"Category is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-       /* else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
+        else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
         {
             Toast.makeText(this,"Picture is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
-        }*/
+        }
         else if(!this.isIngredientListValid(model.getIngredients()))
         {
             Toast.makeText(this,"Ingredients are not valid", Toast.LENGTH_LONG).show();
