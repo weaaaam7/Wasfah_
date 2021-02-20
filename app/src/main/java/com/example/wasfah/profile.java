@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +43,9 @@ public class profile extends Fragment {
    private String email;
     List<RecipeInfo> recipieList;
     String name11;
+    String img;
     private String recipeId;
+    private ImageView imageView;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Users");
@@ -51,6 +55,8 @@ public class profile extends Fragment {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
 
+    public profile() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +66,7 @@ recipieList=new ArrayList<>();
       nameTv=(TextView) RootView.findViewById(R.id.name);
       logout=(Button) RootView.findViewById(R.id.logout);
         edit=(Button) RootView.findViewById(R.id.edit);
+        imageView=(ImageView) RootView.findViewById(R.id.imageView);
         if (user != null) {
             // Read from the database
             myRef.child(userID).addValueEventListener(new ValueEventListener() {
@@ -70,6 +77,11 @@ recipieList=new ArrayList<>();
 
                         name11 = dataSnapshot.child("name").getValue(String.class);
                         email= dataSnapshot.child("email").getValue(String.class);
+                        img =dataSnapshot.child("uimage").getValue(String.class);
+                        if (img !=null){
+                            Picasso.get().load(img).into(imageView);
+                        }
+
                         if (name11 != null) {
                             nameTv.setText(name11);
                         }

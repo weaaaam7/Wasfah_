@@ -27,12 +27,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      private Context mcontext;
      private List<RecipeInfo> mData;
      private String name;
+     private String currentUser;
      private String recipeId;
 
-    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String userName) {
+    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String currentUser) {
         this.mcontext = mcontext;
         this.mData = mData;
-        this.name=userName;
+        this.currentUser=currentUser;
     }
 
     public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData) {
@@ -55,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        if (name !=null)
+        if (mData.get(position).isProfile())
         {
            holder.profile.setVisibility(View.VISIBLE);
            holder.category.setVisibility(View.GONE);
@@ -82,15 +83,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 inten.putExtra("ingredients", (Serializable) mData.get(position).getIngredients());
                 inten.putExtra("steps", (Serializable) mData.get(position).getSteps());
                 inten.putExtra("img",mData.get(position).getImg());
-                if (name !=null)
-                {inten.putExtra("userName",name);}
-                else {
-                    inten.putExtra("userName", mData.get(position).getName());
-
-                }
+                inten.putExtra("userName",currentUser);
                 inten.putExtra("publishedByUser",mData.get(position).isPublishedByUser());
                 inten.putExtra("recipeId",mData.get(position).getRecipeId());
                 inten.putExtra("timestamp",mData.get(position).getTimestamp());
+                inten.putExtra("isProfile",mData.get(position).isProfile());
                 mcontext.startActivity(inten);
 
             }
