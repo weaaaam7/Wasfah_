@@ -91,7 +91,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
                     uploadToFirebase(picURI);
 
                 } else {
-                    Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT);
+                    Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -203,16 +203,17 @@ public class PublishRecipeActivity extends AppCompatActivity {
                             public void onSuccess(Uri downloadUrl) {
                                 currentModelPic= downloadUrl.toString();
                                 publishRecipe();
+
                             }
                         });
-                        Toast.makeText(PublishRecipeActivity.this,"Uploaded Successfully", Toast.LENGTH_SHORT);
+
                     }
                 });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PublishRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT);
+                Toast.makeText(PublishRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -233,7 +234,6 @@ public class PublishRecipeActivity extends AppCompatActivity {
         if(this.validateModel(model)) {
             recipeFirebaseManager.SaveRecipe(model, this);
             Intent i = new Intent(this, MainActivity.class);
-            //no need to combe back to login
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
@@ -293,12 +293,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         return edit.getText() != null ? edit.getText().toString() : "";
     }
 
-    /**
-     * checks if the text is not null or empty and only contains characters
-     * no special characters or numbers.
-     * @param text
-     * @return
-     */
+
     private boolean isNotEmptyAndOnlyCharacters(String text)
     {
         boolean isValid = true;
