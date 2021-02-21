@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".EditRecipeActivity"></activity>
+        <activity android:name=".SplashScreen"></activity>
         <activity
             android:name=".SearchRecipe"
             android:exported="true" />
@@ -30,7 +30,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".PublishRecipeActivity" />
         <activity android:name=".recepe" />
-        <activity android:name=".SplashScreen">
+        <activity android:name=".EditRecipeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
