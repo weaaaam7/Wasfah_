@@ -1,10 +1,8 @@
-package com.example.wasfah.model;
+package com.example.wasfah;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-
-import com.example.wasfah.R;
 
 public class EditRecipeActivity extends AppCompatActivity {
 
