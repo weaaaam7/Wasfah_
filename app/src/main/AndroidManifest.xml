@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".model.EditRecipeActivity"></activity>
+        <activity android:name=".EditRecipeActivity"></activity>
         <activity
             android:name=".SearchRecipe"
             android:exported="true" />
