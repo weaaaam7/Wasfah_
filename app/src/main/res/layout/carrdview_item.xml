@@ -3,30 +3,90 @@
   android:id="@+id/cardview"
    android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:layout_width="120dp"
-    android:layout_height="190dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="4dp">
+    android:layout_margin="10dp"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="7dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/profile"
+        android:layout_width="140dp"
+        android:layout_height="190dp"
+        android:visibility="gone"
         android:orientation="vertical">
         <ImageView
           android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:background="#2d2d2d"/>
+            android:background="#9A9A9A"/>
 
         <TextView
            android:id="@+id/tv"
             android:textSize="13sp"
-            android:textColor="#2d2d2d"
+            android:textColor="#474537"
             android:gravity="center"
             android:text="recipe title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="140dp"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            android:background="#9A9A9A"
+            android:layout_margin="10dp"
+            android:src="@drawable/images"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Recipe name"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:textColor="#474537"
+                android:id="@+id/tv2"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="by:"
+
+                android:id="@+id/name"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="dd/mm/yyyy"
+
+                android:id="@+id/date"/>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
 </androidx.cardview.widget.CardView>

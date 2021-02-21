@@ -34,6 +34,8 @@ import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -89,11 +91,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
                     uploadToFirebase(picURI);
 
                 } else {
-                    Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT);
+                    Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
 
                 }
 
-                publishRecipe(v);
+
 
             }
         });
@@ -180,7 +182,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         if (requestCode == GALLERY_ACT_REQ_CODE && resultCode == RESULT_OK && data != null) {
             picURI = data.getData();
             picture.setImageURI(picURI);
-            this.currentModelPic = picURI.toString();
+//            this.currentModelPic = picURI.toString();
         }
 
     }
@@ -192,18 +194,26 @@ public class PublishRecipeActivity extends AppCompatActivity {
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                currentModelPic = uri.toString();
+//                currentModelPic = uri.toString();
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Toast.makeText(PublishRecipeActivity.this,"Uploaded Successfully", Toast.LENGTH_SHORT);
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                            @Override
+                            public void onSuccess(Uri downloadUrl) {
+                                currentModelPic= downloadUrl.toString();
+                                publishRecipe();
+
+                            }
+                        });
+
                     }
                 });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PublishRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT);
+                Toast.makeText(PublishRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -215,13 +225,17 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
 
 
-    public void publishRecipe(View view)
+    public void publishRecipe()
     {
         RecipeModel model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
+        model.setTimestamp();
         if(this.validateModel(model)) {
             recipeFirebaseManager.SaveRecipe(model, this);
+            Intent i = new Intent(this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         }
     }
 
@@ -256,11 +270,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
             Toast.makeText(this,"Category is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-       /* else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
+        else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
         {
             Toast.makeText(this,"Picture is not valid", Toast.LENGTH_LONG).show();
             isValid = false;
-        }*/
+        }
         else if(!this.isIngredientListValid(model.getIngredients()))
         {
             Toast.makeText(this,"Ingredients are not valid", Toast.LENGTH_LONG).show();
@@ -279,12 +293,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         return edit.getText() != null ? edit.getText().toString() : "";
     }
 
-    /**
-     * checks if the text is not null or empty and only contains characters
-     * no special characters or numbers.
-     * @param text
-     * @return
-     */
+
     private boolean isNotEmptyAndOnlyCharacters(String text)
     {
         boolean isValid = true;
