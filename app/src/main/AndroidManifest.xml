@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".SearchRecipe"></activity>
+        <activity android:name=".SearchRecipe"
+            android:exported="true"></activity>
         <activity android:name=".ProfileView" />
         <activity
             android:name=".editprofile"
