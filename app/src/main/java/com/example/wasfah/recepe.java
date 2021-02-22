@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wasfah.HomeFragments.HealthyFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,13 +28,15 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView title_tv;
-    private ImageView image;
+    private ImageView image,back;
     private TextView tv_ingrediants;
     private TextView tv_category;
     private TextView tv_steps;
@@ -63,6 +66,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
+        boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
@@ -79,17 +83,27 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         RvComment=(RecyclerView) findViewById(R.id.commentRec);
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.b1);
+        back=(ImageView) findViewById(R.id.back);
+
 
 
         //hide and display 3 dots
 
         if (publishedByUser){
             dots.setVisibility(View.VISIBLE);
+
         }
         else{
-            dots.setVisibility(View.GONE);
+            dots.setVisibility(View.INVISIBLE);
         }
 
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            });
 
         //Firebase
 
@@ -131,10 +145,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         //add values
         title_tv.setText(tilte);
         tv_timestamp.setText(timestamp);
+
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
         for (int i=0;i<ingredients.size();i++){
-            str+=ingredients.get(i).getFullName();
+            str+=(i+1)+"- "+ingredients.get(i).getFullName();
             if(i<ingredients.size()-1) {
                 str += "\n\n";
             }
@@ -143,7 +158,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_ingrediants.setText(str);
         str="";
         for (int i=0;i<steps.size();i++){
-            str+=steps.get(i).getDescription();
+            str+=(i+1)+"- "+steps.get(i).getDescription();
             if(i<steps.size()-1) {
                 str += "\n\n";
             }
@@ -178,7 +193,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
 
             case R.id.delete:
-                Toast.makeText(this,"Delete recepe is clicked",Toast.LENGTH_SHORT).show();
+                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
+                dRec.removeValue();
+                Toast.makeText(this,"Recipe is deleted",Toast.LENGTH_SHORT).show();
                 return true;
 
             default:return false;

@@ -16,7 +16,15 @@ public class RecipeInfo {
     private String timestamp;
     private String name;
     private boolean isPublishedByUser;
+    private boolean isProfile;
 
+    public boolean isProfile() {
+        return isProfile;
+    }
+
+    public void setProfile(boolean profile) {
+        isProfile = profile;
+    }
 
     public void setPublishedByUser(boolean publishedByUser) {
         isPublishedByUser = publishedByUser;
@@ -59,9 +67,10 @@ public class RecipeInfo {
         this.recipeId=recipeId;
         this.timestamp=timestamp;
         this.isPublishedByUser=true;
+        this.isProfile=true;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser) {
+    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
         this.title = title;
         this.img = img;
         this.category=category;
@@ -71,6 +80,7 @@ public class RecipeInfo {
         this.timestamp=timestamp;
         this.name=name;
         this.isPublishedByUser=isPublishedByUser;
+        this.isProfile=isProfile;
     }
     public String getRecipeId() {
         return recipeId;
@@ -119,4 +129,5 @@ public class RecipeInfo {
     public void setCategory(String category) {
         this.category = category;
     }
+
 }

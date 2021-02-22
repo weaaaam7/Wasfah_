@@ -38,6 +38,7 @@ public class HealthyFragment extends Fragment {
     String name,email,username;
     List<RecipeInfo> recipieList;
     DataSnapshot userDataSnap;
+    String currentUser;
     boolean isPublishedByUser=false;
     public HealthyFragment() {
     }
@@ -53,7 +54,7 @@ public class HealthyFragment extends Fragment {
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    username=dataSnapshot.child(userID).child("name").getValue(String.class);
+                    currentUser=dataSnapshot.child(userID).child("name").getValue(String.class);
                     userDataSnap=dataSnapshot;
                     recipeRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -62,7 +63,7 @@ public class HealthyFragment extends Fragment {
                             RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                             if (recipieList.size()>0)
                             {
-                                RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList);
+                                RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,currentUser);
                                 rs.setLayoutManager(new GridLayoutManager(getContext(),1));
                                 rs.setAdapter(recAdap);
                             }
@@ -138,14 +139,14 @@ public class HealthyFragment extends Fragment {
                     steps.add(s);
                 }
 
-                if (username!=null && name!=null && username.equalsIgnoreCase(name))
+                if (currentUser!=null && name!=null && currentUser.equalsIgnoreCase(name))
                 {
                     isPublishedByUser=true;
                 }
                 else {
                     isPublishedByUser=false;
                 }
-                    RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser);
+                    RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false);
                     recipieList.add(recipe);
 
             }

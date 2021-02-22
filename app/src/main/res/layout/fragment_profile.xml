@@ -34,7 +34,9 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/photo" />
+                    android:src="@drawable/photo"
+                    android:scaleType="fitXY"
+                  />
 
             </androidx.cardview.widget.CardView>
             <!--        <androidx.cardview.widget.CardView-->
@@ -86,7 +88,7 @@
                     android:elevation="30dp"
                     android:padding="20dp"
                     android:text="Edit profile"
-                    android:textColor="@color/white"
+                    android:textColor="#474537"
                     app:cornerRadius="50dp" />
 
                 <Button
@@ -101,7 +103,7 @@
                     android:elevation="30dp"
                     android:padding="20dp"
                     android:text="log out"
-                    android:textColor="@color/white"
+                    android:textColor="#474537"
                     app:cornerRadius="50dp" />
             </LinearLayout>
 

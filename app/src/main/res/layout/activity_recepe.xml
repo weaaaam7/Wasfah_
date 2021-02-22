@@ -25,17 +25,33 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="-20dp">
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/rounded_corners"
+                    android:src="@drawable/ic_baseline_keyboard_backspace_24"
+                  >
+                </ImageView>
 
                 <TextView
                     android:id="@+id/date"
-                    android:layout_width="330dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="left"
+                    android:layout_marginTop="-5dp"
                     android:text="publish date"
-                    android:textSize="14sp" />
+                    android:textSize="18sp" />
+
+
 
 
                 <Button
@@ -44,20 +60,25 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_baseline_more_horiz_24"
-                    app:backgroundTint="#E8CA68"
+                    app:backgroundTint="#F5D472"
+                    android:layout_marginTop="-5dp"
+                    android:layout_marginLeft="165dp"
                     android:onClick="showPopup"
-                 />
 
-
+                    />
 
             </LinearLayout>
+
+
 
             <ImageView
                 android:id="@+id/img2"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="350dp"
                 android:background="#2d2d2d"
-                android:scaleType="fitCenter" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY" />
+
 
             <TextView
                 android:id="@+id/tv"
@@ -66,6 +87,7 @@
                 android:layout_marginTop="10dp"
                 android:text=" RECIPE title"
                 android:textSize="20sp"
+                android:textColor="#2A2A2A"
                 android:textStyle="bold" />
 
             <TextView
@@ -85,6 +107,7 @@
                 android:text="ingredients"
                 android:textAllCaps="true"
                 android:textSize="18sp"
+                android:textColor="#2A2A2A"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/Ingred_val"
@@ -100,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:text="Steps"
+                android:textColor="#2A2A2A"
                 android:textAllCaps="true"
                 android:textSize="18sp"
                 android:textStyle="bold" />
