@@ -27,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ recipieList=new ArrayList<>();
                         email= dataSnapshot.child("email").getValue(String.class);
                         img =dataSnapshot.child("uimage").getValue(String.class);
                         if (img !=null){
-                            Picasso.get().load(img).into(imageView);
+                            //Picasso.get().load(img).into(imageView);
                         }
 
                         if (name11 != null) {

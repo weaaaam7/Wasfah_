@@ -3,43 +3,32 @@ package com.example.wasfah;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.ReceiverCallNotAllowedException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PatternMatcher;
-import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
-import com.example.wasfah.database.RecipeFirebaseManager;
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -50,9 +39,8 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    RecipeFirebaseManager recipeFirebaseManager = new RecipeFirebaseManager();
     private Button publishButton;
-
+    private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
     private ImageView picture;
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
@@ -232,7 +220,16 @@ public class PublishRecipeActivity extends AppCompatActivity {
         model.setPicUri(currentModelPic);
         model.setTimestamp();
         if(this.validateModel(model)) {
-            recipeFirebaseManager.SaveRecipe(model, this);
+            db.child(model.getRecipeId()).setValue(model)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(PublishRecipeActivity.this,"Recipe Published Successfully..", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
             Intent i = new Intent(this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
