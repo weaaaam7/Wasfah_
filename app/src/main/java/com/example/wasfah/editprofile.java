@@ -65,8 +65,6 @@ public class editprofile extends AppCompatActivity {
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,7 +85,7 @@ public class editprofile extends AppCompatActivity {
         dbreference=FirebaseDatabase.getInstance().getReference().child("Users");
         storageReference= FirebaseStorage.getInstance().getReference();
 
-        reference=FirebaseDatabase.getInstance().getReference().child("Users").child("JJn5mHzyKeh49dcZKvUyxvHkbci2");
+        reference=FirebaseDatabase.getInstance().getReference().child("Users").child(UserID);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,8 +105,7 @@ public class editprofile extends AppCompatActivity {
                 profileLastName.setText(part2);
                 profilePassword.setText(password);
                 profileConfirmPass.setText(password);
-                profilePassword.setTransformationMethod(null);
-                profileConfirmPass.setTransformationMethod(null);
+                
 
             }
 

@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,16 +17,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".ProfileView"></activity>
-
-        <activity android:name=".editprofile"
+        <activity android:name=".SearchRecipe"
+            android:exported="true"></activity>
+        <activity android:name=".ProfileView" />
+        <activity
+            android:name=".editprofile"
             android:exported="true" />
         <activity android:name=".SignupActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".LoginActivity"
             />
         <activity android:name=".PublishRecipeActivity" />
-        <activity android:name=".MainActivity" />
+
         <activity android:name=".recepe" />
         <activity android:name=".SplashScreen">
             <intent-filter>
