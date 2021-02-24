@@ -2,13 +2,10 @@ package com.example.wasfah;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.opengl.ETC1;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,16 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
 
-import com.bumptech.glide.Glide;
-import com.example.wasfah.database.RecipeFirebaseManager;
-import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.model.RecipeModel;
-import com.example.wasfah.model.StepModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,24 +24,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.wasfah.PublishRecipeActivity.GALLERY_ACT_REQ_CODE;
-
 public class EditRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
+    private static final String TAG = "MainActivity";
 
     private ImageView picture;
     private EditText titleEdit;
     private Spinner catSpinner;
+
     private List<IngredientModel> ingredientsList = new ArrayList<>();
     private List<StepModel> stepsList = new ArrayList<>();
+    private List<Ingredients> ingredients;
+    private List<Steps> steps;
     private ListView ingredientsListView;
     private ListView stepsListView;
 
@@ -59,10 +50,6 @@ public class EditRecipeActivity extends AppCompatActivity {
     private Button saveButton;
     private Button cancelButton;
 
-//    //From publish class
-//    private String currentModelPic;
-//    private StorageReference storRef = FirebaseStorage.getInstance().getReference();
-//    private Uri picURI;
 
     private String recipeId;
     private FirebaseAuth fAuth;
@@ -82,8 +69,8 @@ public class EditRecipeActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         recipeId = user.getUid();
         databaseReference1 = db.getReference("Recipes").child(recipeId);
-        databaseReference2 = db.getReference("Recipes").child(recipeId).child("ingredients");
-        databaseReference3 = db.getReference("Recipes").child(recipeId).child("preparationSteps");
+        databaseReference2 = databaseReference1.child("ingredients");
+        databaseReference3 = databaseReference1.child("preparationSteps");
 
         //Retrieve data
         Intent intent = getIntent();
@@ -105,6 +92,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.saveBut);
         cancelButton = (Button) findViewById(R.id.cancelBut);
 
+
         //Set image, title and category.
         databaseReference1.addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,66 +108,82 @@ public class EditRecipeActivity extends AppCompatActivity {
             }
         });
 
-        //Retrieve ingredients.
-        databaseReference2.addValueEventListener(new ValueEventListener() {
+        //Retrieve ingredients and steps.
+        databaseReference1.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                    String key = (String) ds.getKey();
+                    DatabaseReference keyReference = databaseReference1.child(key);
 
+                    if (key == "ingredients") {
+                        keyReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                ingredientsList.clear();
+                                String name = dataSnapshot.child("name").getValue(String.class);
+                                Long quan = dataSnapshot.child("quantity").getValue(long.class);
+                                String unit = dataSnapshot.child("unitOfMeasure").getValue(String.class);
+                                Ingredients ing = new Ingredients(name, quan, unit);
+                                ingredients.add(ing);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d(TAG, "Read failed");
+                            }
+                        }); // [End of keyReference]
+
+                        if (key=="preparationSteps") {
+                            keyReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    steps.clear();
+                                    String desc = dataSnapshot.child("description").getValue(String.class);
+                                    Steps ste = new Steps(desc);
+                                    steps.add(ste);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d(TAG, "Read failed");
+                                }
+                            }); // [End of keyReference]
+
+                        }
+
+                    } // END of for Loop
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Read failed");
             }
         });
 
-        //Retrieve steps.
-        databaseReference3.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-//        databaseReference1.addValueEventListener(new ValueEventListener() {
+        //ing2
+//        databaseReference2.addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                String pic = dataSnapshot.child("picUri").getValue().toString();
-//                String title = dataSnapshot.child("title").getValue().toString();
-//                String category = dataSnapshot.child("category").getValue(String.class);
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
 //
-//                //Retrieve title
-//                titleEdit.setText(title);
-//                //Retrieve Image
-//                Picasso.get().load(pic).into(picture);
-//                //Retrieve category
-//                String[] cat = {category};
-//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditRecipeActivity.this, android.R.layout.simple_spinner_item, cat);
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                catSpinner.setAdapter(adapter);
+//                int i = 1;
+//                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+//                    ingredientsList[i] = dataSnapshot.getValue(IngredientModel.class);
+//
+//                }
 //
 //            }
 //
 //            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//            public void onCancelled(@NonNull DatabaseError error) {
 //
 //            }
-//
-//
 //        });
 
-
-//        //Retrieve ingredients.
-//        List<IngredientModel> ingredientsList = new ArrayList<>();
-//        ArrayAdapter<IngredientModel> adapterIng = new ArrayAdapter<IngredientModel>(this, R.layout.activity_edit_recipe,ingredientsList);
-//        ingredientsListView.setAdapter(adapterIng);
-//        databaseReference2.addValueEventListener(new ValueEventListener() {
+//        //Retrieve steps.
+//        databaseReference3.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot snapshot) {
 //
@@ -190,19 +194,6 @@ public class EditRecipeActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
-
-//        //Edit pic
-//        picture.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent galleryIntent = new Intent();
-//                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//                galleryIntent.setType("image/*");
-//                startActivityForResult(galleryIntent, GALLERY_ACT_REQ_CODE);
-//            }
-//        });
-
 
 
         addIngrButton.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +259,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         this.setStepsListModel(this.stepsList);
 
     }
+
 
     private void setCategoriesSpinnerItems()
     {
