@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -104,7 +105,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView tv_title,tv_title_cat;
         ImageView img,img2;
-        CardView cardView;
+        RelativeLayout cardView;
         LinearLayout profile,category;
         TextView name,date;
         public MyViewHolder(View itemView)
@@ -114,7 +115,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tv_title=(TextView) itemView.findViewById(R.id.tv);
             img=(ImageView) itemView.findViewById(R.id.img);
             img2=(ImageView) itemView.findViewById(R.id.img2);
-            cardView=(CardView) itemView.findViewById(R.id.cardview);
+            cardView=(RelativeLayout) itemView.findViewById(R.id.cardview);
             tv_title_cat=(TextView) itemView.findViewById(R.id.tv2);
             name=(TextView) itemView.findViewById(R.id.name);
             date=(TextView) itemView.findViewById(R.id.date);

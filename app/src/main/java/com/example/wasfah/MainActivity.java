@@ -1,6 +1,9 @@
 package com.example.wasfah;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +25,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private FirebaseAuth mAuth;
     private String name;
     private FloatingActionButton publishFB;
+    private  BottomNavigationView BN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView BN = findViewById(R.id.bottomNavigationView);
+         BN = findViewById(R.id.bottomNavigationView);
         BN.setBackground(null);
+        BN.getMenu().getItem(2).setEnabled(false);
+
 
 
         //loading the default fragment
@@ -63,12 +69,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-            //return true;
+            return true;
         }
         return false;
     }
 
 
+    @SuppressLint("ResourceType")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
@@ -76,21 +83,24 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
 
             case R.id.mHome:
+
                 fragment = new home();
                 break;
 
             case R.id.mprofile:
+
                 fragment = new profile();
                 break;
 
 
             case R.id.mFav:
+
                 fragment = new Fav();
                 break;
 
             case R.id.mSearch:
-                Intent intent1 = new Intent(this, SearchRecipe.class);
-                this.startActivity(intent1);
+
+                fragment = new Search();
                 break;
 
 
