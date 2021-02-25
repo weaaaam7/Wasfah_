@@ -21,7 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
-//import com.example.wasfah.database.RecipeFirebaseManager;
+
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 public class EditRecipeActivity extends AppCompatActivity  {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    //RecipeFirebaseManager recipeFirebaseManager = new RecipeFirebaseManager();
+
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
     private Uri picURI;
