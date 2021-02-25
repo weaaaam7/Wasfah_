@@ -1,46 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/cardview"
    android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="10dp"
-    app:cardElevation="10dp"
-    app:cardCornerRadius="7dp">
 
+>
+<androidx.cardview.widget.CardView
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    android:layout_margin="5dp">
     <LinearLayout
         android:id="@+id/profile"
-        android:layout_width="140dp"
-        android:layout_height="190dp"
-        android:visibility="gone"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
         android:orientation="vertical">
         <ImageView
-          android:id="@+id/img"
+            android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:background="#9A9A9A"/>
 
         <TextView
-           android:id="@+id/tv"
+            android:id="@+id/tv"
             android:textSize="13sp"
             android:textColor="#474537"
             android:gravity="center"
-            android:text="recipe title"
+            android:text="recipe title recipe title recipe title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
+</androidx.cardview.widget.CardView>
 
 
 
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:layout_margin="10dp"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="10dp">
     <LinearLayout
         android:id="@+id/category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
 
         <ImageView
@@ -58,7 +68,6 @@
             android:gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,6 +96,8 @@
 
         </LinearLayout>
 
-        </LinearLayout>
-
+    </LinearLayout>
 </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

@@ -9,7 +9,7 @@
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_gravity="bottom"
         app:fabCradleMargin="20dp"
         app:fabCradleRoundedCornerRadius="20dp"
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add"
         android:backgroundTint="#fce6a2"
+
         app:layout_anchor="@id/bottomAppBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

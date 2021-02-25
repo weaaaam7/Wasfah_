@@ -35,7 +35,7 @@ public class HealthyFragment extends Fragment {
     DatabaseReference recipeRef = database.getReference("Recipes");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
-    String name,email,username;
+    String name,email;
     List<RecipeInfo> recipieList;
     DataSnapshot userDataSnap;
     String currentUser;
