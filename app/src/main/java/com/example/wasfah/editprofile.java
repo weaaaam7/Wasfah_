@@ -79,6 +79,9 @@ public class editprofile extends AppCompatActivity {
         profileConfirmPass=(EditText) findViewById(R.id.EditConfirmPass);
         btnupdate=(Button)findViewById(R.id.SaveProfile);
         backProfile = findViewById(R.id.back);
+
+
+
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         UserID=user.getUid();
 
@@ -105,7 +108,7 @@ public class editprofile extends AppCompatActivity {
                 profileLastName.setText(part2);
                 profilePassword.setText(password);
                 profileConfirmPass.setText(password);
-                
+
 
             }
 
@@ -115,8 +118,6 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-
-
         backProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,9 +125,16 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
+        btnupdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updatetofirebase();
+            }
+        });
 
+            }
 
-        uimage.setOnClickListener(new View.OnClickListener() {
+       /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -153,18 +161,10 @@ public class editprofile extends AppCompatActivity {
                         }).check();
 
             }
-        });
-
-        btnupdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updatetofirebase();
-            }
-        });
-    }
+        });*/
 
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==101 && resultCode==RESULT_OK)
@@ -178,8 +178,7 @@ public class editprofile extends AppCompatActivity {
             {
                 Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG).show();
             }
-        }
-    }
+      */
 
 
     public void updatetofirebase()
@@ -228,11 +227,14 @@ public class editprofile extends AppCompatActivity {
             return;
         }
 
+        String fname=profileFirstName.getText().toString();
+        String lname=profileLastName.getText().toString();
+        String Full_name= fname+" "+lname;
 
 
 
 
-        final ProgressDialog pd=new ProgressDialog(this);
+      /*  final ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("File Uploader");
         pd.show();
 
@@ -243,27 +245,29 @@ public class editprofile extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(Uri uri) {
-                                final Map<String,Object> map=new HashMap<>();
-                                map.put("uimage",uri.toString());
-                                map.put("name",profileFirstName.getText().toString());
-                                map.put("email",profileEmail.getText().toString());
-                                map.put("password",profilePassword.getText().toString());
+                            public void onSuccess(Uri uri) {*/
+        final Map<String,Object> map=new HashMap<>();
+        // map.put("uimage",uri.toString());
+        map.put("name",Full_name);
+        map.put("email",profileEmail.getText().toString());
+        map.put("password",profilePassword.getText().toString());
 
-                                dbreference.child(UserID).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists())
-                                            dbreference.child(UserID).updateChildren(map);
-                                        else
-                                            dbreference.child(UserID).setValue(map);
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                    }
-                                });
+        dbreference.child(UserID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    dbreference.child(UserID).updateChildren(map);
+                    Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
+                 }
+                else
+                    dbreference.child(UserID).setValue(map);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
-                                pd.dismiss();
+                             /*   pd.dismiss();
                                 Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
                             }
                         });
@@ -276,7 +280,7 @@ public class editprofile extends AppCompatActivity {
                         pd.setMessage("Uploaded :"+(int)percent+"%");
                     }
                 });
-
+*/
     }
 
 }
