@@ -69,7 +69,9 @@ public class RecipeModel {
     public String getPicUri() {
         return picUri;
     }
-
+    public String getPicUri2() {
+        return "https://1.bp.blogspot.com/-eDCzOgLuiTg/XkMKlPN0hhI/AAAAAAAABJ8/aUWdGB_87EAagPAQhLvKs2RaICBjkasOwCLcBGAsYHQ/s1600/WhatsApp%2BImage%2B2020-02-11%2Bat%2B8.31.27%2BPM%2B%25281%2529.jpeg";
+    }
     public void setPicUri(String picUri) {
         this.picUri = picUri;
     }
