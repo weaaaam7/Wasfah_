@@ -118,9 +118,6 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-            }
-
-
         backProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +125,14 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
+        btnupdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updatetofirebase();
+            }
+        });
 
+            }
 
        /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,14 +162,6 @@ public class editprofile extends AppCompatActivity {
 
             }
         });*/
-
-        btnupdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updatetofirebase();
-            }
-        });
-    }
 
 
    /* @Override
