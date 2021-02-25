@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragments.SaudiFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:padding="8dp">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_noRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="there is no recipe yet"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+
+</FrameLayout>

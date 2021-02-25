@@ -3,13 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home">
 
+
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home"
-        android:textSize="40dp"/>
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+
+ android:orientation="vertical">
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="200dp"
+     android:background="@drawable/profile_bg"
+     android:gravity="center"
+>
+
+     <ImageView
+         android:id="@+id/logo"
+         android:layout_width="204dp"
+         android:layout_height="150dp"
+         android:layout_gravity="center"
+         android:elevation="10dp"
+
+         android:src="@drawable/wasfahlogo" />
+ </LinearLayout>
+
+      <com.google.android.material.appbar.AppBarLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/appBarLayout"
+          android:background="@drawable/profile_bg"
+
+          >
+          <HorizontalScrollView
+              android:id="@+id/hsv"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:fillViewport="true"
+              android:measureAllChildren="false"
+              android:scrollbars="none" >
+          <com.google.android.material.tabs.TabLayout
+              android:id="@+id/tabLayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              app:tabTextColor="#474537"
+              android:background="@drawable/profile_bg"
+              android:elevation="10dp"
+              app:tabMode="scrollable"
+              app:tabGravity="fill"
+              app:tabIndicatorHeight="5dp"
+              app:tabIndicatorColor="#B68827"
+              app:tabSelectedTextColor="#B68827"
+              >
+
+          </com.google.android.material.tabs.TabLayout>
+    </HorizontalScrollView>
+      </com.google.android.material.appbar.AppBarLayout>
+
+       <androidx.viewpager.widget.ViewPager
+           android:id="@+id/viewPager"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           />
+   </LinearLayout>
 
 </FrameLayout>

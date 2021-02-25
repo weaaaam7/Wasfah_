@@ -1,102 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".PublishRecipeActivity"
     android:background="@drawable/add"
+    android:layout_height="match_parent"
     android:isScrollContainer="true">
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/rounded_corners"
-        android:src="@drawable/ic_baseline_keyboard_backspace_24">
-
-    </ImageView>
 
 
-    <LinearLayout
-        android:id="@+id/topContainer"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        tools:context=".PublishRecipeActivity"
+
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:layout_marginTop="48dp"
-        android:orientation="vertical"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/advent_pro_thin"
-            android:text="Publish Recipe"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="#474537"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/uploadedP"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/rounded_corners"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_baseline_keyboard_backspace_24"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
+        </ImageView>
         <LinearLayout
+            android:id="@+id/topContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="3dp">
 
-            <EditText
-                android:id="@+id/recipe_title"
-                android:layout_width="0dp"
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Publish Recipe"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="#474537"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/uploadedP"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:ems="10"
-                android:hint="Title"
-                android:inputType="textPersonName" />
+                android:layout_marginTop="5dp">
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/cats_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"></androidx.appcompat.widget.AppCompatSpinner>
+                <EditText
+                    android:id="@+id/recipe_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:ems="10"
+                    android:hint="Title"
+                    android:inputType="textPersonName"
+                    android:layout_marginLeft="10dp"/>
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/cats_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp">
+
+                </androidx.appcompat.widget.AppCompatSpinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10"
+                    android:text="Ingredients"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#474537"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+
+                    android:id="@+id/add"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    app:cornerRadius="50dp"
+                    android:background="@drawable/custom_button"
+                    android:drawableRight="@drawable/ic_baseline_add_24"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="Add"
+                    android:textColor="#474537"
+                    android:textSize="18sp"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
+
+        <com.example.wasfah.NonScrollableListView
+            android:id="@+id/ingredients_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/border_grey"
+            android:scrollbars="vertical"
             android:layout_margin="5dp"
+
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topContainer"
+            tools:ignore="MissingClass"></com.example.wasfah.NonScrollableListView>
+
+        <LinearLayout
+            android:id="@id/steps_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/ingredients_list_view"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/steps_label_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="10"
-                android:fontFamily="sans-serif-thin"
-                android:text="Ingredients"
+                android:layout_weight="14"
+                android:text="Steps"
+                android:layout_marginLeft="10dp"
                 android:textAlignment="textStart"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textColor="#474537"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
 
-                android:id="@+id/add"
+                android:id="@+id/add_step_bt"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:layout_marginRight="10dp"
@@ -108,84 +177,36 @@
                 android:paddingRight="10dp"
                 android:text="Add"
                 android:textColor="#474537"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                />
         </LinearLayout>
 
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/ingredients_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/border_grey"
-        android:scrollbars="vertical"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topContainer"></ListView>
-
-    <LinearLayout
-        android:id="@id/steps_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ingredients_list_view"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/steps_label_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="10"
-            android:fontFamily="sans-serif-thin"
-            android:text="Steps"
-            android:textAlignment="textStart"
-            android:textAllCaps="true"
+        <com.example.wasfah.NonScrollableListView
+            android:id="@+id/steps_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_grey"
+            android:scrollbars="vertical"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/steps_label"
+            tools:ignore="MissingClass"></com.example.wasfah.NonScrollableListView>
+        <Button
+            android:id="@+id/uploadBut"
+            android:layout_width="390dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/yellow"
+            android:text="Publish"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/steps_list_view"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:textColor="#474537"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-
-            android:id="@+id/add_step_bt"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_button"
-            android:drawableRight="@drawable/ic_baseline_add_24"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="Add"
-            android:textColor="#474537"
-            android:textSize="18sp" />
-    </LinearLayout>
-    <ListView
-        android:id="@+id/steps_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/border_grey"
-        android:scrollbars="vertical"
-        android:layout_margin="5dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/steps_label"></ListView>
-    <Button
-        android:id="@+id/uploadBut"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/yellow"
-        android:text="Publish"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/steps_list_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="#474537"
-        android:textSize="18sp"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,6 +1,12 @@
 package com.example.wasfah.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class RecipeModel {
@@ -12,7 +18,20 @@ public class RecipeModel {
     private List<StepModel> preparationSteps;
     private String createdBy;
     private String picUri;
+    private String timestamp;
 
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userID = user.getUid();
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp() {
+        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        this.timestamp =  date;
+    }
     public RecipeModel()
     {
         this.recipeId = UUID.randomUUID().toString();

@@ -121,7 +121,9 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
+
+//                            Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
 
                         } else {
                             AuthenticationManager.CURRENT_USER_EMAIL = checkEmail;
@@ -129,8 +131,10 @@ public class SignupActivity extends AppCompatActivity {
                         }
 
                         FirebaseUser user = fAuth.getCurrentUser();
-                        String userI = user.getUid();
-                        ref.child(userI).setValue(helper);
+                        if(user!=null) {
+                            String userI = user.getUid();
+                            ref.child(userI).setValue(helper);
+                        }
 
                     }
                 });

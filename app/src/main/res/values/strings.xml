@@ -22,6 +22,9 @@
         <item>LTR</item>
         <item>ML</item>
         <item>MM</item>
+        <item>Piece</item>
+        <item>Small Spoon</item>
+        <item>Large Spoon</item>
     </string-array>
 
 
