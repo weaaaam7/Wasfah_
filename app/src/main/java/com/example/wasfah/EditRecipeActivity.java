@@ -222,7 +222,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 //                if (picURI != null) {
 //                    uploadToFirebase(picURI);
 //                }
-//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
 
         });
