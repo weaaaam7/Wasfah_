@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +34,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
         edtEmail = (EditText) findViewById(R.id.resetEmail);
         btnResetPassword = (Button) findViewById(R.id.Rbutton);
         btnBack = findViewById(R.id.Acreate);
+
+        //Underline "Back to Log in" text view.
+        String backText = "Back to Log in";
+        SpannableString sBack = new SpannableString(backText);
+        UnderlineSpan unBack = new UnderlineSpan();
+        sBack.setSpan(unBack, 0,14, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        btnBack.setText(sBack);
 
         mAuth = FirebaseAuth.getInstance();
 

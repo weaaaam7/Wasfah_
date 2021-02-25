@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +58,13 @@ public class SignupActivity extends AppCompatActivity {
 
         root = FirebaseDatabase.getInstance();
         ref = root.getReference("Users");
+
+        //Underline "Log in!" text view.
+        String loginText = "Log in!";
+        SpannableString sLogin = new SpannableString(loginText);
+        UnderlineSpan unLogin = new UnderlineSpan();
+        sLogin.setSpan(unLogin, 0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        logBtn.setText(sLogin);
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -111,16 +121,20 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
+
+//                            Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
 
                         } else {
                             AuthenticationManager.CURRENT_USER_EMAIL = checkEmail;
-                            startActivity(new Intent(SignupActivity.this, PublishRecipeActivity.class));
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
                         }
 
                         FirebaseUser user = fAuth.getCurrentUser();
-                        String userI = user.getUid();
-                        ref.child(userI).setValue(helper);
+                        if(user!=null) {
+                            String userI = user.getUid();
+                            ref.child(userI).setValue(helper);
+                        }
 
                     }
                 });

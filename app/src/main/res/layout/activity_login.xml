@@ -50,11 +50,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.73" />
+        app:layout_constraintVertical_bias="0.73"
+        android:textAllCaps="false"/>
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="160dp"
+        android:layout_width="146dp"
         android:layout_height="21dp"
         android:gravity="center"
         android:text="Don't have an account?"
@@ -67,33 +68,35 @@
 
     <TextView
         android:id="@+id/signup"
-        android:layout_width="57dp"
+        android:layout_width="52dp"
         android:layout_height="20dp"
         android:gravity="center"
         android:text="Sign up!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.706"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.817" />
 
     <TextView
         android:id="@+id/reset"
-        android:layout_width="69dp"
-        android:layout_height="23dp"
-        android:text="Click Here"
+        android:layout_width="71dp"
+        android:layout_height="19dp"
+        android:gravity="center"
+        android:text="Click Here!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.406"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.629" />
+        app:layout_constraintVertical_bias="0.628" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="122dp"
+        android:layout_width="117dp"
         android:layout_height="20dp"
+        android:gravity="center"
         android:text="Forget Password?"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

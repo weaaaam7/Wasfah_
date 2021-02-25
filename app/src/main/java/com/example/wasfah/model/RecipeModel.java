@@ -1,18 +1,37 @@
 package com.example.wasfah.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class RecipeModel {
 
     private String recipeId;
     private String title;
-    private String preparationSteps;
     private String category;
     private List<IngredientModel> ingredients;
+    private List<StepModel> preparationSteps;
     private String createdBy;
     private String picUri;
+    private String timestamp;
 
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userID = user.getUid();
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp() {
+        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        this.timestamp =  date;
+    }
     public RecipeModel()
     {
         this.recipeId = UUID.randomUUID().toString();
@@ -34,11 +53,11 @@ public class RecipeModel {
         this.title = title;
     }
 
-    public String getPreparationSteps() {
+    public List<StepModel> getPreparationSteps() {
         return preparationSteps;
     }
 
-    public void setPreparationSteps(String preparationSteps) {
+    public void setPreparationSteps(List<StepModel> preparationSteps) {
         this.preparationSteps = preparationSteps;
     }
 
@@ -69,7 +88,9 @@ public class RecipeModel {
     public String getPicUri() {
         return picUri;
     }
-
+    public String getPicUri2() {
+        return "https://1.bp.blogspot.com/-eDCzOgLuiTg/XkMKlPN0hhI/AAAAAAAABJ8/aUWdGB_87EAagPAQhLvKs2RaICBjkasOwCLcBGAsYHQ/s1600/WhatsApp%2BImage%2B2020-02-11%2Bat%2B8.31.27%2BPM%2B%25281%2529.jpeg";
+    }
     public void setPicUri(String picUri) {
         this.picUri = picUri;
     }

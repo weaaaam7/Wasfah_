@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.CaseMap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +47,7 @@ import org.w3c.dom.Text;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static android.app.ProgressDialog.show;
 
@@ -52,13 +55,15 @@ public class editprofile extends AppCompatActivity {
 
     ImageView uimage;
     Button btnupdate;
-    DatabaseReference dbreference;
+    DatabaseReference dbreference, reference;
     StorageReference storageReference;
     Uri filepath;
     Bitmap bitmap;
     String UserID="";
     EditText profileFirstName,profileLastName,profileEmail,profilePassword,profileConfirmPass;
-
+    ImageView backProfile;
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,6 +78,9 @@ public class editprofile extends AppCompatActivity {
         profilePassword=(EditText) findViewById(R.id.EditPass);
         profileConfirmPass=(EditText) findViewById(R.id.EditConfirmPass);
         btnupdate=(Button)findViewById(R.id.SaveProfile);
+        backProfile = findViewById(R.id.back);
+
+
 
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         UserID=user.getUid();
@@ -80,9 +88,7 @@ public class editprofile extends AppCompatActivity {
         dbreference=FirebaseDatabase.getInstance().getReference().child("Users");
         storageReference= FirebaseStorage.getInstance().getReference();
 
-<<<<<<< Updated upstream
-=======
-        reference=FirebaseDatabase.getInstance().getReference().child("Users").child("JJn5mHzyKeh49dcZKvUyxvHkbci2");
+        reference=FirebaseDatabase.getInstance().getReference().child("Users").child(UserID);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -102,8 +108,7 @@ public class editprofile extends AppCompatActivity {
                 profileLastName.setText(part2);
                 profilePassword.setText(password);
                 profileConfirmPass.setText(password);
-                profilePassword.setTransformationMethod(null);
-                profileConfirmPass.setTransformationMethod(null);
+
 
             }
 
@@ -113,6 +118,7 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
+            }
 
 
         backProfile.setOnClickListener(new View.OnClickListener() {
@@ -124,9 +130,7 @@ public class editprofile extends AppCompatActivity {
 
 
 
-
->>>>>>> Stashed changes
-        uimage.setOnClickListener(new View.OnClickListener() {
+       /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -153,7 +157,7 @@ public class editprofile extends AppCompatActivity {
                         }).check();
 
             }
-        });
+        });*/
 
         btnupdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +167,8 @@ public class editprofile extends AppCompatActivity {
         });
     }
 
-    @Override
+
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==101 && resultCode==RESULT_OK)
@@ -177,13 +182,63 @@ public class editprofile extends AppCompatActivity {
             {
                 Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG).show();
             }
-        }
-    }
+      */
 
 
     public void updatetofirebase()
     {
-        final ProgressDialog pd=new ProgressDialog(this);
+
+        String checkEmail = profileEmail.getText().toString().trim();
+        String checkPass = profilePassword.getText().toString().trim();
+        String checkConf = profileConfirmPass.getText().toString().trim();
+        String checkFName = profileFirstName.getText().toString().trim();
+        String checkLName = profileLastName.getText().toString().trim();
+
+
+        if (TextUtils.isEmpty(checkEmail) || TextUtils.isEmpty(checkFName) || TextUtils.isEmpty(checkLName) || TextUtils.isEmpty(checkPass) || TextUtils.isEmpty(checkPass)) {
+            Toast.makeText(editprofile.this, "All fields are required!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!checkFName.matches("^[a-zA-Z]*$")) {
+            profileFirstName.setError("Invalid first name.");
+            profileFirstName.setText("");
+            return;
+        }
+
+        if (!checkLName.matches("^[a-zA-Z]*$")) {
+            profileLastName.setError("Invalid last name.");
+            profileLastName.setText("");
+            return;
+        }
+
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(checkEmail).matches()) {
+            profileEmail.setError("Invalid email.");
+            profileEmail.setText("");
+            return;
+        }
+
+
+        if (!(PASSWORD_PATTERN.matcher(checkPass).matches())) {
+            profilePassword.setError("Password must contain a capital letter, a small letter, a digit, one of [@#$%^&+=] and of length 8-16.");
+            profilePassword.setText("");
+            return;
+        }
+
+        if (!checkPass.equals(checkConf)) {
+            profileConfirmPass.setError("Passwords are not matched.");
+            profileConfirmPass.setText("");
+            return;
+        }
+
+        String fname=profileFirstName.getText().toString();
+        String lname=profileLastName.getText().toString();
+        String Full_name= fname+" "+lname;
+
+
+
+
+      /*  final ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("File Uploader");
         pd.show();
 
@@ -194,27 +249,29 @@ public class editprofile extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(Uri uri) {
-                                final Map<String,Object> map=new HashMap<>();
-                                map.put("uimage",uri.toString());
-                                map.put("name",profileFirstName.getText().toString());
-                                map.put("email",profileEmail.getText().toString());
-                                map.put("password",profilePassword.getText().toString());
+                            public void onSuccess(Uri uri) {*/
+        final Map<String,Object> map=new HashMap<>();
+        // map.put("uimage",uri.toString());
+        map.put("name",Full_name);
+        map.put("email",profileEmail.getText().toString());
+        map.put("password",profilePassword.getText().toString());
 
-                                dbreference.child(UserID).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists())
-                                            dbreference.child(UserID).updateChildren(map);
-                                        else
-                                            dbreference.child(UserID).setValue(map);
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                    }
-                                });
+        dbreference.child(UserID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    dbreference.child(UserID).updateChildren(map);
+                    Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
+                 }
+                else
+                    dbreference.child(UserID).setValue(map);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
-                                pd.dismiss();
+                             /*   pd.dismiss();
                                 Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
                             }
                         });
@@ -227,7 +284,7 @@ public class editprofile extends AppCompatActivity {
                         pd.setMessage("Uploaded :"+(int)percent+"%");
                     }
                 });
-
+*/
     }
 
 }
