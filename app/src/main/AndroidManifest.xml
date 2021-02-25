@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.wasfah">
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -17,8 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".SearchRecipe"
-            android:exported="true"></activity>
+        <activity android:name=".EditRecipeActivity"></activity>
+        <activity
+            android:name=".SearchRecipe"
+            android:exported="true" />
         <activity android:name=".ProfileView" />
         <activity
             android:name=".editprofile"
@@ -26,10 +27,8 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".LoginActivity"
-            />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".PublishRecipeActivity" />
-
         <activity android:name=".recepe" />
         <activity android:name=".SplashScreen">
             <intent-filter>

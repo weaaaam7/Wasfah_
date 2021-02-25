@@ -191,7 +191,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         switch (item.getItemId())
         {
             case R.id.edit:
-                Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                startActivity(intent);
                 return true;
 
 
