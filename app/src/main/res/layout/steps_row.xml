@@ -21,8 +21,8 @@
 
     <EditText
         android:id="@+id/step_desc_et"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="50dp"
         android:layout_weight="6.8"
         android:ems="10"
         android:hint="Step"
@@ -47,7 +47,7 @@
     <ImageButton
         android:id="@+id/image_remove_step"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:maxHeight="25dp"
         android:backgroundTint="@color/yellow"
