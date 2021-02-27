@@ -101,12 +101,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
 
 
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
 
         //Firebase
 
@@ -193,6 +193,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -242,24 +243,24 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-       commentRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               listComment=new ArrayList<>();
-               for (DataSnapshot snap:snapshot.getChildren()){
-                   Comment comment=snap.getValue(Comment.class);
-                   listComment.add(comment);
-               }
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listComment=new ArrayList<>();
+                for (DataSnapshot snap:snapshot.getChildren()){
+                    Comment comment=snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment);
-               RvComment.setAdapter(adapter);
-           }
+                adapter = new commentAdapter(getApplicationContext(),listComment);
+                RvComment.setAdapter(adapter);
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-           }
-       });
+            }
+        });
     }
 
     private void showMessage(String msg) {
