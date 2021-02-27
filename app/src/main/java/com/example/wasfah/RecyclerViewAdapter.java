@@ -72,7 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Picasso.get().load(mData.get(position).getImg()).into(holder.img2);
         }
         holder.tv_title.setText(mData.get(position).getTitle());
-//        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
+        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
         Picasso.get().load(mData.get(position).getImg()).into(holder.img);
         // set Click lisner
         holder.cardView.setOnClickListener(new View.OnClickListener() {

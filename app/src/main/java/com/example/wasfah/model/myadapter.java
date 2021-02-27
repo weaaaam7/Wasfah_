@@ -17,8 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-
 public class myadapter extends FirebaseRecyclerAdapter<RecipeModel,myadapter.myviewholder>
 {
     public myadapter(@NonNull FirebaseRecyclerOptions<RecipeModel> options) {
@@ -29,7 +27,7 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel,myadapter.myv
     protected void onBindViewHolder(@NonNull myviewholder holder, int position, @NonNull RecipeModel model)
     {
         holder.name.setText(model.getTitle());
-        Glide.with(holder.img.getContext()).load(model.getPicUri()).into(holder.img);
+        //Glide.with(holder.img.getContext()).load(model.getPicUri()).into(holder.img);
     }
 
     @NonNull
@@ -43,15 +41,13 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel,myadapter.myv
 
     class myviewholder extends RecyclerView.ViewHolder
     {
-        CircleImageView img;
+        //CircleImageView img;
         TextView name;
         public myviewholder(@NonNull View itemView)
         {
             super(itemView);
-            img=itemView.findViewById(R.id.img);
+           // img=itemView.findViewById(R.id.img);
             name=(TextView)itemView.findViewById(R.id.tv);
         }
     }
 }
-
-

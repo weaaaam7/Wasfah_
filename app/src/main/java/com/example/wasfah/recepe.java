@@ -229,6 +229,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
                 return true;
 
+            case R.id.fav:
+
+                return true;
+
+
             default:return false;
         }
 
