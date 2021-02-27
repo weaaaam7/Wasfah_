@@ -293,7 +293,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             isValid = false;
         }
-        else if(!Pattern.matches("/^[a-zA-Z\\s]*$/",text))
+        else if(!Pattern.matches("^[a-zA-Z\\s\\.]+$",text))
         {
             isValid = false;
         }
@@ -350,7 +350,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
             {
                 if(!this.isNotEmptyAndOnlyCharacters(model.getDescription()))
                 {
-                    Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Steps contain letters only", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
                 } else if (model.getOrder() <= 0) {
