@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //loading the default fragment
         loadFragment(new home());
 
-        //getting bottom navigation view and attaching the listener
+        //getting bottom navigation view and attaching the listener.
 
         BN.setOnNavigationItemSelectedListener(this);
 
