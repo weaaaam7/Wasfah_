@@ -24,8 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -122,7 +125,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 String comment_content=comment.getText().toString();
                 String uid=user.getUid();
                 String uName=userName;
-                Comment comment1= new Comment(comment_content,uid,uName);
+                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                Comment comment1= new Comment(comment_content,uid,uName,date);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
