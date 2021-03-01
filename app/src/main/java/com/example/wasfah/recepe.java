@@ -1,5 +1,6 @@
 package com.example.wasfah;
 
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wasfah.HomeFragments.HealthyFragment;
+import com.example.wasfah.model.RecipeModel;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,6 +63,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     String recpieId;
     boolean publishedByUser=true;
 
+    // favorite list
+    private Button fav_r;
+    boolean faved = false;
+    DatabaseReference favList;
+    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +98,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         addComment=(Button) findViewById(R.id.button);
         RvComment=(RecyclerView) findViewById(R.id.commentRec);
         tv_timestamp=(TextView) findViewById(R.id.date);
-        dots=(Button) findViewById(R.id.b1);
+        dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
-
+        fav_r = (Button) findViewById(R.id.fav_r);
 
 
         //hide and display 3 dots
@@ -116,6 +126,33 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
+        String uid=user.getUid();
+
+        // fav
+
+        fav_r.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favList = db.getReference("FavoriteList").child(uid).push();
+                favList.setValue(recpieId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if(!faved) {
+                            showMessage("Added to your favorite list");
+                            fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
+                            faved = true;
+                            favList.child(recpieId).setValue(faved);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        showMessage("fail to add to your favorite list: "+e.getMessage());
+                    }
+                });
+
+            }
+        });
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +160,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 addComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
                 String comment_content=comment.getText().toString();
-                String uid=user.getUid();
                 String uName=userName;
                 String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
                 Comment comment1= new Comment(comment_content,uid,uName,date);
@@ -145,6 +181,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
             }
         });
+
 
         //initi Recycler view
         initRvComment();
@@ -171,11 +208,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             }
         }
         tv_steps.setText(str);
-
-
-
-
-
 
     }
 
@@ -235,9 +267,29 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 return true;
 
             case R.id.fav:
+             /*   //Firebase
+                fAuth=FirebaseAuth.getInstance();
+                user=fAuth.getCurrentUser();
+                db=FirebaseDatabase.getInstance();
+                String uid=user.getUid();
+                // fav
+                favList = db.getReference("FavoriteList").child(uid).push();
+
+                if (!faved) {
+                    favList.setValue(recpieId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            showMessage("Added to your favourite list");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            showMessage("fail to add it to your favourite list : " + e.getMessage());
+                        }
+                    });
+                } */
 
                 return true;
-
 
             default:return false;
         }

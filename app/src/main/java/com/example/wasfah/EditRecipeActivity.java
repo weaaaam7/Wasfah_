@@ -14,18 +14,15 @@ import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
-
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,16 +30,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -53,7 +49,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
     private Uri picURI;
-
     private static final String TAG = "MainActivity";
 
     private ImageView picture;
@@ -73,23 +68,30 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
 
     private String recipeId;
-
+    private FirebaseAuth fAuth;
+    private FirebaseUser user;
     private FirebaseDatabase db;
-
+    private DatabaseReference databaseReference1;
+    private DatabaseReference databaseReference2;
+    private DatabaseReference databaseReference3;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recipe);
+
         //Assign
-        picture = (ImageView) findViewById(R.id.uploadedP);
-        titleEdit = (EditText) findViewById(R.id.recipe_title);
-        catSpinner = (Spinner) findViewById(R.id.cats_spinner);
-        ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-        stepsListView = (ListView) findViewById(R.id.steps_list_view);
-        addIngrButton = (Button) findViewById(R.id.add_ing_but);
-        addStepButton = (Button) findViewById(R.id.add_step_bt);
-        saveButton = (Button) findViewById(R.id.saveBut);
-        cancelButton = (Button) findViewById(R.id.cancelBut);
+        picture = (ImageView) findViewById(R.id.uploadedP_er);
+        titleEdit = (EditText) findViewById(R.id.recipe_title_er);
+        catSpinner = (Spinner) findViewById(R.id.cats_spinner_er);
+        ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view_er);
+        stepsListView = (ListView) findViewById(R.id.steps_list_view_er);
+        addIngrButton = (Button) findViewById(R.id.add_ing_but_er);
+        addStepButton = (Button) findViewById(R.id.add_step_bt_er);
+        saveButton = (Button) findViewById(R.id.saveBut_er);
+        cancelButton = (Button) findViewById(R.id.cancelBut_er);
+
+        this.setCategoriesSpinnerItems();
+
         //Firebase
         db = FirebaseDatabase.getInstance();
         recipeId = getIntent().getStringExtra("rec");
@@ -100,20 +102,37 @@ public class EditRecipeActivity extends AppCompatActivity  {
                     Log.e("firebase", "Error getting data", task.getException());
                 }
                 else {
-                    recipeModel = (RecipeModel)(task.getResult().getValue());
+                    HashMap vals = (HashMap) task.getResult().getValue();
+                    recipeModel = new RecipeModel() ;
+                    recipeModel.setRecipeId((String) vals.get("recipeId"));
+                    recipeModel.setTitle((String) vals.get("title"));
+                    recipeModel.setPicUri((String) vals.get("picUri"));
+                    recipeModel.setCategory((String) vals.get("category"));
+                    recipeModel.setCreatedBy((String) vals.get("createdBy"));
+                    //recipeModel.setPreparationSteps((List<StepModel>) vals.get("preparationSteps"));
+                    //recipeModel.setIngredients((List<IngredientModel>) vals.get("ingredients"));
                     Picasso.get().load(recipeModel.getPicUri()).into(picture);
+                    currentModelPic = recipeModel.getPicUri();
                     titleEdit.setText(recipeModel.getTitle());
                     String[] data = EditRecipeActivity.this.getResources().getStringArray(R.array.ingredient_categories);
                     updateSpinner(catSpinner,recipeModel.getCategory(),data);
-                    ingredientsList = recipeModel.getIngredients();
-                    stepsList = recipeModel.getPreparationSteps();
+                    //ingredientsList = recipeModel.getIngredients();
+                    //stepsList = recipeModel.getPreparationSteps();
+                    //setIngredientsListModel(ingredientsList);
+                    //setStepsListModel(stepsList);
                 }
             }
         });
 
-
-
-
+        picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_ACT_REQ_CODE);
+            }
+        });
 
         addIngrButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +151,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(EditRecipeActivity.this, "Recipe had not been edited.", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
@@ -139,14 +159,91 @@ public class EditRecipeActivity extends AppCompatActivity  {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    uploadToFirebase(picURI);
             }
 
         });
 
+        this.setCategoriesSpinnerItems();
+        this.setIngredientsListModel(this.ingredientsList);
+        this.setStepsListModel(this.stepsList);
 
     }
+
+    private void uploadToFirebase(Uri uri) {
+
+        StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                currentModelPic = uri.toString();
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                            @Override
+                            public void onSuccess(Uri downloadUrl) {
+                                if (downloadUrl != null)
+                                currentModelPic= downloadUrl.toString();
+                            }
+                        });
+
+                        editRecipe();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(EditRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void editRecipe() {
+        RecipeModel model = getRecipe();
+        model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
+        model.setPicUri(currentModelPic);
+        model.setTimestamp();
+        if(this.validateModel(model)) {
+            db.getReference("Recipes").child(model.getRecipeId()).setValue(model)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(EditRecipeActivity.this,"Recipe Edited Successfully..", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+            Intent i = new Intent(this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
+    }
+
+    private RecipeModel getRecipe()
+    {
+        RecipeModel model = new RecipeModel();
+        Spinner catSpinner = findViewById(R.id.cats_spinner_er);
+        EditText titleEdit = findViewById(R.id.recipe_title_er);
+
+
+        String category = (String)catSpinner.getSelectedItem();
+        String title = getTextOrEmpty(titleEdit);
+        model.setCategory(category);
+        model.setTitle(title);
+        model.setIngredients(this.ingredientsList);
+        model.setPreparationSteps(this.stepsList);
+        return model;
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
     private void updateSpinner(Spinner spinner, String selectedValue, String[] dataSource)
     {
 
@@ -165,6 +262,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         }
     }
 
+    @Override
     protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -188,25 +286,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
     }
 
 
-    public void updateToFirebase() {
-
-        picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_ACT_REQ_CODE);
-            }
-        });
-
-        this.setCategoriesSpinnerItems();
-        this.setIngredientsListModel(this.ingredientsList);
-        this.setStepsListModel(this.stepsList);
-
-    }
-
-
     private void setCategoriesSpinnerItems()
     {
         //Spinner spinner = (Spinner) findViewById(R.id.cats_spinner);
@@ -224,11 +303,12 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void setIngredientsListModel(List<IngredientModel> models)
     {
-        ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
+        ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view_er);
         IngredientsListAdapter adapter = new IngredientsListAdapter(this,
                 R.layout.row_add, models);
 
         ingredientsListView .setAdapter(adapter);
+
     }
 
     public void addStepRow(View view)
@@ -245,7 +325,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void setStepsListModel(List<StepModel> models)
     {
-        ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
+        ListView stepsListView = (ListView) findViewById(R.id.steps_list_view_er);
 
         StepsListAdapter adapter = new StepsListAdapter(this,
                 R.layout.steps_row, models);
@@ -255,13 +335,122 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
+        if (order > 20) {
+            Toast.makeText(this, "The maximum number for steps is 20", Toast.LENGTH_LONG).show();
+            return;
+        }
         model.setOrder(order);
         this.stepsList.add(model);
         this.setStepsListModel(this.stepsList);
     }
 
 
+    private boolean validateModel(RecipeModel model)
+    {
+        boolean isValid = true;
+        //validations
+        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+        {
+            Toast.makeText(this,"Title must only contain letters and spaces", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        {
+            Toast.makeText(this,"Please select a category", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        else if(!this.isIngredientListValid(model.getIngredients()))
+        {
+            isValid = false;
+        }
+        else if(!this.isStepsListValid(model.getPreparationSteps()))
+        {
+            isValid = false;
+        }
+        return isValid;
+    }
 
+    private String getTextOrEmpty(EditText edit)
+    {
+        return edit.getText() != null ? edit.getText().toString() : "";
+    }
+
+    private boolean isNotEmptyAndOnlyCharacters(String text)
+    {
+        boolean isValid = true;
+        if(text == null || text.length() <= 0)
+        {
+            isValid = false;
+        }
+        else if(!Pattern.matches("/^[a-zA-Z\\s]*$/",text))
+        {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private boolean isIngredientListValid(List<IngredientModel> models)
+    {
+        boolean isValid = true;
+        if(models == null || models.size() <= 0)
+        {
+            Toast.makeText(this, "Please add ingredients", Toast.LENGTH_LONG).show();
+            isValid = false;
+
+        }
+
+        if(models.size() > 20) {
+            Toast.makeText(this, "The maximum number for ingredients is 20", Toast.LENGTH_LONG).show();
+            isValid = false;
+        } else {
+            for(IngredientModel model: models)
+            {
+                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
+                    Toast.makeText(this, "Please select a unit of measure", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+                if (!this.isNotEmptyAndOnlyCharacters(model.getName())) {
+                    Toast.makeText(this, "Please enter a proper ingredient name that only contain letters", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+                if(model.getQuantity() <= 0)
+                {
+                    Toast.makeText(this, "Please enter a proper quantity", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        return isValid;
+    }
+
+    private boolean isStepsListValid(List<StepModel> models)
+    {
+        boolean isValid = true;
+        if(models == null || models.size() <= 0)
+        {
+            Toast.makeText(this, "Please add steps", Toast.LENGTH_LONG).show();
+            isValid = false;
+
+        } else {
+            for(StepModel model: models)
+            {
+                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription()))
+                {
+                    Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                } else if (model.getOrder() <= 0) {
+                    Toast.makeText(this, "There are no steps", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        return isValid;
+    }
 
 
 }
