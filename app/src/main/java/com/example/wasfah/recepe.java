@@ -1,6 +1,5 @@
 package com.example.wasfah;
 
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +12,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wasfah.HomeFragments.HealthyFragment;
-import com.example.wasfah.model.RecipeModel;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,9 +32,6 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -130,26 +122,58 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         // fav
 
+        favList = db.getReference("FavoriteList");
+        favList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child(recpieId).hasChild(uid))
+                {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
+                } else {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_off);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         fav_r.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                favList = db.getReference("FavoriteList").child(uid).push();
-                favList.setValue(recpieId).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        if(!faved) {
-                            showMessage("Added to your favorite list");
-                            fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
-                            faved = true;
-                            favList.child(recpieId).setValue(faved);
+                faved = true;
+                    favList.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (faved) {
+                                if (snapshot.child(recpieId).hasChild(uid)) {
+                                    favList.child(recpieId).child(uid).removeValue();
+                                    faved = false;
+                                } else {
+                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            showMessage("Added to your favorite list");
+                                            faved = false;
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            showMessage("fail to add to your favorite list: " + e.getMessage());
+                                        }
+                                    });
+
+                                    faved = false;
+                                }
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        showMessage("fail to add to your favorite list: "+e.getMessage());
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
 
             }
         });
