@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -235,6 +236,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_recepie_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     //show popup
 
     public void showPopup(View v){
@@ -287,31 +294,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 alertDialog.show();
                 alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
-
-                return true;
-
-            case R.id.fav:
-             /*   //Firebase
-                fAuth=FirebaseAuth.getInstance();
-                user=fAuth.getCurrentUser();
-                db=FirebaseDatabase.getInstance();
-                String uid=user.getUid();
-                // fav
-                favList = db.getReference("FavoriteList").child(uid).push();
-
-                if (!faved) {
-                    favList.setValue(recpieId).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            showMessage("Added to your favourite list");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            showMessage("fail to add it to your favourite list : " + e.getMessage());
-                        }
-                    });
-                } */
 
                 return true;
 
