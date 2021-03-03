@@ -127,7 +127,7 @@
                 android:padding="8dp">
 
                 <androidx.core.widget.NestedScrollView
-                    android:id="@+id/fav_view"
+                    android:id="@+id/rec_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
