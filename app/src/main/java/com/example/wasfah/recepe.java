@@ -12,7 +12,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wasfah.HomeFragments.HealthyFragment;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wasfah.model.IngredientModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,26 +33,17 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView title_tv;
-    private ImageView image,back;
+    private ImageView image, back;
     private TextView tv_ingrediants;
     private TextView tv_category;
     private TextView tv_steps;
     private TextView tv_timestamp;
-    private String str="";
+    private String str = "";
     private EditText comment;
-    private Button addComment,dots;
+    private Button addComment, dots;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -54,7 +51,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     commentAdapter adapter;
     List<Comment> listComment;
     String recpieId;
-    boolean publishedByUser=true;
+    boolean publishedByUser = true;
 
 
     @Override
@@ -71,58 +68,56 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String timestamp = intent.getExtras().getString("timestamp");
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
-        publishedByUser=intent.getExtras().getBoolean("publishedByUser");
-        List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
-        List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
+        publishedByUser = intent.getExtras().getBoolean("publishedByUser");
+        List<IngredientModel> ingredients = (List<IngredientModel>) intent.getSerializableExtra("ingredients");
+        List<Steps> steps = (List<Steps>) intent.getSerializableExtra("steps");
 
         //Ininilize
-        tv_ingrediants=(TextView) findViewById(R.id.Ingred_val);
-        tv_steps=(TextView) findViewById(R.id.Steps_val);
-        title_tv=(TextView) findViewById(R.id.tv);
-        tv_category=(TextView) findViewById(R.id.categ);
-        image=(ImageView) findViewById(R.id.img2);
-        comment=(EditText) findViewById(R.id.editText);
-        addComment=(Button) findViewById(R.id.button);
-        RvComment=(RecyclerView) findViewById(R.id.commentRec);
-        tv_timestamp=(TextView) findViewById(R.id.date);
-        dots=(Button) findViewById(R.id.b1);
-        back=(ImageView) findViewById(R.id.back);
-
+        tv_ingrediants = (TextView) findViewById(R.id.Ingred_val);
+        tv_steps = (TextView) findViewById(R.id.Steps_val);
+        title_tv = (TextView) findViewById(R.id.tv);
+        tv_category = (TextView) findViewById(R.id.categ);
+        image = (ImageView) findViewById(R.id.img2);
+        comment = (EditText) findViewById(R.id.editText);
+        addComment = (Button) findViewById(R.id.button);
+        RvComment = (RecyclerView) findViewById(R.id.commentRec);
+        tv_timestamp = (TextView) findViewById(R.id.date);
+        dots = (Button) findViewById(R.id.b1);
+        back = (ImageView) findViewById(R.id.back);
 
 
         //hide and display 3 dots
 
-        if (publishedByUser){
+        if (publishedByUser) {
             dots.setVisibility(View.VISIBLE);
 
-        }
-        else{
+        } else {
             dots.setVisibility(View.INVISIBLE);
         }
 
 
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
 
         //Firebase
 
-        fAuth=FirebaseAuth.getInstance();
-        user=fAuth.getCurrentUser();
-        db=FirebaseDatabase.getInstance();
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        db = FirebaseDatabase.getInstance();
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
-                String comment_content=comment.getText().toString();
-                String uid=user.getUid();
-                String uName=userName;
-                Comment comment1= new Comment(comment_content,uid,uName);
+                DatabaseReference commentRef = db.getReference("Recipes").child(recpieId).child("comment").push();
+                String comment_content = comment.getText().toString();
+                String uid = user.getUid();
+                String uName = userName;
+                Comment comment1 = new Comment(comment_content, uid, uName);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -135,7 +130,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        showMessage("fail to add comment : "+e.getMessage());
+                        showMessage("fail to add comment : " + e.getMessage());
                     }
                 });
 
@@ -151,34 +146,31 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
-        for (int i=0;i<ingredients.size();i++){
-            str+=(i+1)+"- "+ingredients.get(i).getFullName();
-            if(i<ingredients.size()-1) {
+        for (int i = 0; i < ingredients.size(); i++) {
+            str += (i + 1) + "- " + ingredients.get(i).getName();
+            if (i < ingredients.size() - 1) {
                 str += "\n\n";
             }
 
         }
         tv_ingrediants.setText(str);
-        str="";
-        for (int i=0;i<steps.size();i++){
-            str+=(i+1)+"- "+steps.get(i).getDescription();
-            if(i<steps.size()-1) {
-                str += "\n\n";
+        str = "";
+        if (steps!=null)
+            for (int i = 0; i < steps.size(); i++) {
+                str += (i + 1) + "- " + steps.get(i).getDescription();
+                if (i < steps.size() - 1) {
+                    str += "\n\n";
+                }
             }
-        }
         tv_steps.setText(str);
-
-
-
-
 
 
     }
 
     //show popup
 
-    public void showPopup(View v){
-        PopupMenu popup = new PopupMenu(this,v);
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(this);
         popup.inflate(R.menu.edit_recepie_menu);
         popup.show();
@@ -186,10 +178,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem item){
+    public boolean onMenuItemClick(MenuItem item) {
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
@@ -229,36 +220,37 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
                 return true;
 
-            default:return false;
+            default:
+                return false;
         }
 
     }
 
     private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
-        DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-       commentRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               listComment=new ArrayList<>();
-               for (DataSnapshot snap:snapshot.getChildren()){
-                   Comment comment=snap.getValue(Comment.class);
-                   listComment.add(comment);
-               }
+        DatabaseReference commentRef = db.getReference("Recipes").child(recpieId).child("comment");
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listComment = new ArrayList<>();
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Comment comment = snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment);
-               RvComment.setAdapter(adapter);
-           }
+                adapter = new commentAdapter(getApplicationContext(), listComment);
+                RvComment.setAdapter(adapter);
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-           }
-       });
+            }
+        });
     }
 
     private void showMessage(String msg) {
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
 }

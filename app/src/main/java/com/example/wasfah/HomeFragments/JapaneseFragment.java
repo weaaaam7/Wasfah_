@@ -1,22 +1,21 @@
 package com.example.wasfah.HomeFragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.example.wasfah.Ingredients;
 import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
+import com.example.wasfah.model.IngredientModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -125,11 +124,11 @@ public class JapaneseFragment extends Fragment {
 
 
             if (Category != null &&Category.equalsIgnoreCase("Japanese")) {
-                List<Ingredients> ingredients=new ArrayList<>();
+                List<IngredientModel> ingredients=new ArrayList<>();
                 List<Steps> steps=new ArrayList<>();
                 for (DataSnapshot ds2: ds.child("ingredients").getChildren())
                 {
-                    Ingredients ingredients1=new Ingredients(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
+                    IngredientModel ingredients1=new IngredientModel(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
                     ingredients.add(ingredients1);
                 }
 
