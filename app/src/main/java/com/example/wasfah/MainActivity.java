@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //loading the default fragment
         loadFragment(new home());
 
-        //getting bottom navigation view and attaching the listener
+        //getting bottom navigation view and attaching the listener.
 
         BN.setOnNavigationItemSelectedListener(this);
 
@@ -63,11 +63,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-            //return true;
+            return true;
         }
         return false;
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -11,7 +11,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="2dp"
         android:padding="10dp"
        >
 
@@ -51,21 +51,29 @@
                     android:text="publish date"
                     android:textSize="18sp" />
 
-
-
-
                 <Button
-                    android:id="@+id/b1"
+                    android:id="@+id/bU1"
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_baseline_more_horiz_24"
                     app:backgroundTint="#F5D472"
                     android:layout_marginTop="-5dp"
-                    android:layout_marginLeft="165dp"
+                    android:layout_marginLeft="155dp"
                     android:onClick="showPopup"
 
                     />
+
+                <Button
+                    android:id="@+id/fav_r"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="7dp"
+                    android:background="@drawable/ic_favorite_off"
+                    android:onClick="showPopup"
+                    app:backgroundTint="#F5D472"></Button>
+
 
             </LinearLayout>
 
