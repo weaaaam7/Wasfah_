@@ -2,18 +2,18 @@
     <string name="app_name">Wasfah</string>
 
     <string-array name="ingredient_categories">
-        <item>Healthy</item>
-        <item>Italian</item>
-        <item>Indian</item>
-        <item>Saudi</item>
-        <item>Japanese</item>
-        <item>Chinese</item>
-        <item>American</item>
-        <item>French</item>
-        <item>Drinks</item>
-        <item>Deserts</item>
-        <item>Bakeries</item>
-        <item>Others</item>
+        <item>@string/Healthy</item>
+        <item>@string/Italian</item>
+        <item>@string/Indian</item>
+        <item>@string/Saudi</item>
+        <item>@string/Japanese</item>
+        <item>@string/Chinese</item>
+        <item>@string/American</item>
+        <item>@string/French</item>
+        <item>@string/Drinks</item>
+        <item>@string/Deserts</item>
+        <item>@string/Bakeries</item>
+        <item>@string/Others</item>
     </string-array>
 
     <string-array name="uoms">
@@ -29,15 +29,61 @@
 
 
     <string name="title_activity_recepe">recepe</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="Ingredients">Ingredients</string>
+    <string name="Steps">Steps</string>
+    <string name="Comment">Comment</string>
+    <string name="Add_comment">Add Comment</string>
+    <string name="Add">Add</string>
+    <string name="Healthy">Healthy</string>
+    <string name="Italian">Italian</string>
+    <string name="Saudi">Saudi</string>
+    <string name="Indian">Indian</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="Japanese">Japanese</string>
+    <string name="Chinese">Chinese</string>
+    <string name="American">American</string>
+    <string name="French">French</string>
+
+    <string name="Drinks">Drinks</string>
+    <string name="Deserts">Deserts</string>
+    <string name="Bakeries">Bakeries</string>
+    <string name="Others">Others</string>
+
+
+    <string name="Home">Home</string>
+    <string name="Search">Search</string>
+    <string name="Profile">profile</string>
+    <string name="fav">Favorite</string>
+
+    <string name="publish_recipe">Publish recipe</string>
+    <string name="publish">Publish</string>
+    <string name="Editـprofile">Edit profile</string>
+    <string name="logout">Logout</string>
+    <string name="title">Title</string>
+
+    <string name="Editـrecipe">Edit Recipe</string>
+    <string name="delete_recipe">Delete Recipe</string>
+    <string name="add_to_my_fav">+ My Favorite</string>
+    <string name="my_fav">My Favorite</string>
+    <string name="no_recipe">There is no recipes yet</string>
+
+
+
+
+
+
+
+
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
+
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
 </resources>

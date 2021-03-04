@@ -5,20 +5,20 @@
     <item
         android:id="@+id/edit"
         android:orderInCategory="100"
-        android:title="Edit Recipe"
+        android:title="@string/Editـrecipe"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/delete"
         android:orderInCategory="100"
-        android:title="Delete Recipe"
+        android:title="@string/delete_recipe"
         android:icon="@drawable/ic_baseline_more_horiz_24"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/fav"
         android:orderInCategory="100"
-        android:title="+ My Favourites"
+        android:title="@string/add_to_my_fav"
         android:icon="@drawable/ic_baseline_more_horiz_24"
         app:showAsAction="never"/>
 
