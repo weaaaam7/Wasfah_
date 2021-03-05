@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 
 import com.example.wasfah.model.IngredientModel;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -42,7 +44,9 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
 
         }
         this.itemPosition = position;
-        IngredientModel model = this.getItem(position);
+
+        IngredientModel model = getModelOrHashMap(position);
+
         if(model!=null)
         {
             EditText nameView = (EditText) convertView.findViewById(R.id.ingredient_name_lv);
@@ -60,13 +64,13 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    IngredientModel model = getItem(itemPosition);
+
                     model.setName(s.toString());
                 }
             });
 
-           EditText qtyView = (EditText) convertView.findViewById(R.id.ingredient_qty_lv);
-           qtyView.setText(model.getQuantity() + "");
+            EditText qtyView = (EditText) convertView.findViewById(R.id.ingredient_qty_lv);
+            qtyView.setText(model.getQuantity() + "");
             qtyView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -97,7 +101,7 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
             sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                   // IngredientModel model = getItem(itemPosition);
+                    // IngredientModel model = getItem(itemPosition);
                     model.setUnitOfMeasure(sp.getSelectedItem().toString());
                 }
 
@@ -120,6 +124,17 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
         }
         return convertView;
     }
+    private IngredientModel getModelOrHashMap(int position)
+    {
+
+        try{
+            IngredientModel model = this.getItem(position);
+            return model;
+        }catch (ClassCastException exception)
+        {
+            return this.getIngredientModel((Object)this.getItem(position));
+        }
+    }
     private void removeItemFromDS(String modelId)
     {
         for(IngredientModel model : this.dataSource)
@@ -133,27 +148,51 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
         }
     }
 
+    private IngredientModel getIngredientModel(Object obj)
+    {
+        HashMap map = (HashMap)obj;
+        IngredientModel model = new IngredientModel();
+        model.setUnitOfMeasure((String)map.get("unitOfMeasure"));
+        model.setQuantity(castQuantity(map.get("quantity")));
+        model.setName((String)map.get("name"));
+        model.setModelId((String)map.get("modelId"));
+        return model;
+    }
+
+    private double castQuantity(Object qty)
+    {
+        if(qty instanceof  Long)
+        {
+            return (long)qty;
+        }
+        else if (qty instanceof  Double)
+        {
+            return (double)qty;
+        }
+        return new BigDecimal(qty.toString()).doubleValue();
+    }
+
     private void setSpinnerDataSource(Spinner spinner, IngredientModel model)
     {
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.context,
-                    R.array.uoms, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-            spinner.setPrompt(model.getUnitOfMeasure());
-            String[] vals = this.context.getResources().getStringArray(R.array.uoms);
-            if(model.getUnitOfMeasure() == null)
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.context,
+                R.array.uoms, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPrompt(model.getUnitOfMeasure());
+        String[] vals = this.context.getResources().getStringArray(R.array.uoms);
+        if(model.getUnitOfMeasure() == null)
+        {
+            model.setUnitOfMeasure(vals[0]);
+            return;
+        }
+        for(int i = 0; i < vals.length; i++)
+        {
+            if(vals[i].equals(model.getUnitOfMeasure()))
             {
-                model.setUnitOfMeasure(vals[0]);
+                spinner.setSelection(i);
                 return;
             }
-            for(int i = 0; i < vals.length; i++)
-            {
-                if(vals[i].equals(model.getUnitOfMeasure()))
-                {
-                    spinner.setSelection(i);
-                    return;
-                }
-            }
+        }
 
     }
 

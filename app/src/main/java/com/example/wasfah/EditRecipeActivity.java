@@ -75,6 +75,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private DatabaseReference databaseReference2;
     private DatabaseReference databaseReference3;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recipe);
@@ -107,19 +108,20 @@ public class EditRecipeActivity extends AppCompatActivity  {
                     recipeModel.setRecipeId((String) vals.get("recipeId"));
                     recipeModel.setTitle((String) vals.get("title"));
                     recipeModel.setPicUri((String) vals.get("picUri"));
+                    currentModelPic = recipeModel.getPicUri();
                     recipeModel.setCategory((String) vals.get("category"));
                     recipeModel.setCreatedBy((String) vals.get("createdBy"));
-                    //recipeModel.setPreparationSteps((List<StepModel>) vals.get("preparationSteps"));
-                    //recipeModel.setIngredients((List<IngredientModel>) vals.get("ingredients"));
+                    recipeModel.setPreparationSteps((List<StepModel>) vals.get("preparationSteps"));
+                    recipeModel.setIngredients((List<IngredientModel>) vals.get("ingredients"));
                     Picasso.get().load(recipeModel.getPicUri()).into(picture);
                     currentModelPic = recipeModel.getPicUri();
                     titleEdit.setText(recipeModel.getTitle());
                     String[] data = EditRecipeActivity.this.getResources().getStringArray(R.array.ingredient_categories);
                     updateSpinner(catSpinner,recipeModel.getCategory(),data);
-                    //ingredientsList = recipeModel.getIngredients();
-                    //stepsList = recipeModel.getPreparationSteps();
-                    //setIngredientsListModel(ingredientsList);
-                    //setStepsListModel(stepsList);
+                    ingredientsList = recipeModel.getIngredients();
+                    stepsList = recipeModel.getPreparationSteps();
+                    setIngredientsListModel(ingredientsList);
+                    setStepsListModel(stepsList);
                 }
             }
         });
@@ -159,7 +161,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    uploadToFirebase(picURI);
+                uploadToFirebase(picURI);
             }
 
         });
@@ -171,33 +173,43 @@ public class EditRecipeActivity extends AppCompatActivity  {
     }
 
     private void uploadToFirebase(Uri uri) {
+        String picUri = "";
+        if(uri == null)
+        {
 
-        StorageReference fileRef = storRef.child(System.currentTimeMillis()+"."+getFileExtension(uri));
-        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            editRecipe();
+        }
+        else
+        {
+            picUri = System.currentTimeMillis()+"."+ getFileExtension(uri);
+            StorageReference fileRef = storRef.child(picUri);
+            fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //                currentModelPic = uri.toString();
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                            @Override
-                            public void onSuccess(Uri downloadUrl) {
-                                if (downloadUrl != null)
-                                currentModelPic= downloadUrl.toString();
-                            }
-                        });
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                                @Override
+                                public void onSuccess(Uri downloadUrl) {
+                                    if (downloadUrl != null)
+                                        currentModelPic= downloadUrl.toString();
+                                }
+                            });
 
-                        editRecipe();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(EditRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+                            editRecipe();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(EditRecipeActivity.this,"Uploading Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
     }
 
     private void editRecipe() {
@@ -249,7 +261,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
         if(selectedValue== null)
         {
-
             return;
         }
         for(int i = 0; i < dataSource.length; i++)
@@ -265,7 +276,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == GALLERY_ACT_REQ_CODE && resultCode == RESULT_OK && data != null) {
             picURI = data.getData();
             picture.setImageURI(picURI);
@@ -306,8 +316,8 @@ public class EditRecipeActivity extends AppCompatActivity  {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view_er);
         IngredientsListAdapter adapter = new IngredientsListAdapter(this,
                 R.layout.row_add, models);
-
         ingredientsListView .setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -330,6 +340,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         StepsListAdapter adapter = new StepsListAdapter(this,
                 R.layout.steps_row, models);
         stepsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void addBlankStepToListView(StepModel model)

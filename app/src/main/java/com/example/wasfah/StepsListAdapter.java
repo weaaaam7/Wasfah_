@@ -18,8 +18,10 @@ import androidx.annotation.NonNull;
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.StepModel;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -45,7 +47,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
         }
         this.itemPosition = position;
-        StepModel model = this.getItem(position);
+        StepModel model = StepModelConverter.getStepModel(getItem(position));
         if(model!=null)
         {
             TextView orderTextView = (TextView) convertView.findViewById(R.id.step_order_tv);
@@ -65,7 +67,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    StepModel model = getItem(itemPosition);
+
                     model.setDescription(s.toString());
                 }
             });
@@ -101,6 +103,8 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         }
         return convertView;
     }
+
+
     private void removeItemFromDS(String modelId)
     {
         List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
