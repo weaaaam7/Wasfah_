@@ -45,6 +45,8 @@ import java.util.regex.Pattern;
 public class EditRecipeActivity extends AppCompatActivity  {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
+    public static final int MAX_ING = 15;
+    public static final int MAX_STEP = 20;
 
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
@@ -329,6 +331,10 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void addBlankIngredientToListView(IngredientModel model)
     {
+        if (this.ingredientsList.size() >= MAX_ING) {
+            Toast.makeText(EditRecipeActivity.this, "The maximum number for ingredients is " + MAX_ING, Toast.LENGTH_SHORT).show();
+            return;
+        }
         this.ingredientsList.add(model);
         this.setIngredientsListModel(this.ingredientsList);
     }
@@ -346,8 +352,8 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
-        if (order > 20) {
-            Toast.makeText(this, "The maximum number for steps is 20", Toast.LENGTH_LONG).show();
+        if (order > MAX_STEP) {
+            Toast.makeText(this, "The maximum number for steps is " + MAX_STEP, Toast.LENGTH_LONG).show();
             return;
         }
         model.setOrder(order);
@@ -410,8 +416,8 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
         }
 
-        if(models.size() > 20) {
-            Toast.makeText(this, "The maximum number for ingredients is 20", Toast.LENGTH_LONG).show();
+        if(models.size() > MAX_ING) {
+            Toast.makeText(this, "The maximum number for ingredients is " + MAX_ING, Toast.LENGTH_LONG).show();
             isValid = false;
         } else {
             for(IngredientModel model: models)
