@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -47,6 +50,7 @@ public class HealthyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_healthy, container, false);
+
         recipieList=new ArrayList<>();
         if (user != null) {
             // Read from the database
@@ -103,6 +107,7 @@ public class HealthyFragment extends Fragment {
         return RootView;
 
 }
+
     private void getAllRecipes(@NonNull DataSnapshot snapshot,@NonNull DataSnapshot userSnapShot) {
         if (recipieList != null && recipieList.size() > 0) {
             recipieList.clear();
@@ -153,4 +158,5 @@ public class HealthyFragment extends Fragment {
 
         }
     }
+
 }
