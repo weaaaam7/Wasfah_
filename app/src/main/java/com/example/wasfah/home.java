@@ -1,13 +1,20 @@
 package com.example.wasfah;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.Switch;
+import android.widget.Toast;
+
 
 import com.example.wasfah.HomeFragments.AmericanFragment;
 import com.example.wasfah.HomeFragments.BakeriesFragment;
@@ -23,10 +30,14 @@ import com.example.wasfah.HomeFragments.OthersFragment;
 import com.example.wasfah.HomeFragments.SaudiFragment;
 import com.example.wasfah.MainActivity;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -57,9 +68,11 @@ public class home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Inflate the layout for this fragment
+        //setHasOptionsMenu(true);
         myFragment=inflater.inflate(R.layout.fragment_home, container, false);
         viewPager = myFragment.findViewById(R.id.viewPager);
         tabLayout = myFragment.findViewById(R.id.tabLayout);
+
 //        s = myFragment.findViewById(R.id.switch1);
 //
 //        s.setOnClickListener(new View.OnClickListener() {
@@ -110,9 +123,45 @@ public class home extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.sort, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.sort) {
+
+            switch (item.getItemId()){
+
+                case R.id.newestSort:
+                    return true;
+
+                case R.id.alphaSort:
+                    return true;
+
+                default:
+                    break;
+
+            }
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -150,4 +199,5 @@ public class home extends Fragment {
 
         viewPager.setAdapter(adapter);
     }
+
 }
