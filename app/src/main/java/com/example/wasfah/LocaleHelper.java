@@ -25,17 +25,6 @@ public class LocaleHelper {
         return getPersistedData(context, Locale.getDefault().getLanguage());
     }
 
-<<<<<<< HEAD
-    public Context setLocale(Context context,String lang) {
-        if (Pref.getValue(context,"language_checked", "false").equalsIgnoreCase("true"))
-        {
-            return updateResources(context,"ar");
-        }
-        else
-        {
-             return updateResources(context,"en");
-        }
-=======
     public void setLocale(String lang) {
 //        Locale myLocale = new Locale(lang);
 //        Resources res = getResources();
@@ -46,7 +35,6 @@ public class LocaleHelper {
 //        Intent refresh = new Intent(this, MainActivity.class);
 //        finish();
 //        startActivity(refresh);
->>>>>>> origin/master
     }
 
     private static String getPersistedData(Context context, String defaultLanguage) {
