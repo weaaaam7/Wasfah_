@@ -2,7 +2,12 @@ package com.example.wasfah;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -11,10 +16,13 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.cloud.translate.*;
 import com.example.wasfah.HomeFragments.HealthyFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,10 +30,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.common.model.RemoteModelManager;
+import com.google.mlkit.nl.translate.TranslateLanguage;
+import com.google.mlkit.nl.translate.TranslateRemoteModel;
+import com.google.mlkit.nl.translate.Translator;
+import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -55,17 +73,26 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+    String tilte;
+    boolean flag=false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-
+        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
+        {
+            setApplicationLocale("ar");
+        }
+        else
+        {
+           setApplicationLocale("en");
+        }
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
-        String tilte = intent.getExtras().getString("title");
+        tilte = intent.getExtras().getString("title");
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
@@ -88,8 +115,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         dots=(Button) findViewById(R.id.b1);
         back=(ImageView) findViewById(R.id.back);
 
-
-
         //hide and display 3 dots
 
         if (publishedByUser){
@@ -110,6 +135,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         //Firebase
 
+        String language_checked=Pref.getValue(this,"test", "false");
+
         fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
@@ -122,7 +149,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 String comment_content=comment.getText().toString();
                 String uid=user.getUid();
                 String uName=userName;
-                Comment comment1= new Comment(comment_content,uid,uName);
+                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                Comment comment1= new Comment(comment_content,uid,uName,date);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -170,8 +198,54 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
 
 
+//
+//        TranslatorOptions options =
+//                new TranslatorOptions.Builder()
+//                        .setSourceLanguage(TranslateLanguage.ENGLISH)
+//                        .setTargetLanguage(TranslateLanguage.ARABIC)
+//                        .build();
+//        final Translator englishGermanTranslator =
+//                Translation.getClient(options);
+//        DownloadConditions conditions = new DownloadConditions.Builder()
+//                .requireWifi()
+//                .build();
+//        englishGermanTranslator.downloadModelIfNeeded(conditions)
+//                .addOnSuccessListener(
+//                        (OnSuccessListener) v -> {
+//
+//                                englishGermanTranslator.translate(tilte)
+//                                        .addOnSuccessListener(
+//                                                (OnSuccessListener) translatedText -> {
+//                                                    title_tv.setText(translatedText.toString());
+//                                                })
+//                                        .addOnFailureListener(
+//                                                new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                        // Error.
+//                                                        // ...
+//                                                    }
+//                                                });
+//
+//                        })
+//                .addOnFailureListener(
+//                        new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                // Model couldn’t be downloaded or other internal error.
+//                                // ...
+//                            }
+//                        });
+//
+//
+//        Translate translate = TranslateOptions.getDefaultInstance().getService();
+//        Translation translation = translate.translate(tilte);
+//        title_tv.setText(translation.getTranslatedText());
+//        String language_checked=Pref.getValue(this,"test", "false");
 
-
+//        Translate2 translate = new Translate2();
+//        translate.execute(tilte);
+//        title_tv.setText(translate.getResult());
 
     }
 
@@ -261,7 +335,17 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
            }
        });
     }
-
+    public void setApplicationLocale(String locale) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(locale.toLowerCase()));
+        } else {
+            config.locale = new Locale(locale.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
+    }
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }

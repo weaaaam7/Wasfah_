@@ -4,12 +4,16 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.CaseMap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +50,7 @@ import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -70,7 +75,14 @@ public class editprofile extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editprofile);
-
+        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
+        {
+          setApplicationLocale("ar");
+        }
+        else
+        {
+          setApplicationLocale("en");
+        }
         uimage=(ImageView)findViewById(R.id.ProfileImage);
         profileFirstName=(EditText) findViewById(R.id.EditFirstName);
         profileLastName=(EditText) findViewById(R.id.EditLastName);
@@ -281,6 +293,17 @@ public class editprofile extends AppCompatActivity {
                     }
                 });
 */
+    }
+    public void setApplicationLocale(String locale) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(locale.toLowerCase()));
+        } else {
+            config.locale = new Locale(locale.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
     }
 
 }
