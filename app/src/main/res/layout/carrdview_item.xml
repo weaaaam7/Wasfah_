@@ -98,15 +98,7 @@
 
                     android:text="dd/mm/yyyy" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="12dp">
 
-
-
-                </LinearLayout>
             </LinearLayout>
 
 

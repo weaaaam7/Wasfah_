@@ -21,8 +21,8 @@ public class RecipeModel implements Serializable {
     private List<IngredientModel> ingredients;
     private List<StepModel> preparationSteps;
     private String createdBy;
-
-
+    private long likes;
+    private long dislikes;
     private String picUri;
     private String timestamp;
     private String img;
@@ -40,6 +40,8 @@ public class RecipeModel implements Serializable {
         title = in.readString();
         category = in.readString();
         createdBy = in.readString();
+        likes = in.readLong();
+        dislikes = in.readLong();
         picUri = in.readString();
         timestamp = in.readString();
         img = in.readString();
@@ -146,12 +148,21 @@ public class RecipeModel implements Serializable {
         return this.picUri ;//= "https://realfood.tesco.com/media/images/RFO-October2020-65809-Tesco-LetsCook-Oct20-65850-SpicedChickenGreenBeans1400x919-38f3e9b0-7241-49a3-83fe-fcc38d2c24be-0-1400x919.jpg";
     }
 
+    public String getPicUri2() {
+        return "https://1.bp.blogspot.com/-eDCzOgLuiTg/XkMKlPN0hhI/AAAAAAAABJ8/aUWdGB_87EAagPAQhLvKs2RaICBjkasOwCLcBGAsYHQ/s1600/WhatsApp%2BImage%2B2020-02-11%2Bat%2B8.31.27%2BPM%2B%25281%2529.jpeg";
+    }
 
     public void setPicUri(String picUri) {
         this.picUri = picUri;//"https://realfood.tesco.com/media/images/RFO-October2020-65809-Tesco-LetsCook-Oct20-65850-SpicedChickenGreenBeans1400x919-38f3e9b0-7241-49a3-83fe-fcc38d2c24be-0-1400x919.jpg";
     }
 
+    public long getLikes() {
+        return likes;
+    }
 
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
@@ -173,7 +184,13 @@ public class RecipeModel implements Serializable {
         this.userID = userID;
     }
 
+    public long getDislikes() {
+        return dislikes;
+    }
 
+    public void setDislikes(long dislikes) {
+        this.dislikes = dislikes;
+    }
 
 
     public RecipeModel(String recipeId, String title, String category, List<IngredientModel> ingredients, List<StepModel> preparationSteps, String createdBy, long likes, long dislikes, String picUri, String timestamp, String img, List<Steps> steps, boolean isPublishedByUser, boolean isProfile, FirebaseUser user, String userID) {
@@ -183,7 +200,8 @@ public class RecipeModel implements Serializable {
         this.ingredients = ingredients;
         this.preparationSteps = preparationSteps;
         this.createdBy = createdBy;
-
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.picUri = picUri;
         this.timestamp = timestamp;
         this.img = img;

@@ -30,11 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -56,12 +53,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     String recpieId;
     boolean publishedByUser = true;
 
-    // favorite list
-    private Button fav_r;
-    boolean faved = false;
-    DatabaseReference favList;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,18 +73,18 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         List<Steps> steps = (List<Steps>) intent.getSerializableExtra("steps");
 
         //Ininilize
-        tv_ingrediants=(TextView) findViewById(R.id.Ingred_val);
-        tv_steps=(TextView) findViewById(R.id.Steps_val);
-        title_tv=(TextView) findViewById(R.id.tv);
-        tv_category=(TextView) findViewById(R.id.categ);
-        image=(ImageView) findViewById(R.id.img2);
-        comment=(EditText) findViewById(R.id.editText);
-        addComment=(Button) findViewById(R.id.button);
-        RvComment=(RecyclerView) findViewById(R.id.commentRec);
-        tv_timestamp=(TextView) findViewById(R.id.date);
-        dots=(Button) findViewById(R.id.bU1);
-        back=(ImageView) findViewById(R.id.back);
-        fav_r = (Button) findViewById(R.id.fav_r);
+        tv_ingrediants = (TextView) findViewById(R.id.Ingred_val);
+        tv_steps = (TextView) findViewById(R.id.Steps_val);
+        title_tv = (TextView) findViewById(R.id.tv);
+        tv_category = (TextView) findViewById(R.id.categ);
+        image = (ImageView) findViewById(R.id.img2);
+        comment = (EditText) findViewById(R.id.editText);
+        addComment = (Button) findViewById(R.id.button);
+        RvComment = (RecyclerView) findViewById(R.id.commentRec);
+        tv_timestamp = (TextView) findViewById(R.id.date);
+        dots = (Button) findViewById(R.id.b1);
+        back = (ImageView) findViewById(R.id.back);
+
 
         //hide and display 3 dots
 
@@ -114,68 +105,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         //Firebase
 
-        fAuth=FirebaseAuth.getInstance();
-        user=fAuth.getCurrentUser();
-        db=FirebaseDatabase.getInstance();
-        String uid=user.getUid();
-
-        // fav
-
-        favList = db.getReference("FavoriteList");
-        favList.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(recpieId).hasChild(uid))
-                {
-                    fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
-                } else {
-                    fav_r.setBackgroundResource(R.drawable.ic_favorite_off);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        fav_r.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                faved = true;
-                    favList.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (faved) {
-                                if (snapshot.child(recpieId).hasChild(uid)) {
-                                    favList.child(recpieId).child(uid).removeValue();
-                                    faved = false;
-                                } else {
-                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            showMessage("Added to your favorite list");
-                                            faved = false;
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            showMessage("fail to add to your favorite list: " + e.getMessage());
-                                        }
-                                    });
-
-                                    faved = false;
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-            }
-        });
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        db = FirebaseDatabase.getInstance();
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,9 +115,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 addComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef = db.getReference("Recipes").child(recpieId).child("comment").push();
                 String comment_content = comment.getText().toString();
-                String uName=userName;
-                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                Comment comment1 = new Comment(comment_content, uid, uName,date);
+                String uid = user.getUid();
+                String uName = userName;
+                Comment comment1 = new Comment(comment_content, uid, uName);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -204,7 +136,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
             }
         });
-
 
         //initi Recycler view
         initRvComment();
@@ -253,7 +184,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
-                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -287,31 +217,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 alertDialog.show();
                 alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
-
-                return true;
-
-            case R.id.fav:
-             /*   //Firebase
-                fAuth=FirebaseAuth.getInstance();
-                user=fAuth.getCurrentUser();
-                db=FirebaseDatabase.getInstance();
-                String uid=user.getUid();
-                // fav
-                favList = db.getReference("FavoriteList").child(uid).push();
-
-                if (!faved) {
-                    favList.setValue(recpieId).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            showMessage("Added to your favourite list");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            showMessage("fail to add it to your favourite list : " + e.getMessage());
-                        }
-                    });
-                } */
 
                 return true;
 

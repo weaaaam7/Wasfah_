@@ -2,12 +2,9 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,10 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.example.wasfah.model.RecipeModel;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.List;
@@ -73,11 +69,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.tv_title_cat.setText(mData.get(position).getTitle());
             holder.date.setText(mData.get(position).getTimestamp());
             holder.name.setText(mData.get(position).getName());
-           // Picasso.get().load(mData.get(position).getImg()).into(holder.img2);
+            Picasso.get().load(mData.get(position).getImg()).into(holder.img2);
         }
         holder.tv_title.setText(mData.get(position).getTitle());
-      //  Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
-      //  Picasso.get().load(mData.get(position).getImg()).into(holder.img);
+//        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
+        Picasso.get().load(mData.get(position).getImg()).into(holder.img);
         // set Click lisner
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Intent inten = new Intent(mcontext, recepe.class);
                 inten.putExtra("title", mData.get(position).getTitle());
                 inten.putExtra("category", mData.get(position).getCategory());
-                inten.putExtra("ingredients", (((Serializable) mData.get(position).getIngredients())));
+                inten.putExtra("ingredients",( (  (Serializable) mData.get(position).getIngredients())));
                 inten.putExtra("steps", (Serializable) mData.get(position).getSteps());
                 inten.putExtra("img", mData.get(position).getImg());
                 inten.putExtra("userName", currentUser);
@@ -98,6 +94,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
+        //like and dislike
+
 
     }
 
@@ -109,7 +107,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_title, tv_title_cat;
-
+        ImageView img, img2, like, dislike;
         RelativeLayout cardView;
         LinearLayout profile, category;
         TextView name, date;
@@ -118,7 +116,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super((itemView));
 
             tv_title = (TextView) itemView.findViewById(R.id.tv);
-
+            img = (ImageView) itemView.findViewById(R.id.img);
+            img2 = (ImageView) itemView.findViewById(R.id.img2);
 
             cardView = (RelativeLayout) itemView.findViewById(R.id.cardview);
             tv_title_cat = (TextView) itemView.findViewById(R.id.tv2);
@@ -128,5 +127,4 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             category = (LinearLayout) itemView.findViewById(R.id.category);
         }
     }
-
 }
