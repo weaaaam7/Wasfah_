@@ -6,12 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -38,7 +34,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class PublishRecipeActivity extends AppCompatActivity {
@@ -60,14 +55,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_recipe);
-        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
-        {
-           setApplicationLocale("ar");
-        }
-        else
-        {
-           setApplicationLocale("en");
-        }
+
         publishButton = findViewById(R.id.uploadBut);
         picture = findViewById(R.id.uploadedP);
         backHome = findViewById(R.id.back);
@@ -373,16 +361,5 @@ public class PublishRecipeActivity extends AppCompatActivity {
             }
         }
         return isValid;
-    }
-    public void setApplicationLocale(String locale) {
-        Resources resources = getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(new Locale(locale.toLowerCase()));
-        } else {
-            config.locale = new Locale(locale.toLowerCase());
-        }
-        resources.updateConfiguration(config, dm);
     }
 }

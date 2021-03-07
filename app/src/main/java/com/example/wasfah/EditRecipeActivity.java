@@ -6,12 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -46,7 +42,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class EditRecipeActivity extends AppCompatActivity  {
@@ -87,14 +82,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recipe);
-        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
-        {
-           setApplicationLocale("ar");
-        }
-        else
-        {
-          setApplicationLocale("en");
-        }
+
         //Firebase
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
@@ -513,17 +501,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 //        }
 //        return isValid;
 //    }
-public void setApplicationLocale(String locale) {
-    Resources resources = getResources();
-    DisplayMetrics dm = resources.getDisplayMetrics();
-    Configuration config = resources.getConfiguration();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        config.setLocale(new Locale(locale.toLowerCase()));
-    } else {
-        config.locale = new Locale(locale.toLowerCase());
-    }
-    resources.updateConfiguration(config, dm);
-}
+
 
 
 }

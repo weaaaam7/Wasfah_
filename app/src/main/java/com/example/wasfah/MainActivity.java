@@ -1,12 +1,7 @@
 package com.example.wasfah;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -20,8 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Locale;
-
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseDatabase root;
@@ -30,21 +23,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private String name;
     private FloatingActionButton publishFB;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView BN = findViewById(R.id.bottomNavigationView);
         BN.setBackground(null);
-        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
-        {
-           setApplicationLocale("ar");
-        }
-        else
-        {
-            setApplicationLocale("en");
-        }
+
 
         //loading the default fragment
         loadFragment(new home());
@@ -83,11 +68,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
-    public void restartActivity() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -112,19 +92,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Intent intent1 = new Intent(this, SearchRecipe.class);
                 this.startActivity(intent1);
                 break;
+
+
+
         }
 
         return loadFragment(fragment);
-    }
-    public void setApplicationLocale(String locale) {
-        Resources resources = getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(new Locale(locale.toLowerCase()));
-        } else {
-            config.locale = new Locale(locale.toLowerCase());
-        }
-        resources.updateConfiguration(config, dm);
     }
 }
