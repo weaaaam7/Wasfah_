@@ -62,7 +62,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private ListView ingredientsListView;
     private ListView stepsListView;
-
+    private ImageView backHome;
     private Button addIngrButton;
     private Button addStepButton;
     private Button saveButton;
@@ -92,8 +92,16 @@ public class EditRecipeActivity extends AppCompatActivity  {
         addStepButton = (Button) findViewById(R.id.add_step_bt_er);
         saveButton = (Button) findViewById(R.id.saveBut_er);
         cancelButton = (Button) findViewById(R.id.cancelBut_er);
+        backHome = findViewById(R.id.back_er);
 
         this.setCategoriesSpinnerItems();
+
+        backHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
 
         //Firebase
         db = FirebaseDatabase.getInstance();
