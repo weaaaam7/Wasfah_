@@ -95,7 +95,7 @@ recipieList=new ArrayList<>();
                     RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                     if (recipieList.size()>0)
                     {
-                        RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,name11);
+                        RecyclerViewAdapter<RecyclerView.ViewHolder> recAdap = new RecyclerViewAdapter<RecyclerView.ViewHolder>(getContext(),recipieList,name11);
                         rs.setLayoutManager(new GridLayoutManager(getContext(),3));
                         rs.setAdapter(recAdap);
                     }

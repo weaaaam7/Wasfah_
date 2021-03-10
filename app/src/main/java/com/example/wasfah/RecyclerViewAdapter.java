@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 import java.io.Serializable;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
     private String TAG = "RecyclerViewAdapter";
     private Context mcontext;
@@ -93,9 +93,144 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             }
         });
+/*
 
         //like and dislike
+        final Like[] like = new Like[1];
 
+        recipeRef.child(mData.get(position).getRecipeId()).child("likeList").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+
+                Log.e(TAG, "onSuccess: " + dataSnapshot.getValue());
+
+                if (dataSnapshot.getChildren() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Like like1 = new Like(
+                                ds.child("uid").getValue(String.class),
+                                ds.child("like").getValue(Boolean.class)
+                        );
+
+                        if (like1.getUid().equals(userId)) {
+                            like[0] = like1;
+                            if (like1.isLike()) {
+                                holder.dislike.setImageResource(R.drawable.ic_dislike);
+                                holder.like.setImageResource(R.drawable.ic_like_used);
+
+                            } else {
+                                holder.dislike.setImageResource(R.drawable.ic_dislike_used);
+                                holder.like.setImageResource(R.drawable.ic_like);
+                            }
+                            return;
+                        }
+
+                    }
+                }
+
+            }
+        });
+
+        holder.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (like[0] == null) {
+                    like[0] = new Like(userId, true);
+
+                    recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).setValue(like[0])
+                            .addOnSuccessListener(aVoid -> {
+                                final Map<String, Object> map = new HashMap<>();
+                                map.put("likes", mData.get(position).getLikes() + 1);
+
+                                recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            holder.like.setImageResource(R.drawable.ic_like_used);
+
+                                        });
+                            });
+                } else {
+                    if (like[0].isLike())
+                        recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).removeValue()
+                                .addOnSuccessListener(aVoid -> {
+                                    final Map<String, Object> map = new HashMap<>();
+                                    map.put("likes", mData.get(position).getLikes() - 1);
+
+                                    recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                            .addOnSuccessListener(aVoid1 -> {
+                                                holder.like.setImageResource(R.drawable.ic_like);
+
+                                            });
+                                });
+                    else {
+                        like[0].setLike(true);
+                        recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).setValue(like[0])
+                                .addOnSuccessListener(aVoid -> {
+                                    final Map<String, Object> map = new HashMap<>();
+                                    map.put("dislikes", mData.get(position).getDislikes() - 1);
+                                    map.put("likes", mData.get(position).getLikes() + 1);
+
+                                    recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                            .addOnSuccessListener(aVoid1 -> {
+                                                holder.dislike.setImageResource(R.drawable.ic_dislike);
+                                                holder.like.setImageResource(R.drawable.ic_like_used);
+
+                                            });
+                                });
+                    }
+                }
+
+            }
+        });
+
+        holder.dislike.setOnClickListener(view -> {
+
+            if (like[0] == null) {
+                like[0] = new Like(userId, false);
+
+                recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).setValue(like[0])
+                        .addOnSuccessListener(aVoid -> {
+                            final Map<String, Object> map = new HashMap<>();
+                            map.put("dislikes", mData.get(position).getDislikes() + 1);
+
+                            recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        holder.dislike.setImageResource(R.drawable.ic_dislike_used);
+
+                                    });
+                        });
+            } else {
+                if (!like[0].isLike())
+                    recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).removeValue()
+                            .addOnSuccessListener(aVoid -> {
+                                final Map<String, Object> map = new HashMap<>();
+                                map.put("dislikes", mData.get(position).getDislikes() - 1);
+
+                                recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            holder.dislike.setImageResource(R.drawable.ic_dislike);
+
+                                        });
+                            });
+                else {
+                    like[0].setLike(false);
+                    recipeRef.child(mData.get(position).getRecipeId()).child("likeList").child(like[0].getUid()).setValue(like[0])
+                            .addOnSuccessListener(aVoid -> {
+                                final Map<String, Object> map = new HashMap<>();
+                                map.put("dislikes", mData.get(position).getDislikes() + 1);
+                                map.put("likes", mData.get(position).getLikes() - 1);
+
+                                recipeRef.child(mData.get(position).getRecipeId()).updateChildren(map)
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            holder.like.setImageResource(R.drawable.ic_like);
+                                            holder.dislike.setImageResource(R.drawable.ic_dislike_used);
+
+                                        });
+                            });
+
+                }            }
+
+        });
+*/
 
     }
 
@@ -107,7 +242,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_title, tv_title_cat;
-        ImageView img, img2, like, dislike;
+        ImageView img, img2;//,like, dislike;
         RelativeLayout cardView;
         LinearLayout profile, category;
         TextView name, date;
@@ -118,7 +253,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tv_title = (TextView) itemView.findViewById(R.id.tv);
             img = (ImageView) itemView.findViewById(R.id.img);
             img2 = (ImageView) itemView.findViewById(R.id.img2);
-
+//            like = (ImageView) itemView.findViewById(R.id.img_like);
+//            dislike = (ImageView) itemView.findViewById(R.id.img_dislike);
             cardView = (RelativeLayout) itemView.findViewById(R.id.cardview);
             tv_title_cat = (TextView) itemView.findViewById(R.id.tv2);
             name = (TextView) itemView.findViewById(R.id.name);

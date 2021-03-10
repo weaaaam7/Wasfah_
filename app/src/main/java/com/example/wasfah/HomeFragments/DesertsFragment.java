@@ -63,7 +63,7 @@ public class DesertsFragment extends Fragment {
                             RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                             if (recipieList.size()>0)
                             {
-                                RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,currentUser);
+                                RecyclerViewAdapter<RecyclerView.ViewHolder> recAdap = new RecyclerViewAdapter<RecyclerView.ViewHolder>(getContext(),recipieList,currentUser);
                                 rs.setLayoutManager(new GridLayoutManager(getContext(),1));
                                 rs.setAdapter(recAdap);
                             }

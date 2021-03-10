@@ -98,7 +98,26 @@
 
                     android:text="dd/mm/yyyy" />
 
+              <!--  <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="12dp">
 
+                    <ImageView
+                        android:id="@+id/img_like"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_like" />
+
+                    <ImageView
+                        android:id="@+id/img_dislike"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_dislike" />
+
+                </LinearLayout>-->
             </LinearLayout>
 
 

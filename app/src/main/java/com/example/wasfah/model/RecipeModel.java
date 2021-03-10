@@ -21,6 +21,7 @@ public class RecipeModel implements Serializable {
     private List<IngredientModel> ingredients;
     private List<StepModel> preparationSteps;
     private String createdBy;
+    //like
     private long likes;
     private long dislikes;
     private String picUri;
@@ -192,7 +193,6 @@ public class RecipeModel implements Serializable {
         this.dislikes = dislikes;
     }
 
-
     public RecipeModel(String recipeId, String title, String category, List<IngredientModel> ingredients, List<StepModel> preparationSteps, String createdBy, long likes, long dislikes, String picUri, String timestamp, String img, List<Steps> steps, boolean isPublishedByUser, boolean isProfile, FirebaseUser user, String userID) {
         this.recipeId = recipeId;
         this.title = title;
@@ -211,5 +211,7 @@ public class RecipeModel implements Serializable {
         this.user = user;
         this.userID = userID;
     }
+
+
 }
 
