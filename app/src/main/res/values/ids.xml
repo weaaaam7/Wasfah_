@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="inputToTranslate" type="id">input</item>
+    <item name="translatedTv" type="id">trans</item>
+    <item name="translateButton" type="id">transb</item>
+</resources>

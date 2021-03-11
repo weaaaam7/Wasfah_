@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #067d17;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.wasfah;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.content.res.Configuration;</span>
+<span class="s0">import </span><span class="s1">android.net.ConnectivityManager;</span>
+<span class="s0">import </span><span class="s1">android.net.NetworkInfo;</span>
+<span class="s0">import </span><span class="s1">android.os.Build;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.os.StrictMode;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuItem;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.material.bottomnavigation.BottomNavigationView;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.floatingactionbutton.FloatingActionButton;</span>
+<span class="s0">import </span><span class="s1">com.google.auth.oauth2.GoogleCredentials;</span>
+<span class="s0">import </span><span class="s1">com.google.cloud.translate.TranslateOptions;</span>
+<span class="s0">import </span><span class="s1">com.google.cloud.translate.Translation;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase;</span>
+
+<span class="s0">import </span><span class="s1">java.io.IOException;</span>
+<span class="s0">import </span><span class="s1">java.io.InputStream;</span>
+<span class="s0">import </span><span class="s1">java.util.Locale;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s0">implements </span><span class="s1">BottomNavigationView.OnNavigationItemSelectedListener {</span>
+
+    <span class="s0">private </span><span class="s1">FirebaseDatabase root;</span>
+    <span class="s0">private </span><span class="s1">DatabaseReference ref;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth mAuth;</span>
+    <span class="s0">private </span><span class="s1">String name;</span>
+    <span class="s0">private </span><span class="s1">FloatingActionButton publishFB;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_main);</span>
+        <span class="s1">BottomNavigationView BN = findViewById(R.id.bottomNavigationView);</span>
+        <span class="s1">BN.setBackground(</span><span class="s0">null</span><span class="s1">);</span>
+
+
+        <span class="s2">//loading the default fragment</span>
+        <span class="s1">loadFragment(</span><span class="s0">new </span><span class="s1">home());</span>
+
+        <span class="s2">//getting bottom navigation view and attaching the listener.</span>
+
+        <span class="s1">BN.setOnNavigationItemSelectedListener(</span><span class="s0">this</span><span class="s1">);</span>
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance();</span>
+        <span class="s1">root = FirebaseDatabase.getInstance();</span>
+        <span class="s1">ref = root.getReference(</span><span class="s3">&quot;Users&quot;</span><span class="s1">);</span>
+        <span class="s1">publishFB = findViewById(R.id.publish_fb);</span>
+        <span class="s1">publishFB.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">startPublishRecipeActivity();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">startPublishRecipeActivity()</span>
+    <span class="s1">{</span>
+        <span class="s1">Intent i = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, PublishRecipeActivity.</span><span class="s0">class</span><span class="s1">);</span>
+        <span class="s1">startActivity(i);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">loadFragment(Fragment fragment) {</span>
+        <span class="s2">//switching fragment</span>
+        <span class="s0">if </span><span class="s1">(fragment != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">getSupportFragmentManager()</span>
+                    <span class="s1">.beginTransaction()</span>
+                    <span class="s1">.replace(R.id.fragment_container, fragment)</span>
+                    <span class="s1">.commit();</span>
+            <span class="s0">return true</span><span class="s1">;</span>
+        <span class="s1">}</span>
+        <span class="s0">return false</span><span class="s1">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">restartActivity() {</span>
+        <span class="s1">Intent intent = getIntent();</span>
+        <span class="s1">finish();</span>
+        <span class="s1">startActivity(intent);</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onNavigationItemSelected(@NonNull MenuItem item) {</span>
+        <span class="s1">Fragment fragment = </span><span class="s0">null</span><span class="s1">;</span>
+
+        <span class="s0">switch </span><span class="s1">(item.getItemId()) {</span>
+
+            <span class="s0">case </span><span class="s1">R.id.mHome:</span>
+                <span class="s1">fragment = </span><span class="s0">new </span><span class="s1">home();</span>
+                <span class="s0">break</span><span class="s1">;</span>
+
+            <span class="s0">case </span><span class="s1">R.id.mprofile:</span>
+                <span class="s1">fragment = </span><span class="s0">new </span><span class="s1">profile();</span>
+                <span class="s0">break</span><span class="s1">;</span>
+
+
+            <span class="s0">case </span><span class="s1">R.id.mFav:</span>
+                <span class="s1">fragment = </span><span class="s0">new </span><span class="s1">Fav();</span>
+                <span class="s0">break</span><span class="s1">;</span>
+
+            <span class="s0">case </span><span class="s1">R.id.mSearch:</span>
+                <span class="s1">Intent intent1 = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, SearchRecipe.</span><span class="s0">class</span><span class="s1">);</span>
+                <span class="s0">this</span><span class="s1">.startActivity(intent1);</span>
+                <span class="s0">break</span><span class="s1">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">return </span><span class="s1">loadFragment(fragment);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private </span><span class="s1">EditText inputToTranslate;</span>
+    <span class="s0">private </span><span class="s1">TextView translatedTv;</span>
+    <span class="s0">private </span><span class="s1">String originalText;</span>
+    <span class="s0">private </span><span class="s1">String translatedText;</span>
+    <span class="s0">private boolean </span><span class="s1">connected;</span>
+    <span class="s1">Translate translate;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_main);</span>
+
+        <span class="s1">inputToTranslate = findViewById(R.id.inputToTranslate);</span>
+        <span class="s1">translatedTv = findViewById(R.id.translatedTv);</span>
+        <span class="s1">Button translateButton = findViewById(R.id.translateButton);</span>
+
+        <span class="s1">translateButton.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@RequiresApi(api = Build.VERSION_CODES.M)</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                <span class="s0">if </span><span class="s1">(checkInternetConnection()) {</span>
+
+                    <span class="s2">//If there is internet connection, get translate service and start translation:</span>
+                    <span class="s1">getTranslateService();</span>
+                    <span class="s1">translate();</span>
+
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+
+                    <span class="s2">//If not, display &quot;no connection&quot; warning:</span>
+                    <span class="s1">translatedTv.setText(getResources().getString(R.string.no_connection));</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">getTranslateService() {</span>
+
+        <span class="s1">StrictMode.ThreadPolicy policy = </span><span class="s0">new </span><span class="s1">StrictMode.ThreadPolicy.Builder().permitAll().build();</span>
+        <span class="s1">StrictMode.setThreadPolicy(policy);</span>
+
+        <span class="s0">try </span><span class="s1">{</span>
+            <span class="s0">try </span><span class="s1">(InputStream is = getResources().openRawResource(R.raw.wasfah)) {</span>
+
+                <span class="s2">//Get credentials:</span>
+                <span class="s0">final </span><span class="s1">GoogleCredentials myCredentials = GoogleCredentials.fromStream(is);</span>
+
+                <span class="s2">//Set credentials and get translate service:</span>
+                <span class="s1">TranslateOptions translateOptions = TranslateOptions.newBuilder().setCredentials(myCredentials).build();</span>
+                <span class="s1">translate = (Translate) translateOptions.getService();</span>
+
+            <span class="s1">} </span><span class="s0">catch </span><span class="s1">(IOException ioe) {</span>
+                <span class="s1">ioe.printStackTrace();</span>
+
+            <span class="s1">}</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(IOException e) {</span>
+            <span class="s1">e.printStackTrace();</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">translate() {</span>
+
+        <span class="s2">//Get input text to be translated:</span>
+        <span class="s1">originalText = inputToTranslate.getText().toString();</span>
+        <span class="s1">Translation translation = translate.Translate(originalText, Translate.TranslateOption.targetLanguage(</span><span class="s3">&quot;ARABIC&quot;</span><span class="s1">), Translate.TranslateOption.model(</span><span class="s3">&quot;ENGLISH&quot;</span><span class="s1">));</span>
+        <span class="s1">translatedText = translation.getTranslatedText();</span>
+
+        <span class="s2">//Translated text and original text are set to TextViews:</span>
+        <span class="s1">translatedTv.setText(translatedText);</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.M)</span>
+    <span class="s0">public boolean </span><span class="s1">checkInternetConnection() {</span>
+
+        <span class="s2">//Check internet connection:</span>
+        <span class="s1">ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);</span>
+
+        <span class="s2">//Means that we are connected to a network (mobile or wi-fi)</span>
+        <span class="s1">connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||</span>
+                <span class="s1">connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;</span>
+
+        <span class="s0">return </span><span class="s1">connected;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
