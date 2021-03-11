@@ -23,6 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 ///**
 // * A simple {@link Fragment} subclass.
 // * Use the {@link Fav#newInstance} factory method to
@@ -33,7 +35,7 @@ import com.squareup.picasso.Picasso;
 public class Fav extends Fragment {
 
     private View RootView;
-    private RecyclerView myFavList;
+    private RecyclerView recyclerView;
 
 //    List<RecipeInfo> recipeList;
 //    RecyclerView recyclerView;
@@ -60,8 +62,8 @@ public class Fav extends Fragment {
         // Inflate the layout for this fragment
         RootView = inflater.inflate(R.layout.fragment_fav, container, false);
 
-        myFavList = (RecyclerView) RootView.findViewById(R.id.rec_view);
-        myFavList.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView = (RecyclerView) RootView.findViewById(R.id.rec_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAuth = FirebaseAuth.getInstance();
         recipeID = mAuth.getCurrentUser().getUid();
@@ -71,6 +73,7 @@ public class Fav extends Fragment {
         return RootView;
 
     }
+
 
     @Override
     public void onStart() {
@@ -111,7 +114,7 @@ public class Fav extends Fragment {
             }
         };
 
-        myFavList.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
 
