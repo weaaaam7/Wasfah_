@@ -9,12 +9,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 ///**
@@ -36,24 +39,17 @@ public class Fav extends Fragment {
 
     private View RootView;
     private RecyclerView recyclerView;
+    List<RecipeInfo> recipeList;
 
-//    List<RecipeInfo> recipeList;
-//    RecyclerView recyclerView;
-//    RecyclerViewAdapter recyclerViewAdapter;
-//    private String name;
-//    private String email;
 
     //Firebase
     DatabaseReference favRef;
-    DatabaseReference recRef;
     FirebaseAuth mAuth;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String recipeID;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//    DatabaseReference myRef = database.getReference("Users");
-//    DatabaseReference recipeRef = database.getReference("Recipes");
-//    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//    String userID = user.getUid();
+    public Fav(){}
 
 
     @Override
@@ -61,6 +57,7 @@ public class Fav extends Fragment {
 
         // Inflate the layout for this fragment
         RootView = inflater.inflate(R.layout.fragment_fav, container, false);
+        recipeList = new ArrayList<>();
 
         recyclerView = (RecyclerView) RootView.findViewById(R.id.rec_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -68,11 +65,11 @@ public class Fav extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         recipeID = mAuth.getCurrentUser().getUid();
         favRef = database.getReference().child("FavoriteList").child(recipeID);
-        recRef = database.getReference().child("Recipes");
 
         return RootView;
 
     }
+
 
 
     @Override
@@ -87,6 +84,7 @@ public class Fav extends Fragment {
                 favRef.child(recipesId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                         if(snapshot.hasChild("picUri")) {
                             String recipeImage = snapshot.child("picUri").getValue().toString();
                             String recipeTitle = snapshot.child("title").getValue().toString();
@@ -119,14 +117,11 @@ public class Fav extends Fragment {
     }
 
     public static class favViewHolder extends RecyclerView.ViewHolder {
-
         ImageView image;
         TextView title;
 
         public favViewHolder(@NonNull View itemView) {
-
             super(itemView);
-
             image = itemView.findViewById(R.id.img);
             title = itemView.findViewById(R.id.tv);
         }
