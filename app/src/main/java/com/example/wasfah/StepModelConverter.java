@@ -13,7 +13,6 @@ public class StepModelConverter {
 
         HashMap map = (HashMap)obj;
         StepModel model = new StepModel();
-
         model.setOrder(castOrder(map.get("quantity")));
         model.setDescription((String)map.get("description"));
         model.setModelId((String)map.get("modelId"));

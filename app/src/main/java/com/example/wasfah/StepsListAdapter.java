@@ -47,7 +47,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
         }
         this.itemPosition = position;
-        StepModel model = StepModelConverter.getStepModel(getItem(position));
+        StepModel model = getModelOrHashMap(position);
         if(model!=null)
         {
             TextView orderTextView = (TextView) convertView.findViewById(R.id.step_order_tv);
@@ -103,7 +103,17 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         }
         return convertView;
     }
+    private StepModel getModelOrHashMap(int position)
+    {
 
+        try{
+            StepModel model = this.getItem(position);
+            return model;
+        }catch (ClassCastException exception)
+        {
+            return StepModelConverter.getStepModel(getItem(position));
+        }
+    }
 
     private void removeItemFromDS(String modelId)
     {

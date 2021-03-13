@@ -256,7 +256,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         EditText titleEdit = findViewById(R.id.recipe_title);
 
 
-        String category = (String)catSpinner.getSelectedItem();
+        String category = (String)(catSpinner.getSelectedItem());
         String title = getTextOrEmpty(titleEdit);
         model.setCategory(category);
         model.setTitle(title);
@@ -270,12 +270,12 @@ public class PublishRecipeActivity extends AppCompatActivity {
     {
         boolean isValid = true;
         //validations
-        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+        if(!(isNotEmptyAndOnlyCharacters(model.getTitle())))
         {
             Toast.makeText(this,"Title must only contain letters and spaces", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        else if(!(isNotEmptyAndOnlyCharacters(model.getCategory())))
         {
             Toast.makeText(this,"Please select a category", Toast.LENGTH_LONG).show();
             isValid = false;
@@ -303,7 +303,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             isValid = false;
         }
-        else if(!Pattern.matches("/^[a-zA-Z\\s]*$/",text))
+        else if(!(Pattern.matches("[a-zA-Z\\s]",text)))
         {
             isValid = false;
         }

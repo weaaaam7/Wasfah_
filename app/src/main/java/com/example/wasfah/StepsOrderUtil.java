@@ -25,6 +25,7 @@ public class StepsOrderUtil {
                 break;
             }
         }
+
         //assuming only one step is removed.
         for(StepModel step : modelList)
         {
