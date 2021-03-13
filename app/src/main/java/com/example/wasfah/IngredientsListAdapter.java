@@ -132,6 +132,7 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
             }
         }
     }
+
     private void setSpinnerDataSource(Spinner spinner, IngredientModel model)
     {
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.context,

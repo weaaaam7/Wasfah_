@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,6 +18,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wasfah.model.RecipeModel;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -30,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      private String name;
      private String currentUser;
      private String recipeId;
+     private Button mLikeButton;
 
     public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String currentUser) {
         this.mcontext = mcontext;
@@ -62,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
            holder.profile.setVisibility(View.VISIBLE);
            holder.category.setVisibility(View.GONE);
         }
-        else{
+        else {
 
             holder.profile.setVisibility(View.GONE);
             holder.category.setVisibility(View.VISIBLE);
@@ -123,4 +127,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             category=(LinearLayout) itemView.findViewById(R.id.category);
         }
     }
+
 }

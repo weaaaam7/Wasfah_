@@ -121,10 +121,10 @@ public class EditRecipeActivity extends AppCompatActivity  {
         catSpinner = (Spinner) findViewById(R.id.cats_spinner);
         ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
         stepsListView = (ListView) findViewById(R.id.steps_list_view);
-        addIngrButton = (Button) findViewById(R.id.add_ing_but);
+        addIngrButton = (Button) findViewById(R.id.add_ing_but_er);
         addStepButton = (Button) findViewById(R.id.add_step_bt);
-        saveButton = (Button) findViewById(R.id.saveBut);
-        cancelButton = (Button) findViewById(R.id.cancelBut);
+        saveButton = (Button) findViewById(R.id.saveBut_er);
+        cancelButton = (Button) findViewById(R.id.cancelBut_er);
 
 
         //Set image, title and category.
