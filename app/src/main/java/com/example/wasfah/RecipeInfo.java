@@ -1,7 +1,5 @@
 package com.example.wasfah;
 
-import android.net.Uri;
-
 import java.util.List;
 
 public class RecipeInfo {
@@ -58,30 +56,36 @@ public class RecipeInfo {
         this.email = email;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp) {
         this.title = title;
         this.img = img;
-        this.category=category;
-        this.ingredients=ingredients;
-        this.steps=steps;
-        this.recipeId=recipeId;
-        this.timestamp=timestamp;
-        this.isPublishedByUser=true;
-        this.isProfile=true;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.isPublishedByUser = true;
+        this.isProfile = true;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile) {
         this.title = title;
         this.img = img;
-        this.category=category;
-        this.ingredients=ingredients;
-        this.steps=steps;
-        this.recipeId=recipeId;
-        this.timestamp=timestamp;
-        this.name=name;
-        this.isPublishedByUser=isPublishedByUser;
-        this.isProfile=isProfile;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.name = name;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
     }
+
+
+    public RecipeInfo getRecipeInfo() {
+        return this;
+    }
+
     public String getRecipeId() {
         return recipeId;
     }
