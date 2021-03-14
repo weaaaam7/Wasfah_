@@ -11,15 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
-
 import com.example.wasfah.model.IngredientModel;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
-
 
 public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
 

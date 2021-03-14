@@ -45,13 +45,11 @@ import java.util.regex.Pattern;
 public class EditRecipeActivity extends AppCompatActivity  {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    public static final int MAX_ING = 15;
-    public static final int MAX_STEP = 20;
 
     private String currentModelPic;
     private StorageReference storRef = FirebaseStorage.getInstance().getReference();
     private Uri picURI;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "EditRecipeActiviy";
 
     private ImageView picture;
     private EditText titleEdit;
@@ -95,13 +93,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
         backHome = findViewById(R.id.back_er);
 
         this.setCategoriesSpinnerItems();
-
-        backHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
 
         //Firebase
         db = FirebaseDatabase.getInstance();
@@ -176,6 +167,13 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
         });
 
+        backHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+
         this.setCategoriesSpinnerItems();
         this.setIngredientsListModel(this.ingredientsList);
         this.setStepsListModel(this.stepsList);
@@ -200,15 +198,12 @@ public class EditRecipeActivity extends AppCompatActivity  {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                                @Override
-                                public void onSuccess(Uri downloadUrl) {
-                                    if (downloadUrl != null)
-                                        currentModelPic= downloadUrl.toString();
-                                }
-                            });
 
-                            editRecipe();
+                            if (uri != null) {
+                                currentModelPic = uri.toString();
+                                editRecipe();
+                            }
+
                         }
                     });
                 }
@@ -227,6 +222,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
         model.setTimestamp();
+
         if(this.validateModel(model)) {
             db.getReference("Recipes").child(model.getRecipeId()).setValue(model)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -252,6 +248,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
 
         String category = (String)catSpinner.getSelectedItem();
+
         String title = getTextOrEmpty(titleEdit);
         model.setCategory(category);
         model.setTitle(title);
@@ -326,7 +323,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view_er);
         IngredientsListAdapter adapter = new IngredientsListAdapter(this,
                 R.layout.row_add, models);
-        ingredientsListView .setAdapter(adapter);
+        ingredientsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }
@@ -339,8 +336,11 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void addBlankIngredientToListView(IngredientModel model)
     {
-        if (this.ingredientsList.size() >= MAX_ING) {
-            Toast.makeText(EditRecipeActivity.this, "The maximum number for ingredients is " + MAX_ING, Toast.LENGTH_SHORT).show();
+        if(this.ingredientsList.size()  > PublishRecipeActivity.MAX_INGR_ITEMS)
+        {
+            String msg = "The maximum number for ingredients is = "
+                    + PublishRecipeActivity.MAX_INGR_ITEMS;
+            Toast.makeText(this,  msg, Toast.LENGTH_LONG).show();
             return;
         }
         this.ingredientsList.add(model);
@@ -360,8 +360,9 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
-        if (order > MAX_STEP) {
-            Toast.makeText(this, "The maximum number for steps is " + MAX_STEP, Toast.LENGTH_LONG).show();
+        if (order > PublishRecipeActivity.MAX_STEPS_COUNT) {
+            String msg = "The maximum number for steps is " + PublishRecipeActivity.MAX_STEPS_COUNT;
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             return;
         }
         model.setOrder(order);
@@ -374,12 +375,12 @@ public class EditRecipeActivity extends AppCompatActivity  {
     {
         boolean isValid = true;
         //validations
-        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+        if(!validateTitle(model.getTitle()))
         {
-            Toast.makeText(this,"Title must only contain letters and spaces", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Title must only contain letters and spaces!", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        else if(!validateCategory(model.getCategory()))
         {
             Toast.makeText(this,"Please select a category", Toast.LENGTH_LONG).show();
             isValid = false;
@@ -395,6 +396,26 @@ public class EditRecipeActivity extends AppCompatActivity  {
         return isValid;
     }
 
+    private boolean validateTitle(String title)
+    {
+
+        if(title == null || title.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[\\u0621-\\u064A\\s]*$",title) || Pattern.matches("[a-zA-Z\\s]*$",title);
+
+    }
+
+    private boolean validateCategory(String text)
+    {
+        if(text == null || text.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[a-zA-Z]*$",text);
+    }
+
     private String getTextOrEmpty(EditText edit)
     {
         return edit.getText() != null ? edit.getText().toString() : "";
@@ -402,16 +423,13 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private boolean isNotEmptyAndOnlyCharacters(String text)
     {
-        boolean isValid = true;
+
         if(text == null || text.length() <= 0)
         {
-            isValid = false;
+            return false;
         }
-        else if(!Pattern.matches("/^[a-zA-Z\\s]*$/",text))
-        {
-            isValid = false;
-        }
-        return isValid;
+        return Pattern.matches("[a-zA-Z\\s]*$/",text);
+
     }
 
     private boolean isIngredientListValid(List<IngredientModel> models)
@@ -424,18 +442,20 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
         }
 
-        if(models.size() > MAX_ING) {
-            Toast.makeText(this, "The maximum number for ingredients is " + MAX_ING, Toast.LENGTH_LONG).show();
+        if(models.size() > PublishRecipeActivity.MAX_STEPS_COUNT) {
+            Toast.makeText(this, "The maximum number for ingredients is "
+                    + PublishRecipeActivity.MAX_STEPS_COUNT, Toast.LENGTH_LONG).show();
             isValid = false;
         } else {
-            for(IngredientModel model: models)
+            for(int i =0; i < models.size(); i++)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
+                IngredientModel model = IngridientModelConverter.getIngredientModel(models.get(i));
+               /* if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
                     Toast.makeText(this, "Please select a unit of measure", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
-                }
-                if (!this.isNotEmptyAndOnlyCharacters(model.getName())) {
+                } */
+                if (!validateTitle(model.getName())) {
                     Toast.makeText(this, "Please enter a proper ingredient name that only contain letters", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
@@ -462,7 +482,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         } else {
             for(StepModel model: models)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription()))
+                if(!validateTitle(model.getDescription()))
                 {
                     Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
                     isValid = false;
