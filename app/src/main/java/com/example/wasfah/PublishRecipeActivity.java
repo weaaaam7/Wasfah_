@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    public static final int MAX_INGR_ITEMS =  15;
-    public static final int MAX_STEPS_COUNT = 20;
+    public static final int MAX_INGR_ITEMS =  10;
+    public static final int MAX_STEPS_COUNT = 10;
 
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
