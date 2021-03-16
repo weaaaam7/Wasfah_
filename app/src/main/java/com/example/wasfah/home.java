@@ -99,7 +99,10 @@ public class home extends Fragment {
 ////                        home = new home();
 ////                        fragmentTransaction.replace(R.id.fragment_container, home, "mHome");
 ////                    } else {
-////                        fragmentTransaction.show(home);
+////                        fragmentTransaction.show(home)
+
+
+        ;
 ////                    }
 ////                    fragmentTransaction.commit();
 ////                    ((MainActivity)getActivity()).restartActivity();

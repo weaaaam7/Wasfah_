@@ -59,7 +59,7 @@ public class Fav extends Fragment {
         RootView = inflater.inflate(R.layout.fragment_fav, container, false);
         recipeList = new ArrayList<>();
 
-        recyclerView = (RecyclerView) RootView.findViewById(R.id.rec_view);
+        recyclerView = (RecyclerView) RootView.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAuth = FirebaseAuth.getInstance();
