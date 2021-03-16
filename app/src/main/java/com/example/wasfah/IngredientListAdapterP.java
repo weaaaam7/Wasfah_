@@ -1,0 +1,157 @@
+package com.example.wasfah;
+
+import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+
+import com.example.wasfah.model.IngredientModel;
+
+import java.util.List;
+
+public class IngredientListAdapterP extends ArrayAdapter<IngredientModel> {
+
+    private Context context;
+    private int itemPosition;
+    private List<IngredientModel> dataSource;
+
+    public IngredientListAdapterP(@NonNull Context context, int resource, @NonNull List<IngredientModel> objects) {
+        super(context, resource, objects);
+        this.context = context;
+        this.dataSource = objects;
+    }
+
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView == null)
+        {
+            LayoutInflater inflater = LayoutInflater.from(this.context);
+            convertView = inflater.inflate(R.layout.row_add,parent,false);
+
+        }
+        this.itemPosition = position;
+        IngredientModel model = this.getItem(position);
+        if(model!=null)
+        {
+            EditText nameView = (EditText) convertView.findViewById(R.id.ingredient_name_lv);
+            nameView.setText(model.getName());
+            nameView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    IngredientModel model = getItem(itemPosition);
+                    model.setName(s.toString());
+                }
+            });
+
+            EditText qtyView = (EditText) convertView.findViewById(R.id.ingredient_qty_lv);
+            qtyView.setText(model.getQuantity() + "");
+            qtyView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //IngredientModel model = getItem(itemPosition);
+                    try {
+                        model.setQuantity(Double.parseDouble(s.toString()));
+                    }catch(Exception ex)
+                    {
+                        model.setQuantity(0);
+                    }
+                }
+            });
+
+            Spinner sp = (Spinner) convertView.findViewById(R.id.ingredient_uom_lv);
+            this.setSpinnerDataSource(sp,model);
+
+            sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // IngredientModel model = getItem(itemPosition);
+                    model.setUnitOfMeasure(sp.getSelectedItem().toString());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            ImageButton delete = (ImageButton) convertView.findViewById(R.id.image_remove);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    removeItemFromDS(model.getModelId());
+
+
+                }
+            });
+
+        }
+        return convertView;
+    }
+    private void removeItemFromDS(String modelId)
+    {
+        for(IngredientModel model : this.dataSource)
+        {
+            if(modelId.equals(model.getModelId()))
+            {
+                this.dataSource.remove(model);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+    private void setSpinnerDataSource(Spinner spinner, IngredientModel model)
+    {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.context,
+                R.array.uoms, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPrompt(model.getUnitOfMeasure());
+        String[] vals = this.context.getResources().getStringArray(R.array.uoms);
+        if(model.getUnitOfMeasure() == null)
+        {
+            model.setUnitOfMeasure(vals[0]);
+            return;
+        }
+        for(int i = 0; i < vals.length; i++)
+        {
+            if(vals[i].equals(model.getUnitOfMeasure()))
+            {
+                spinner.setSelection(i);
+                return;
+            }
+        }
+
+    }
+
+}
+

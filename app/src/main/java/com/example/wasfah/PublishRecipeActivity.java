@@ -130,7 +130,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+        IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
 
         ingredientsListView .setAdapter(adapter);
@@ -154,7 +154,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     {
         ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
 
-        StepsListAdapter adapter = new StepsListAdapter(this,
+        StepListAdapterP adapter = new StepListAdapterP(this,
                 R.layout.steps_row, models);
         stepsListView.setAdapter(adapter);
     }
