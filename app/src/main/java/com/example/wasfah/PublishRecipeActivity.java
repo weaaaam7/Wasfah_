@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    public static final int MAX_INGR_ITEMS =  15;
-    public static final int MAX_STEPS_COUNT = 20;
+    public static final int MAX_INGR_ITEMS =  10;
+    public static final int MAX_STEPS_COUNT = 10;
 
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
@@ -130,7 +130,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+        IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
 
         ingredientsListView .setAdapter(adapter);
@@ -154,7 +154,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     {
         ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
 
-        StepsListAdapter adapter = new StepsListAdapter(this,
+        StepListAdapterP adapter = new StepListAdapterP(this,
                 R.layout.steps_row, models);
         stepsListView.setAdapter(adapter);
     }

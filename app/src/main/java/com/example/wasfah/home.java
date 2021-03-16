@@ -15,7 +15,6 @@ import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.Toast;
 
-
 import com.example.wasfah.HomeFragments.AmericanFragment;
 import com.example.wasfah.HomeFragments.BakeriesFragment;
 import com.example.wasfah.HomeFragments.ChineseFragment;

@@ -219,12 +219,12 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void editRecipe() {
         RecipeModel model = getRecipe();
-        model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
+        model.setCreatedBy(recipeModel.getCreatedBy());
         model.setPicUri(currentModelPic);
         model.setTimestamp();
 
         if(this.validateModel(model)) {
-            db.getReference("Recipes").child(model.getRecipeId()).setValue(model)
+            db.getReference("Recipes").child(recipeModel.getRecipeId()).setValue(model)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -250,6 +250,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         String category = (String)catSpinner.getSelectedItem();
 
         String title = getTextOrEmpty(titleEdit);
+        model.setRecipeId(recipeModel.getRecipeId());
         model.setCategory(category);
         model.setTitle(title);
         model.setIngredients(this.ingredientsList);
@@ -480,11 +481,12 @@ public class EditRecipeActivity extends AppCompatActivity  {
             isValid = false;
 
         } else {
-            for(StepModel model: models)
+            for(int i =0; i < models.size(); i++)
             {
+                StepModel model = StepModelConverter.getStepModel(models.get(i));
                 if(!validateTitle(model.getDescription()))
                 {
-                    Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please enter steps that only contain letters and spaces", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
                 } else if (model.getOrder() <= 0) {

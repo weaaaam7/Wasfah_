@@ -131,10 +131,12 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
             return this.getIngredientModel((Object)this.getItem(position));
         }
     }
+
     private void removeItemFromDS(String modelId)
     {
-        for(IngredientModel model : this.dataSource)
+        for(int i = 0; i<dataSource.size(); i++)
         {
+            IngredientModel model = IngridientModelConverter.getIngredientModel(dataSource.get(i));
             if(modelId.equals(model.getModelId()))
             {
                 this.dataSource.remove(model);

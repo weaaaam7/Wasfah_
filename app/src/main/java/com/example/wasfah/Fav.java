@@ -62,6 +62,7 @@ public class Fav extends Fragment {
         recyclerView = (RecyclerView) RootView.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
         mAuth = FirebaseAuth.getInstance();
         recipeID = mAuth.getCurrentUser().getUid();
         favRef = database.getReference().child("FavoriteList").child(recipeID);
