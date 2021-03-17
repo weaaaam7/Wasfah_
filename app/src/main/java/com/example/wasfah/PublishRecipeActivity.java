@@ -6,12 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -38,12 +34,14 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
+    public static final int MAX_INGR_ITEMS =  10;
+    public static final int MAX_STEPS_COUNT = 10;
+
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
     private ImageView picture;
@@ -60,14 +58,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_recipe);
-        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
-        {
-           setApplicationLocale("ar");
-        }
-        else
-        {
-           setApplicationLocale("en");
-        }
+
         publishButton = findViewById(R.id.uploadBut);
         picture = findViewById(R.id.uploadedP);
         backHome = findViewById(R.id.back);
@@ -139,7 +130,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+        IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
 
         ingredientsListView .setAdapter(adapter);
@@ -150,6 +141,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
     private void addBlankIngredientToListView(IngredientModel model)
     {
+        if(this.ingredientsList.size() >= MAX_INGR_ITEMS)
+        {
+            Toast.makeText(this, "The maximum number for ingredient is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
+            return;
+        }
         this.ingredientsList.add(model);
         this.setIngredientsListModel(this.ingredientsList);
     }
@@ -158,7 +154,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     {
         ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
 
-        StepsListAdapter adapter = new StepsListAdapter(this,
+        StepListAdapterP adapter = new StepListAdapterP(this,
                 R.layout.steps_row, models);
         stepsListView.setAdapter(adapter);
     }
@@ -171,8 +167,8 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
-        if (order > 20) {
-            Toast.makeText(this, "The maximum number for steps is 20", Toast.LENGTH_LONG).show();
+        if (order > MAX_STEPS_COUNT) {
+            Toast.makeText(this, "The maximum number for steps is " + MAX_STEPS_COUNT, Toast.LENGTH_LONG).show();
             return;
         }
         model.setOrder(order);
@@ -202,14 +198,8 @@ public class PublishRecipeActivity extends AppCompatActivity {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                            @Override
-                            public void onSuccess(Uri downloadUrl) {
-                                currentModelPic= downloadUrl.toString();
-                                publishRecipe();
-
-                            }
-                        });
+                        currentModelPic= uri.toString();
+                        publishRecipe();
 
                     }
                 });
@@ -267,17 +257,17 @@ public class PublishRecipeActivity extends AppCompatActivity {
         return model;
     }
 
-    //the validation.
+
     private boolean validateModel(RecipeModel model)
     {
         boolean isValid = true;
-        //validations
-        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+
+        if(!validateTitle(model.getTitle()))
         {
             Toast.makeText(this,"Title must only contain letters and spaces", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        else if(!validateCategory(model.getCategory()))
         {
             Toast.makeText(this,"Please select a category", Toast.LENGTH_LONG).show();
             isValid = false;
@@ -292,7 +282,25 @@ public class PublishRecipeActivity extends AppCompatActivity {
         }
         return isValid;
     }
+    private boolean validateTitle(String title)
+    {
 
+        if(title == null || title.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[\\u0621-\\u064A\\s]*$",title) || Pattern.matches("[a-zA-Z\\s]*$",title);
+
+    }
+
+    private boolean validateCategory(String text)
+    {
+        if(text == null || text.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[a-zA-Z]*$",text);
+    }
     private String getTextOrEmpty(EditText edit)
     {
         return edit.getText() != null ? edit.getText().toString() : "";
@@ -322,18 +330,18 @@ public class PublishRecipeActivity extends AppCompatActivity {
 
         }
 
-        if(models.size() > 20) {
-        Toast.makeText(this, "The maximum number for ingredients is 20", Toast.LENGTH_LONG).show();
-        isValid = false;
+        if(models.size() > MAX_INGR_ITEMS) {
+            Toast.makeText(this, "The maximum number for ingredients is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
+            isValid = false;
         } else {
             for(IngredientModel model: models)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
+               /* if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
                     Toast.makeText(this, "Please select a unit of measure", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
-                }
-                if (!this.isNotEmptyAndOnlyCharacters(model.getName())) {
+                } */
+                if (!validateTitle(model.getName())) {
                     Toast.makeText(this, "Please enter a proper ingredient name that only contain letters", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
@@ -360,7 +368,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         } else {
             for(StepModel model: models)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription()))
+                if(!validateTitle(model.getDescription()))
                 {
                     Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
                     isValid = false;
@@ -373,16 +381,5 @@ public class PublishRecipeActivity extends AppCompatActivity {
             }
         }
         return isValid;
-    }
-    public void setApplicationLocale(String locale) {
-        Resources resources = getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(new Locale(locale.toLowerCase()));
-        } else {
-            config.locale = new Locale(locale.toLowerCase());
-        }
-        resources.updateConfiguration(config, dm);
     }
 }

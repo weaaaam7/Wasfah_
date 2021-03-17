@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wasfah.HomeFragments.HealthyFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,9 +33,6 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,6 +55,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+
+    // favorite list
+    private Button fav_r;
+    boolean faved = false;
+    DatabaseReference favList;
+    
 
 
     @Override
@@ -90,7 +93,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
-
+        fav_r = (Button) findViewById(R.id.fav_r);
 
 
         //hide and display 3 dots
@@ -104,18 +107,78 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
 
 
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
 
         //Firebase
 
         fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
+        String uid=user.getUid();
+
+        // fav
+
+        favList = db.getReference("FavoriteList");
+        favList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child(recpieId).hasChild(uid))
+                {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
+                } else {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_off);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        fav_r.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faved = true;
+                    favList.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (faved) {
+                                if (snapshot.child(recpieId).hasChild(uid)) {
+                                    favList.child(recpieId).child(uid).removeValue();
+                                    showMessage("Removed your favorite list");
+                                    faved = false;
+                                } else {
+                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            showMessage("Added to your favorite list");
+                                            faved = false;
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            showMessage("fail to add to your favorite list: " + e.getMessage());
+                                        }
+                                    });
+
+                                    faved = false;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+            }
+        });
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +186,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 addComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
                 String comment_content=comment.getText().toString();
-                String uid=user.getUid();
                 String uName=userName;
                 String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
                 Comment comment1= new Comment(comment_content,uid,uName,date);
@@ -145,6 +207,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
             }
         });
+
 
         //initi Recycler view
         initRvComment();
@@ -172,11 +235,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
         tv_steps.setText(str);
 
+    }
 
-
-
-
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_recepie_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     //show popup
@@ -197,6 +261,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -233,11 +298,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
                 return true;
 
-            case R.id.fav:
-
-                return true;
-
-
             default:return false;
         }
 
@@ -246,24 +306,24 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-       commentRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               listComment=new ArrayList<>();
-               for (DataSnapshot snap:snapshot.getChildren()){
-                   Comment comment=snap.getValue(Comment.class);
-                   listComment.add(comment);
-               }
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listComment=new ArrayList<>();
+                for (DataSnapshot snap:snapshot.getChildren()){
+                    Comment comment=snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment);
-               RvComment.setAdapter(adapter);
-           }
+                adapter = new commentAdapter(getApplicationContext(),listComment);
+                RvComment.setAdapter(adapter);
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-           }
-       });
+            }
+        });
     }
 
     private void showMessage(String msg) {

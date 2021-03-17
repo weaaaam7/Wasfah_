@@ -11,7 +11,7 @@
         tools:context=".PublishRecipeActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="2dp">
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:id="@+id/back"
@@ -54,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="9dp"
                 app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
 
             <LinearLayout
@@ -109,7 +110,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
-                    app:cornerRadius="50dp"
                     android:background="@drawable/custom_button"
                     android:drawableRight="@drawable/ic_baseline_add_24"
                     android:paddingLeft="10dp"
