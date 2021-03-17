@@ -1,7 +1,12 @@
 package com.example.wasfah;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class profile extends Fragment {
 
@@ -55,6 +61,14 @@ public class profile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        if (Pref.getValue(getContext(),"language_checked", "false").equalsIgnoreCase("true"))
+        {
+           setApplicationLocale("ar");
+        }
+        else
+        {
+          setApplicationLocale("en");
+        }
 recipieList=new ArrayList<>();
       nameTv=(TextView) RootView.findViewById(R.id.name);
       logout=(Button) RootView.findViewById(R.id.logout);
@@ -143,6 +157,7 @@ recipieList=new ArrayList<>();
         });
 
         // Inflate the layout for this fragment
+        // layout
         return RootView;
 
     }
@@ -176,5 +191,15 @@ recipieList=new ArrayList<>();
         }
     }
 
-
+    public void setApplicationLocale(String locale) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(locale.toLowerCase()));
+        } else {
+            config.locale = new Locale(locale.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
+    }
 }

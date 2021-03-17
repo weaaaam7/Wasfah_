@@ -10,7 +10,7 @@
 
     <EditText
         android:id="@+id/ingredient_name_lv"
-        android:layout_width="0dp"
+        android:layout_width="15dp"
         android:layout_height="match_parent"
         android:layout_weight="9"
         android:hint="Ingredient"

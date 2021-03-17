@@ -39,6 +39,9 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
+    public static final int MAX_INGR_ITEMS =  10;
+    public static final int MAX_STEPS_COUNT = 10;
+
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
     private ImageView picture;
@@ -79,7 +82,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
                     uploadToFirebase(picURI);
 
                 } else {
-                    Toast.makeText(PublishRecipeActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PublishRecipeActivity.this, "Please select a picture", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -127,7 +130,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void setIngredientsListModel(List<IngredientModel> models)
     {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
-        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+        IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
 
         ingredientsListView .setAdapter(adapter);
@@ -138,6 +141,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
     private void addBlankIngredientToListView(IngredientModel model)
     {
+        if(this.ingredientsList.size() >= MAX_INGR_ITEMS)
+        {
+            Toast.makeText(this, "The maximum number for ingredient is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
+            return;
+        }
         this.ingredientsList.add(model);
         this.setIngredientsListModel(this.ingredientsList);
     }
@@ -146,7 +154,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     {
         ListView stepsListView = (ListView) findViewById(R.id.steps_list_view);
 
-        StepsListAdapter adapter = new StepsListAdapter(this,
+        StepListAdapterP adapter = new StepListAdapterP(this,
                 R.layout.steps_row, models);
         stepsListView.setAdapter(adapter);
     }
@@ -159,6 +167,10 @@ public class PublishRecipeActivity extends AppCompatActivity {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
+        if (order > MAX_STEPS_COUNT) {
+            Toast.makeText(this, "The maximum number for steps is " + MAX_STEPS_COUNT, Toast.LENGTH_LONG).show();
+            return;
+        }
         model.setOrder(order);
         this.stepsList.add(model);
         this.setStepsListModel(this.stepsList);
@@ -186,14 +198,8 @@ public class PublishRecipeActivity extends AppCompatActivity {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                            @Override
-                            public void onSuccess(Uri downloadUrl) {
-                                currentModelPic= downloadUrl.toString();
-                                publishRecipe();
-
-                            }
-                        });
+                        currentModelPic= uri.toString();
+                        publishRecipe();
 
                     }
                 });
@@ -211,7 +217,6 @@ public class PublishRecipeActivity extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
     }
-
 
     public void publishRecipe()
     {
@@ -252,44 +257,54 @@ public class PublishRecipeActivity extends AppCompatActivity {
         return model;
     }
 
-    //the validation.
+
     private boolean validateModel(RecipeModel model)
     {
         boolean isValid = true;
-        //validations
-        if(!isNotEmptyAndOnlyCharacters(model.getTitle()))
+
+        if(!validateTitle(model.getTitle()))
         {
-            Toast.makeText(this,"Title is not valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Title must only contain letters and spaces", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-        else if(!isNotEmptyAndOnlyCharacters(model.getCategory()))
+        else if(!validateCategory(model.getCategory()))
         {
-            Toast.makeText(this,"Category is not valid", Toast.LENGTH_LONG).show();
-            isValid = false;
-        }
-        else if(model.getPicUri() == null || model.getPicUri().length() <= 0)
-        {
-            Toast.makeText(this,"Picture is not valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Please select a category", Toast.LENGTH_LONG).show();
             isValid = false;
         }
         else if(!this.isIngredientListValid(model.getIngredients()))
         {
-            Toast.makeText(this,"Ingredients are not valid", Toast.LENGTH_LONG).show();
             isValid = false;
         }
         else if(!this.isStepsListValid(model.getPreparationSteps()))
         {
-            Toast.makeText(this,"Prepartion steps are not valid", Toast.LENGTH_LONG).show();
             isValid = false;
         }
         return isValid;
     }
+    private boolean validateTitle(String title)
+    {
 
+        if(title == null || title.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[\\u0621-\\u064A\\s]*$",title) || Pattern.matches("[a-zA-Z\\s]*$",title);
+
+    }
+
+    private boolean validateCategory(String text)
+    {
+        if(text == null || text.length() <= 0)
+        {
+            return false;
+        }
+        return Pattern.matches("[a-zA-Z]*$",text);
+    }
     private String getTextOrEmpty(EditText edit)
     {
         return edit.getText() != null ? edit.getText().toString() : "";
     }
-
 
     private boolean isNotEmptyAndOnlyCharacters(String text)
     {
@@ -298,7 +313,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             isValid = false;
         }
-        else if(!Pattern.matches("([A-Za-z])+",text))
+        else if(!Pattern.matches("/^[a-zA-Z\\s]*$/",text))
         {
             isValid = false;
         }
@@ -310,17 +325,30 @@ public class PublishRecipeActivity extends AppCompatActivity {
         boolean isValid = true;
         if(models == null || models.size() <= 0)
         {
+            Toast.makeText(this, "Please add ingredients", Toast.LENGTH_LONG).show();
             isValid = false;
 
         }
-        else
-        {
+
+        if(models.size() > MAX_INGR_ITEMS) {
+            Toast.makeText(this, "The maximum number for ingredients is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
+            isValid = false;
+        } else {
             for(IngredientModel model: models)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())
-                        || !this.isNotEmptyAndOnlyCharacters(model.getName())
-                        || model.getQuantity() <= 0)
+               /* if(!this.isNotEmptyAndOnlyCharacters(model.getUnitOfMeasure())) {
+                    Toast.makeText(this, "Please select a unit of measure", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                } */
+                if (!validateTitle(model.getName())) {
+                    Toast.makeText(this, "Please enter a proper ingredient name that only contain letters", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+                if(model.getQuantity() <= 0)
                 {
+                    Toast.makeText(this, "Please enter a proper quantity", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
                 }
@@ -328,21 +356,25 @@ public class PublishRecipeActivity extends AppCompatActivity {
         }
         return isValid;
     }
+
     private boolean isStepsListValid(List<StepModel> models)
     {
         boolean isValid = true;
         if(models == null || models.size() <= 0)
         {
+            Toast.makeText(this, "Please add steps", Toast.LENGTH_LONG).show();
             isValid = false;
 
-        }
-        else
-        {
+        } else {
             for(StepModel model: models)
             {
-                if(!this.isNotEmptyAndOnlyCharacters(model.getDescription())
-                        ||  model.getOrder() <= 0)
+                if(!validateTitle(model.getDescription()))
                 {
+                    Toast.makeText(this, "Please enter steps", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                } else if (model.getOrder() <= 0) {
+                    Toast.makeText(this, "There are no steps", Toast.LENGTH_LONG).show();
                     isValid = false;
                     break;
                 }

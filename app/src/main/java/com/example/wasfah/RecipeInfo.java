@@ -79,27 +79,33 @@ public class RecipeInfo {
     public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
         this.title = title;
         this.img = img;
-        this.category=category;
-        this.ingredients=ingredients;
-        this.steps=steps;
-        this.recipeId=recipeId;
-        this.timestamp=timestamp;
-        this.isPublishedByUser=true;
-        this.isProfile=true;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.isPublishedByUser = true;
+        this.isProfile = true;
     }
 
     public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
         this.title = title;
         this.img = img;
-        this.category=category;
-        this.ingredients=ingredients;
-        this.steps=steps;
-        this.recipeId=recipeId;
-        this.timestamp=timestamp;
-        this.name=name;
-        this.isPublishedByUser=isPublishedByUser;
-        this.isProfile=isProfile;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.name = name;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
     }
+
+
+    public RecipeInfo getRecipeInfo() {
+        return this;
+    }
+
     public String getRecipeId() {
         return recipeId;
     }

@@ -11,23 +11,26 @@ public class Comment implements Serializable, Parcelable {
 
     private String content,uid,uimg,uname;
     private Object timestamp;
+    private String date;
 
     public Comment() {
     }
 
-    public Comment(String content, String uid, String uname) {
-        this.content = content;
-        this.uid = uid;
-        this.uname = uname;
-        this.timestamp = ServerValue.TIMESTAMP;
+    public String getDate() {
+        return date;
     }
 
-    public Comment(String content, String uid, String uname, Object timestamp) {
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Comment(String content, String uid, String uname,String date) {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
-        this.timestamp = timestamp;
+        this.date = date;
     }
+
 
     protected Comment(Parcel in) {
         content = in.readString();
