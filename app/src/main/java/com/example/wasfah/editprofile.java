@@ -2,11 +2,13 @@ package com.example.wasfah;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.CaseMap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,16 +18,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,40 +46,42 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.w3c.dom.Text;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static android.app.ProgressDialog.show;
+
 public class editprofile extends AppCompatActivity {
 
-    ProgressDialog pd;
     ImageView uimage;
     Button btnupdate;
     DatabaseReference dbreference, reference;
     StorageReference storageReference;
     Uri filepath;
     Bitmap bitmap;
-    String UserID = "", oldPassword = "", oldEmail = "";
-    EditText profileFirstName, profileLastName, profileEmail, profilePassword, profileConfirmPass;
+    String UserID="";
+    EditText profileFirstName,profileLastName,profileEmail,profilePassword,profileConfirmPass;
     ImageView backProfile;
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
-    FirebaseAuth fAuth;
-    FirebaseUser user;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editprofile);
         if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
         {
-          setApplicationLocale("ar");
+            setApplicationLocale("ar");
         }
         else
         {
-          setApplicationLocale("en");
+            setApplicationLocale("en");
         }
         uimage=(ImageView)findViewById(R.id.ProfileImage);
         profileFirstName=(EditText) findViewById(R.id.EditFirstName);
@@ -87,30 +91,28 @@ public class editprofile extends AppCompatActivity {
         profileConfirmPass=(EditText) findViewById(R.id.EditConfirmPass);
         btnupdate=(Button)findViewById(R.id.SaveProfile);
         backProfile = findViewById(R.id.back);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        UserID = user.getUid();
-        fAuth = FirebaseAuth.getInstance();
 
-        dbreference = FirebaseDatabase.getInstance().getReference().child("Users");
-        storageReference = FirebaseStorage.getInstance().getReference();
 
-        reference = FirebaseDatabase.getInstance().getReference().child("Users").child(UserID);
+
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        UserID=user.getUid();
+
+        dbreference=FirebaseDatabase.getInstance().getReference().child("Users");
+        storageReference= FirebaseStorage.getInstance().getReference();
+
+        reference=FirebaseDatabase.getInstance().getReference().child("Users").child(UserID);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //todo
-                String email = dataSnapshot.child("email").getValue().toString();
-                String name = dataSnapshot.child("name").getValue().toString();
-                String password = dataSnapshot.child("password").getValue().toString();
-
-                oldEmail = email;
-                oldPassword = password;
+                String email=dataSnapshot.child("email").getValue().toString();
+                String name=dataSnapshot.child("name").getValue().toString();
+                String password=dataSnapshot.child("password").getValue().toString();
 
 
                 String[] parts = name.split(" ");
                 String part1 = parts[0];
-                String part2 = (parts.length > 1) ? parts[1] : "";
+                String part2 = parts[1];
 
 
                 profileEmail.setText(email);
@@ -128,12 +130,10 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-
         backProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(getApplicationContext(), ProfileView.class));
-                finish();
+                startActivity(new Intent(getApplicationContext(), ProfileView.class));
             }
         });
 
@@ -144,56 +144,52 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-        uimage.setOnClickListener(new View.OnClickListener() {
-            }
+    }
 
        /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Dexter.withContext(getApplicationContext())
                         .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                         .withListener(new PermissionListener() {
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                Intent intent = new Intent();
+                                Intent intent=new Intent();
                                 intent.setType("image/*");
                                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                                startActivityForResult(Intent.createChooser(intent, "Please Select File"), 101);
+                                startActivityForResult(Intent.createChooser(intent,"Please Select File"),101);
                             }
-
                             @Override
                             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
                             }
-
                             @Override
                             public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
                                 permissionToken.continuePermissionRequest();
                             }
                         }).check();
-
             }
-        });
+        });*/
 
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 101 && resultCode == RESULT_OK) {
-            filepath = data.getData();
+        if(requestCode==101 && resultCode==RESULT_OK)
+        {
+            filepath=data.getData();
             try {
-                InputStream inputStream = getContentResolver().openInputStream(filepath);
-                bitmap = BitmapFactory.decodeStream(inputStream);
+                InputStream inputStream=getContentResolver().openInputStream(filepath);
+                bitmap= BitmapFactory.decodeStream(inputStream);
                 uimage.setImageBitmap(bitmap);
-            } catch (Exception ex) {
-                Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            }catch (Exception ex)
+            {
+                Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG).show();
             }
-        }
-    }
+      */
 
 
-    public void updatetofirebase() {
+    public void updatetofirebase()
+    {
 
         String checkEmail = profileEmail.getText().toString().trim();
         String checkPass = profilePassword.getText().toString().trim();
@@ -207,7 +203,7 @@ public class editprofile extends AppCompatActivity {
             return;
         }
 
-        /*if (!checkFName.matches("^[a-zA-Z]*$")) {
+        if (!checkFName.matches("^[a-zA-Z]*$")) {
             profileFirstName.setError("Invalid first name.");
             profileFirstName.setText("");
             return;
@@ -218,8 +214,8 @@ public class editprofile extends AppCompatActivity {
             profileLastName.setText("");
             return;
         }
-*/
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(checkEmail).matches()) {
+
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(checkEmail).matches()) {
             profileEmail.setError("Invalid email.");
             profileEmail.setText("");
             return;
@@ -238,138 +234,59 @@ public class editprofile extends AppCompatActivity {
             return;
         }
 
+        String fname=profileFirstName.getText().toString();
+        String lname=profileLastName.getText().toString();
+        String Full_name= fname+" "+lname;
 
-        pd = new ProgressDialog(this);
+
+
+
+      /*  final ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("File Uploader");
         pd.show();
-
-        final StorageReference uploader = storageReference.child("profileimages/" + "img" + System.currentTimeMillis());
-
-        if (filepath != null) {
-            uploader.putFile(filepath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    final Map<String, Object> map = new HashMap<>();
-                                    map.put("uimage", uri.toString());
-                                    map.put("name", profileFirstName.getText().toString() + " " + profileLastName.getText().toString());
-                                    map.put("email", profileEmail.getText().toString());
-                                    map.put("password", profilePassword.getText().toString());
-
-                                    updateEmailAndPassword(map);
-                                }
-                            });
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            float percent = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                            pd.setMessage("Uploaded :" + (int) percent + "%");
-                        }
-                    });
-        } else {
-            final Map<String, Object> map = new HashMap<>();
-//        map.put("uimage",uri.toString());
-            map.put("name", profileFirstName.getText().toString() + " " + profileLastName.getText().toString());
-            map.put("email", profileEmail.getText().toString());
-            map.put("password", profilePassword.getText().toString());
-
-//            saveData(map);
-            updateEmailAndPassword(map);
-        }
-    }
-
-    public void saveData(Map<String, Object> map) {
+        final StorageReference uploader=storageReference.child("profileimages/"+"img"+System.currentTimeMillis());
+        uploader.putFile(filepath)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {*/
+        final Map<String,Object> map=new HashMap<>();
+        // map.put("uimage",uri.toString());
+        map.put("name",Full_name);
+        map.put("email",profileEmail.getText().toString());
+        map.put("password",profilePassword.getText().toString());
 
         dbreference.child(UserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                    dbreference.child(UserID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                            onFinish();
-                        }
-                    });
+                if(snapshot.exists()){
+                    dbreference.child(UserID).updateChildren(map);
+                    Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
+                }
                 else
-                    dbreference.child(UserID).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            onFinish();
-                        }
-                    });
-
-
+                    dbreference.child(UserID).setValue(map);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
 
-
-    }
-
-    private void onFinish() {
-        pd.dismiss();
-        Toast.makeText(getApplicationContext(), "Updated Successfully", Toast.LENGTH_LONG).show();
-        finish();
-
-    }
-
-    private void error() {
-        pd.dismiss();
-        Toast.makeText(getApplicationContext(), "Updated email or password failed \n try again", Toast.LENGTH_LONG).show();
-        finish();
-
-    }
-
-    private void updateEmailAndPassword(Map<String, Object> map) {
-        if (!oldEmail.equals(profileEmail.getText().toString())) {
-            user.updateEmail(profileEmail.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    if (!oldPassword.equals(profilePassword.getText().toString())) {
-                        user.updatePassword(profilePassword.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                saveData(map);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                error();
+                             /*   pd.dismiss();
+                                Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
                             }
                         });
                     }
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            error();
-                        }
-                    });
-        } else if (!oldPassword.equals(profilePassword.getText().toString())) {
-            user.updatePassword(profilePassword.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    saveData(map);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    error();
-                }
-            });
-        } else
-            saveData(map);
-
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
+                        pd.setMessage("Uploaded :"+(int)percent+"%");
+                    }
+                });
+*/
     }
     public void setApplicationLocale(String locale) {
         Resources resources = getResources();
