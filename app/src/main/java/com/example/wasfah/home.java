@@ -1,7 +1,6 @@
 package com.example.wasfah;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
@@ -11,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.wasfah.HomeFragments.AmericanFragment;
 import com.example.wasfah.HomeFragments.BakeriesFragment;
@@ -24,17 +27,9 @@ import com.example.wasfah.HomeFragments.ItalianFragment;
 import com.example.wasfah.HomeFragments.JapaneseFragment;
 import com.example.wasfah.HomeFragments.OthersFragment;
 import com.example.wasfah.HomeFragments.SaudiFragment;
-import com.example.wasfah.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 
 public class home extends Fragment {
@@ -51,9 +46,6 @@ public class home extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-
-
     }
 
     public static home getInstance(){return  new home();}
@@ -95,6 +87,8 @@ public class home extends Fragment {
             }
         });
         return myFragment;
+
+
     }
 
 
@@ -150,5 +144,9 @@ public class home extends Fragment {
             config.locale = new Locale(locale.toLowerCase());
         }
         resources.updateConfiguration(config, dm);
+
     }
+
+
+
 }

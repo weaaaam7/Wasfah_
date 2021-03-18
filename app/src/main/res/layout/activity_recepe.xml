@@ -144,6 +144,16 @@
                 android:text="Steps"
                 android:textSize="18sp"
                 app:drawableTint="#03A9F4" />
+            <TextView
+                android:id="@+id/translateBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#F7E19A"
+                android:padding="20dp"
+                android:visibility="visible"
+                android:text="translate"
+                android:textColor="#0000FF"
+                />
 
             <TextView
                 android:id="@+id/comments_label"
@@ -223,16 +233,7 @@
             </androidx.core.widget.NestedScrollView>
 
 
-            <Button
-                android:id="@+id/translateBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#F7E19A"
-                android:padding="20dp"
-                android:visibility="visible"
-                android:text="translate"
-                android:textColor="#2B2B2B"
-                app:cornerRadius="50dp" />
+
 
         </LinearLayout>
 

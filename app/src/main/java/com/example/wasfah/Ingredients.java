@@ -41,6 +41,6 @@ public class Ingredients implements Serializable {
     }
 
     public String getFullName(){
-        return name +"                 "+quan+unit ;
+        return name+"         "+quan+" "+unit;
     }
 }

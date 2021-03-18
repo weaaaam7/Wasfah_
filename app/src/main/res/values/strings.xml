@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Wasfah</string>
-
     <string-array name="ingredient_categories">
         <item>@string/Healthy</item>
         <item>@string/Italian</item>

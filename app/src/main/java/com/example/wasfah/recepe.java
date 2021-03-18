@@ -1,8 +1,10 @@
 package com.example.wasfah;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +14,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wasfah.HomeFragments.HealthyFragment;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wasfah.translation.TranslationViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,30 +35,24 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-
+private TranslationViewModel translationViewModel;
     private TextView title_tv;
     private ImageView image,back;
-    private TextView tv_ingrediants;
+    private TextView tv_ingrediants,Ingred_label;
     private TextView tv_category;
-    private TextView tv_steps;
+    private TextView tv_steps,Steps_label;
     private TextView tv_timestamp;
-    private String str="";
+    private String ingeredientsStr="";
+    private String stepsStr="";
     private EditText comment;
     private Button addComment,dots;
+    private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -58,13 +61,16 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+    List<Ingredients> ingredients;
+    List<Steps> steps;
 
 
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-
+translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
@@ -90,6 +96,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
+        translateBtn=(TextView) findViewById(R.id.translateBtn);
+        Ingred_label=(TextView) findViewById(R.id.Ingred_label);
+        Steps_label=(TextView) findViewById(R.id.Steps_label);
 
 
 
@@ -110,10 +119,22 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             });
+        translateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                Log.d("ddddd", "dddddd");
+                //translationViewModel.translateIngerediants(stepsStr);
+                subscribeObserver();
+                subscribeObserverIngredients();
+                subscribeObserverSteps();
+
+            }
+        });
         //Firebase
 
-        fAuth=FirebaseAuth.getInstance();
+
+            fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
 
@@ -156,21 +177,21 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
         for (int i=0;i<ingredients.size();i++){
-            str+=(i+1)+"- "+ingredients.get(i).getFullName();
+            ingeredientsStr+=(i+1)+"- "+ingredients.get(i).getFullName();
             if(i<ingredients.size()-1) {
-                str += "\n\n";
+                ingeredientsStr += "\n\n";
             }
 
         }
-        tv_ingrediants.setText(str);
-        str="";
+        tv_ingrediants.setText(ingeredientsStr);
+
         for (int i=0;i<steps.size();i++){
-            str+=(i+1)+"- "+steps.get(i).getDescription();
+            stepsStr+=(i+1)+"- "+steps.get(i).getDescription();
             if(i<steps.size()-1) {
-                str += "\n\n";
+                stepsStr += "\n\n";
             }
         }
-        tv_steps.setText(str);
+        tv_steps.setText(stepsStr);
 
 
 
@@ -179,6 +200,28 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     }
 
+    private String getTranslatedText() {
+        List<String> translatedArray = new ArrayList<>();
+        translatedArray.add(String.valueOf(title_tv.getText()));
+        translatedArray.add(String.valueOf(tv_category.getText()));
+        translatedArray.add(String.valueOf(Ingred_label.getText()));
+        translatedArray.add(String.valueOf(Steps_label.getText()));
+
+        Log.d("ndlnjc","jfrhkjb"+String.valueOf(Steps_label.getText()));
+
+        return convertListToString(translatedArray);
+
+    }
+
+    private String convertListToString(List<String> translatedArray){
+        String listString = "";
+        for (String s : translatedArray)
+        {
+            listString += s + "#";
+        }
+
+        return listString;
+    }
     //show popup
 
     public void showPopup(View v){
@@ -269,5 +312,48 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
+    private void subscribeObserver() {
+        translationViewModel.translateText(getTranslatedText());
+        translationViewModel.translateText(getTranslatedText()).observe(this, translationResponse -> {
+                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
+                    Log.d("ddddds", "dddddd" + test);
+                    List<String> items = Arrays.asList(test.split("\\s*#\\s*"));
 
-}
+            title_tv.setText(items.get(0));
+            tv_category.setText(items.get(1));
+            Ingred_label.setText(items.get(2));
+            Steps_label.setText(items.get(3));
+
+                }
+        );
+    }
+    private void subscribeObserverIngredients() {
+
+
+        translationViewModel.translateIngredients(ingeredientsStr);
+        translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
+                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
+                   Log.d("ddddds222", "dddddd" + test);
+
+                    tv_ingrediants.setText(test);
+
+                }
+        );
+    }
+
+
+
+    private void subscribeObserverSteps() {
+        translationViewModel.translateSteps(stepsStr);
+        translationViewModel.translateSteps(stepsStr).observe(this, translationResponse -> {
+                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
+                    Log.d("ddddd123", "dddddd" + test);
+
+                    tv_steps.setText(test);
+            }
+
+
+
+        ); }
+
+    }
