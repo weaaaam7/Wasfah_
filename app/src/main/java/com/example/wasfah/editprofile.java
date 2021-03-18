@@ -149,7 +149,6 @@ public class editprofile extends AppCompatActivity {
        /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Dexter.withContext(getApplicationContext())
                         .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                         .withListener(new PermissionListener() {
@@ -160,18 +159,14 @@ public class editprofile extends AppCompatActivity {
                                 intent.setAction(Intent.ACTION_GET_CONTENT);
                                 startActivityForResult(Intent.createChooser(intent,"Please Select File"),101);
                             }
-
                             @Override
                             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
                             }
-
                             @Override
                             public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
                                 permissionToken.continuePermissionRequest();
                             }
                         }).check();
-
             }
         });*/
 
@@ -249,7 +244,16 @@ public class editprofile extends AppCompatActivity {
       /*  final ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("File Uploader");
         pd.show();
+=======
 
+
+
+
+      /*  final ProgressDialog pd=new ProgressDialog(this);
+        pd.setTitle("File Uploader");
+        pd.show();
+
+>>>>>>> b3721a3871a43c1dc96ab0661770455c1a861c2c
         final StorageReference uploader=storageReference.child("profileimages/"+"img"+System.currentTimeMillis());
         uploader.putFile(filepath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
