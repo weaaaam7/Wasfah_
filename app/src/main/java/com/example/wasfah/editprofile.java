@@ -3,11 +3,15 @@ package com.example.wasfah;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +46,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -66,14 +71,21 @@ public class editprofile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editprofile);
-
-        uimage = (ImageView) findViewById(R.id.ProfileImage);
-        profileFirstName = (EditText) findViewById(R.id.EditFirstName);
-        profileLastName = (EditText) findViewById(R.id.EditLastName);
-        profileEmail = (EditText) findViewById(R.id.EditEmail);
-        profilePassword = (EditText) findViewById(R.id.EditPass);
-        profileConfirmPass = (EditText) findViewById(R.id.EditConfirmPass);
-        btnupdate = (Button) findViewById(R.id.SaveProfile);
+        if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
+        {
+          setApplicationLocale("ar");
+        }
+        else
+        {
+          setApplicationLocale("en");
+        }
+        uimage=(ImageView)findViewById(R.id.ProfileImage);
+        profileFirstName=(EditText) findViewById(R.id.EditFirstName);
+        profileLastName=(EditText) findViewById(R.id.EditLastName);
+        profileEmail=(EditText) findViewById(R.id.EditEmail);
+        profilePassword=(EditText) findViewById(R.id.EditPass);
+        profileConfirmPass=(EditText) findViewById(R.id.EditConfirmPass);
+        btnupdate=(Button)findViewById(R.id.SaveProfile);
         backProfile = findViewById(R.id.back);
         user = FirebaseAuth.getInstance().getCurrentUser();
         UserID = user.getUid();

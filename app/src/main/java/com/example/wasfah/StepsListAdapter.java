@@ -18,8 +18,10 @@ import androidx.annotation.NonNull;
 import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.model.StepModel;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -45,7 +47,8 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
         }
         this.itemPosition = position;
-        StepModel model = this.getItem(position);
+        StepModel model = this.getStepModel(position);
+
         if(model!=null)
         {
             TextView orderTextView = (TextView) convertView.findViewById(R.id.step_order_tv);
@@ -55,7 +58,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
             descEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    model.setDescription(s.toString());
                 }
 
                 @Override
@@ -65,10 +68,10 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    StepModel model = getItem(itemPosition);
                     model.setDescription(s.toString());
                 }
             });
+
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.image_remove_step);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,6 +104,19 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         }
         return convertView;
     }
+
+    private StepModel getStepModel(int position)
+    {
+        StepModel model = null;
+        try{
+            model = this.getItem(position);
+        }catch (ClassCastException ex)
+        {
+            model = StepModelConverter.getStepModel(getItem(position));
+        }
+
+        return  model;
+    }
     private void removeItemFromDS(String modelId)
     {
         List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
@@ -117,7 +133,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
         {
             for(int i = 0; i < this.dataSource.size(); i++)
             {
-                StepModel model = this.dataSource.get(i);
+                StepModel model = StepModelConverter.getStepModel(this.dataSource.get(i));
                 if(model.getModelId().equals(modelId))
                 {
                     index = i;
@@ -130,8 +146,8 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
             List<StepModel> temps = new ArrayList<>();
             temps.addAll(this.dataSource);
 
-            StepModel temp = temps.get(index);
-            StepModel temp1 = temps.get(index - 1);
+            StepModel temp = StepModelConverter.getStepModel(temps.get(index));
+            StepModel temp1 = StepModelConverter.getStepModel(temps.get(index - 1));
 
             int tempOrder = temp.getOrder();
             int temp1Order = temp1.getOrder();
@@ -158,7 +174,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
             for(int i = 0; i < this.dataSource.size(); i++)
             {
-                StepModel model = this.dataSource.get(i);
+                StepModel model = StepModelConverter.getStepModel(this.dataSource.get(i));
                 if(model.getModelId().equals(modelId))
                 {
                     index = i;
@@ -171,8 +187,8 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
             List<StepModel> temps = new ArrayList<>();
             temps.addAll(this.dataSource);
 
-            StepModel temp = temps.get(index);
-            StepModel temp1 = temps.get(index + 1);
+            StepModel temp = StepModelConverter.getStepModel(temps.get(index));
+            StepModel temp1 = StepModelConverter.getStepModel(temps.get(index + 1));
 
             int tempOrder = temp.getOrder();
             int temp1Order = temp1.getOrder();
@@ -186,6 +202,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
             this.dataSource.clear();
             this.dataSource.addAll(temps);
             notifyDataSetChanged();
+
         }
 
     }

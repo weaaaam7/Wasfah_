@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,8 +31,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -53,6 +63,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     String recpieId;
     boolean publishedByUser = true;
 
+    // favorite list
+    private Button fav_r;
+    boolean faved = false;
+    DatabaseReference favList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,18 +89,18 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         List<Steps> steps = (List<Steps>) intent.getSerializableExtra("steps");
 
         //Ininilize
-        tv_ingrediants = (TextView) findViewById(R.id.Ingred_val);
-        tv_steps = (TextView) findViewById(R.id.Steps_val);
-        title_tv = (TextView) findViewById(R.id.tv);
-        tv_category = (TextView) findViewById(R.id.categ);
-        image = (ImageView) findViewById(R.id.img2);
-        comment = (EditText) findViewById(R.id.editText);
-        addComment = (Button) findViewById(R.id.button);
-        RvComment = (RecyclerView) findViewById(R.id.commentRec);
-        tv_timestamp = (TextView) findViewById(R.id.date);
-        dots = (Button) findViewById(R.id.b1);
-        back = (ImageView) findViewById(R.id.back);
-
+        tv_ingrediants=(TextView) findViewById(R.id.Ingred_val);
+        tv_steps=(TextView) findViewById(R.id.Steps_val);
+        title_tv=(TextView) findViewById(R.id.tv);
+        tv_category=(TextView) findViewById(R.id.categ);
+        image=(ImageView) findViewById(R.id.img2);
+        comment=(EditText) findViewById(R.id.editText);
+        addComment=(Button) findViewById(R.id.button);
+        RvComment=(RecyclerView) findViewById(R.id.commentRec);
+        tv_timestamp=(TextView) findViewById(R.id.date);
+        dots=(Button) findViewById(R.id.bU1);
+        back=(ImageView) findViewById(R.id.back);
+        fav_r = (Button) findViewById(R.id.fav_r);
 
         //hide and display 3 dots
 
@@ -105,19 +121,79 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         //Firebase
 
-        fAuth = FirebaseAuth.getInstance();
-        user = fAuth.getCurrentUser();
-        db = FirebaseDatabase.getInstance();
+        fAuth=FirebaseAuth.getInstance();
+        user=fAuth.getCurrentUser();
+        db=FirebaseDatabase.getInstance();
+        String uid=user.getUid();
+
+        // fav
+
+        favList = db.getReference("FavoriteList");
+        favList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child(recpieId).hasChild(uid))
+                {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
+                } else {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_off);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        fav_r.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faved = true;
+                    favList.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (faved) {
+                                if (snapshot.child(recpieId).hasChild(uid)) {
+                                    favList.child(recpieId).child(uid).removeValue();
+                                    showMessage("Removed your favorite list");
+                                    faved = false;
+                                } else {
+                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            showMessage("Added to your favorite list");
+                                            faved = false;
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            showMessage("fail to add to your favorite list: " + e.getMessage());
+                                        }
+                                    });
+
+                                    faved = false;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+            }
+        });
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                DatabaseReference commentRef = db.getReference("Recipes").child(recpieId).child("comment").push();
-                String comment_content = comment.getText().toString();
-                String uid = user.getUid();
-                String uName = userName;
-                Comment comment1 = new Comment(comment_content, uid, uName);
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
+                String comment_content=comment.getText().toString();
+                String uName=userName;
+                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                Comment comment1= new Comment(comment_content,uid,uName,date);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -136,6 +212,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
             }
         });
+
 
         //initi Recycler view
         initRvComment();
@@ -164,6 +241,13 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             }
         tv_steps.setText(str);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_recepie_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+
 
     }
 
@@ -184,6 +268,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -228,17 +313,17 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
-        DatabaseReference commentRef = db.getReference("Recipes").child(recpieId).child("comment");
+        DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
         commentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listComment = new ArrayList<>();
-                for (DataSnapshot snap : snapshot.getChildren()) {
-                    Comment comment = snap.getValue(Comment.class);
+                listComment=new ArrayList<>();
+                for (DataSnapshot snap:snapshot.getChildren()){
+                    Comment comment=snap.getValue(Comment.class);
                     listComment.add(comment);
                 }
 
-                adapter = new commentAdapter(getApplicationContext(), listComment);
+                adapter = new commentAdapter(getApplicationContext(),listComment);
                 RvComment.setAdapter(adapter);
             }
 

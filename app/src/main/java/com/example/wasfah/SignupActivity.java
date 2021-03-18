@@ -57,6 +57,7 @@ public class SignupActivity extends AppCompatActivity {
         logBtn = findViewById(R.id.Acreate);
 
         root = FirebaseDatabase.getInstance();
+
         ref = root.getReference("Users");
 
         //Underline "Log in!" text view.
@@ -122,10 +123,11 @@ public class SignupActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
 
-//                            Toast.makeText(SignupActivity.this, "Sign up failed, Please Try Again!", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(SignupActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Sign up failed, Please try again!", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(SignupActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
 
                         } else {
+                            Toast.makeText(SignupActivity.this, "Signed up successfully!", Toast.LENGTH_SHORT).show();
                             AuthenticationManager.CURRENT_USER_EMAIL = checkEmail;
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                         }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">وصفة</string>
+    <string name="title_activity_recepe">وصفة</string>
+    <string name="Ingredients">المقادير</string>
+    <string name="Steps">الخطوات</string>
+    <string name="Comment">التعليقات</string>
+    <string name="Add_comment">اضافة تعليق</string>
+    <string name="Add">اضافة</string>
+    <string name="Healthy">صحي</string>
+    <string name="Italian">ايطالي</string>
+    <string name="Saudi">سعودي</string>
+    <string name="Indian">هندي</string>
+
+    <string name="Japanese">ياباني</string>
+    <string name="Chinese">صيني</string>
+    <string name="American">امريكي</string>
+    <string name="French">فرنسي</string>
+
+    <string name="Drinks">مشروبات</string>
+    <string name="Deserts">حلويات</string>
+    <string name="Bakeries">مخبوزات</string>
+    <string name="Others">اخرى</string>
+
+
+    <string name="Home">الرئيسية</string>
+    <string name="Search">بحث</string>
+    <string name="Profile">صفحة شخصية</string>
+    <string name="fav">المفضله</string>
+
+    <string name="publish_recipe">نشر وصفة</string>
+    <string name="publish">نشر</string>
+    <string name="Editـprofile">تعديل الصفحة الشخصية</string>
+    <string name="logout">خروج</string>
+    <string name="title">عنوان الوصفة</string>
+
+    <string name="Editـrecipe">تعديل الوصفة</string>
+    <string name="delete_recipe">حذف الوصفة</string>
+    <string name="add_to_my_fav">+ مفضلتي</string>
+
+    <string name="my_fav">مفضلتي</string>
+    <string name="no_recipe">لا توجد وصفات</string>
+
+</resources>

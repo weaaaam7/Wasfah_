@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.bumptech.glide.Glide;
+import com.example.wasfah.model.RecipeModel;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -72,7 +76,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             Picasso.get().load(mData.get(position).getImg()).into(holder.img2);
         }
         holder.tv_title.setText(mData.get(position).getTitle());
-//        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
+        Glide.with(mcontext).load(mData.get(position).getImg()).into(holder.img);
         Picasso.get().load(mData.get(position).getImg()).into(holder.img);
         // set Click lisner
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -263,4 +267,5 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             category = (LinearLayout) itemView.findViewById(R.id.category);
         }
     }
+
 }

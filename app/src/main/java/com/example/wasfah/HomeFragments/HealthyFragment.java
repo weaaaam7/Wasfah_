@@ -1,21 +1,30 @@
 package com.example.wasfah.HomeFragments;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.wasfah.Ingredients;
+import com.example.wasfah.Pref;
 import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
 import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.home;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class HealthyFragment extends Fragment {
@@ -49,7 +59,14 @@ public class HealthyFragment extends Fragment {
         recipieList=new ArrayList<>();
         if (user != null) {
             // Read from the database
-
+            if (Pref.getValue(getContext(),"language_checked", "false").equalsIgnoreCase("true"))
+            {
+                setApplicationLocale("ar");
+            }
+            else
+            {
+                setApplicationLocale("en");
+            }
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -62,7 +79,7 @@ public class HealthyFragment extends Fragment {
                             RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                             if (recipieList.size()>0)
                             {
-                                RecyclerViewAdapter<RecyclerView.ViewHolder> recAdap = new RecyclerViewAdapter<RecyclerView.ViewHolder>(getContext(),recipieList,currentUser);
+                                RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,currentUser);
                                 rs.setLayoutManager(new GridLayoutManager(getContext(),1));
                                 rs.setAdapter(recAdap);
                             }
@@ -151,5 +168,16 @@ public class HealthyFragment extends Fragment {
             }
 
         }
+    }
+    public void setApplicationLocale(String locale) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(locale.toLowerCase()));
+        } else {
+            config.locale = new Locale(locale.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
     }
 }
