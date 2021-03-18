@@ -77,11 +77,11 @@ public class editprofile extends AppCompatActivity {
         setContentView(R.layout.activity_editprofile);
         if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
         {
-          setApplicationLocale("ar");
+            setApplicationLocale("ar");
         }
         else
         {
-          setApplicationLocale("en");
+            setApplicationLocale("en");
         }
         uimage=(ImageView)findViewById(R.id.ProfileImage);
         profileFirstName=(EditText) findViewById(R.id.EditFirstName);
@@ -144,7 +144,7 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-            }
+    }
 
        /* uimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,7 +270,7 @@ public class editprofile extends AppCompatActivity {
                 if(snapshot.exists()){
                     dbreference.child(UserID).updateChildren(map);
                     Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
-                 }
+                }
                 else
                     dbreference.child(UserID).setValue(map);
             }
