@@ -237,7 +237,6 @@ public class editprofile extends AppCompatActivity {
         String fname=profileFirstName.getText().toString();
         String lname=profileLastName.getText().toString();
         String Full_name= fname+" "+lname;
-<<<<<<< HEAD
 
 
 
