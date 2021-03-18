@@ -23,6 +23,7 @@ import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
 import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.home;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,7 +79,7 @@ public class BakeriesFragment extends Fragment {
                             RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                             if (recipieList.size()>0)
                             {
-                                RecyclerViewAdapter<RecyclerView.ViewHolder> recAdap = new RecyclerViewAdapter<RecyclerView.ViewHolder>(getContext(),recipieList,currentUser);
+                                RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,currentUser);
                                 rs.setLayoutManager(new GridLayoutManager(getContext(),1));
                                 rs.setAdapter(recAdap);
                             }

@@ -237,6 +237,7 @@ public class editprofile extends AppCompatActivity {
         String fname=profileFirstName.getText().toString();
         String lname=profileLastName.getText().toString();
         String Full_name= fname+" "+lname;
+<<<<<<< HEAD
 
 
 
@@ -244,6 +245,16 @@ public class editprofile extends AppCompatActivity {
       /*  final ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("File Uploader");
         pd.show();
+=======
+
+
+
+
+      /*  final ProgressDialog pd=new ProgressDialog(this);
+        pd.setTitle("File Uploader");
+        pd.show();
+
+>>>>>>> b3721a3871a43c1dc96ab0661770455c1a861c2c
         final StorageReference uploader=storageReference.child("profileimages/"+"img"+System.currentTimeMillis());
         uploader.putFile(filepath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
