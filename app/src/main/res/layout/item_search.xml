@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView
-    android:layout_width="@dimen/_140sdp"
+    android:layout_width="140dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="5dp"
-    android:layout_marginLeft="@dimen/_5sdp"
+    android:layout_marginLeft="5dp"
     app:cardCornerRadius="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 

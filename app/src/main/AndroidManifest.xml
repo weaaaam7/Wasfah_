@@ -23,6 +23,7 @@
         <activity android:name=".MainActivity" android:configChanges="layoutDirection|locale"/>
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".LoginActivity" />
+        <activity android:name=".EditRecipeActivity"/>
         <activity android:name=".PublishRecipeActivity" android:configChanges="layoutDirection|locale" />
         <activity android:name=".SplashScreen">
             <intent-filter>
