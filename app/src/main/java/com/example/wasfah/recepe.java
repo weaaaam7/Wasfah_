@@ -63,6 +63,10 @@ private TranslationViewModel translationViewModel;
     boolean publishedByUser=true;
     List<Ingredients> ingredients;
     List<Steps> steps;
+    // favorite list
+    private Button fav_r;
+    boolean faved = false;
+    DatabaseReference favList;
 
 
     @SuppressLint("CutPasteId")
@@ -99,8 +103,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         translateBtn=(TextView) findViewById(R.id.translateBtn);
         Ingred_label=(TextView) findViewById(R.id.Ingred_label);
         Steps_label=(TextView) findViewById(R.id.Steps_label);
-
-
+        fav_r = (Button) findViewById(R.id.fav_r);
 
         //hide and display 3 dots
 
@@ -137,6 +140,67 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
+        String uid = user.getUid();
+
+        // fav
+
+        favList = db.getReference("FavoriteList");
+        favList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child(recpieId).hasChild(uid))
+                {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_on);
+                } else {
+                    fav_r.setBackgroundResource(R.drawable.ic_favorite_off);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        fav_r.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faved = true;
+                favList.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (faved) {
+                            if (snapshot.child(recpieId).hasChild(uid)) {
+                                favList.child(recpieId).child(uid).removeValue();
+                                showMessage("Removed your favorite list");
+                                faved = false;
+                            } else {
+                                favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        showMessage("Added to your favorite list");
+                                        faved = false;
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        showMessage("fail to add to your favorite list: " + e.getMessage());
+                                    }
+                                });
+
+                                faved = false;
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+            }
+        });
+
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,10 +383,10 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                     Log.d("ddddds", "dddddd" + test);
                     List<String> items = Arrays.asList(test.split("\\s*#\\s*"));
 
-            title_tv.setText(items.get(0));
-            tv_category.setText(items.get(1));
-            Ingred_label.setText(items.get(2));
-            Steps_label.setText(items.get(3));
+                    title_tv.setText(items.get(0));
+                    tv_category.setText(items.get(1));
+                    Ingred_label.setText(items.get(2));
+                    Steps_label.setText(items.get(3));
 
                 }
         );
@@ -333,7 +397,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         translationViewModel.translateIngredients(ingeredientsStr);
         translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
                     String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-                   Log.d("ddddds222", "dddddd" + test);
+                    Log.d("ddddds222", "dddddd" + test);
 
                     tv_ingrediants.setText(test);
 
@@ -350,7 +414,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                     Log.d("ddddd123", "dddddd" + test);
 
                     tv_steps.setText(test);
-            }
+                }
 
 
 
