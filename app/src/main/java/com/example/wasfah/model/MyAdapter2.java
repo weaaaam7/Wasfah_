@@ -16,16 +16,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wasfah.R;
 import com.example.wasfah.recepe;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
-public class myadapter extends FirebaseRecyclerAdapter<RecipeModel, myadapter.myviewholder> {
-    public myadapter(@NonNull FirebaseRecyclerOptions<RecipeModel> options, Context c, String a) {
-        super(options);
-        this.currentUser = a;
+public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
+
+    private String TAG="MyAdapter2";
+
+    public MyAdapter2( Context c) {
         this.mcontext = c;
+    }
+
+    private ArrayList<RecipeModel> recipeModels=new ArrayList<>();
+
+    private String currentUser;
+    private Context mcontext;
+
+    public void setRecipeModels(ArrayList<RecipeModel> d) {
+//        this.recipeModels.clear();
+        Log.e(TAG, "setRecipeModels: d "+d.size() );
+        this.recipeModels = d;
+        Log.e(TAG, "setRecipeModels: a "+recipeModels.size() );
+        notifyDataSetChanged();
     }
 
     public void setCurrentUser(String currentUser) {
@@ -34,15 +47,16 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel, myadapter.my
 
     @NonNull
     @Override
-    public RecipeModel getItem(int position) {
-        return super.getItem(getItemCount() - 1 - position);
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
+        return new MyViewHolder(view);
     }
 
-    private String currentUser;
-    Context mcontext;
-
     @Override
-    protected void onBindViewHolder(@NonNull myviewholder holder, int position, @NonNull RecipeModel model) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        RecipeModel model=recipeModels.get(position);
+
         holder.name.setText(model.getTitle());
 
         if (model.getPicUri() != null && !model.getPicUri().isEmpty())
@@ -59,7 +73,7 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel, myadapter.my
             Log.e("TAG_ingredients", model.getIngredients().toString());
 //                Log.e("TAG_steps", model.getSteps().toString());
             Log.e("TAG_img", model.getPicUri());
-            Log.e("TAG_userName", currentUser);
+            Log.e("TAG_userName", currentUser+" ");
             Log.e("TAG_publishedByUser", model.isPublishedByUser() + "");
             Log.e("TAG_recipeId", model.getRecipeId());
             Log.e("TAG_timestamp", model.getTimestamp());
@@ -69,9 +83,9 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel, myadapter.my
             inten.putExtra("title", model.getTitle());
             inten.putExtra("category", model.getCategory());
             inten.putExtra("ingredients", (Serializable) model.getIngredients());
-                inten.putExtra("steps", (Serializable) model.getSteps());
+            inten.putExtra("steps", (Serializable) model.getSteps());
             inten.putExtra("img", model.getPicUri());
-            inten.putExtra("userName", currentUser);
+            inten.putExtra("userName", currentUser+" ");
             inten.putExtra("publishedByUser", model.isPublishedByUser());
             inten.putExtra("recipeId", model.getRecipeId());
             inten.putExtra("timestamp", model.getTimestamp());
@@ -84,20 +98,19 @@ public class myadapter extends FirebaseRecyclerAdapter<RecipeModel, myadapter.my
 
     }
 
-    @NonNull
     @Override
-    public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.carrdview_item, parent, false);
-        return new myviewholder(view);
+    public int getItemCount() {
+        return recipeModels.size();
     }
 
 
-    class myviewholder extends RecyclerView.ViewHolder {
+
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
         TextView name;
         LinearLayout root;
 
-        public myviewholder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             name = (TextView) itemView.findViewById(R.id.tv);

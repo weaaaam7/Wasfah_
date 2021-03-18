@@ -1,8 +1,13 @@
 package com.example.wasfah;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.ServerValue;
 
-public class Comment {
+import java.io.Serializable;
+
+public class Comment implements Serializable, Parcelable {
 
     private String content,uid,uimg,uname;
     private Object timestamp;
@@ -23,6 +28,25 @@ public class Comment {
         this.uname = uname;
         this.timestamp = timestamp;
     }
+
+    protected Comment(Parcel in) {
+        content = in.readString();
+        uid = in.readString();
+        uimg = in.readString();
+        uname = in.readString();
+    }
+
+    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
+        @Override
+        public Comment createFromParcel(Parcel in) {
+            return new Comment(in);
+        }
+
+        @Override
+        public Comment[] newArray(int size) {
+            return new Comment[size];
+        }
+    };
 
     public String getContent() {
         return content;
@@ -62,5 +86,18 @@ public class Comment {
 
     public void setTimestamp(Object timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(content);
+        parcel.writeString(uid);
+        parcel.writeString(uimg);
+        parcel.writeString(uname);
     }
 }

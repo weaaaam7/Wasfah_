@@ -1,6 +1,6 @@
 package com.example.wasfah;
 
-import android.net.Uri;
+import com.example.wasfah.model.IngredientModel;
 
 import java.util.List;
 
@@ -10,13 +10,31 @@ public class RecipeInfo {
     private String category;
     private String img;
     private String email;
-    private List<Ingredients> ingredients;
+    private List<IngredientModel> ingredients;
     private List<Steps> steps;
     private String recipeId;
     private String timestamp;
+    private long likes;
+    private long dislikes;
     private String name;
     private boolean isPublishedByUser;
     private boolean isProfile;
+
+    public RecipeInfo(String title, String category, String img, String email, List<IngredientModel> ingredients, List<Steps> steps, String recipeId, String timestamp, long likes, long dislikes, String name, boolean isPublishedByUser, boolean isProfile) {
+        this.title = title;
+        this.category = category;
+        this.img = img;
+        this.email = email;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.name = name;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
+    }
 
     public boolean isProfile() {
         return isProfile;
@@ -58,7 +76,7 @@ public class RecipeInfo {
         this.email = email;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
+    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
         this.title = title;
         this.img = img;
         this.category=category;
@@ -70,7 +88,7 @@ public class RecipeInfo {
         this.isProfile=true;
     }
 
-    public RecipeInfo(String title, String category, String img, List<Ingredients>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
+    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
         this.title = title;
         this.img = img;
         this.category=category;
@@ -98,11 +116,11 @@ public class RecipeInfo {
         this.steps = steps;
     }
 
-    public List<Ingredients> getIngredients() {
+    public List<IngredientModel> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredients> ingredients) {
+    public void setIngredients(List<IngredientModel> ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -130,4 +148,19 @@ public class RecipeInfo {
         this.category = category;
     }
 
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public long getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(long dislikes) {
+        this.dislikes = dislikes;
+    }
 }
