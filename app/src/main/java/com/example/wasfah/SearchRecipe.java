@@ -154,7 +154,7 @@ public class SearchRecipe extends AppCompatActivity {
 
     private void allData() {
         FirebaseDatabase.getInstance().getReference()
-                .child("Recipes").orderByChild("likes").limitToFirst(10).addValueEventListener(new ValueEventListener() {
+                .child("Recipes").orderByChild("likes").limitToFirst(15).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 

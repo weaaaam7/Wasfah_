@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".recepe"/>
+
 
         <meta-data
             android:name="preloaded_fonts"
