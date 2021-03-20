@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -166,6 +167,9 @@ public class HealthyFragment extends Fragment {
             }
 
         }
+
+        Collections.sort(recipieList, RecipeInfo.newest);
+        Collections.sort(recipieList, RecipeInfo.alphabetically);
     }
     public void setApplicationLocale(String locale) {
         Resources resources = getResources();
