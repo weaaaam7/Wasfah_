@@ -2,6 +2,7 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.wasfah.model.Like;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -95,6 +99,40 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             }
         });
 
+        //like and dislike
+        final Like[] like = new Like[1];
+
+        recipeRef.child(mData.get(position).getRecipeId()).child("likeList").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+
+                Log.e(TAG, "onSuccess: " + dataSnapshot.getValue());
+
+                if (dataSnapshot.getChildren() != null) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Like like1 = new Like(
+                                ds.child("uid").getValue(String.class),
+                                ds.child("like").getValue(Boolean.class)
+                        );
+
+                        if (like1.getUid().equals(userId)) {
+                            like[0] = like1;
+                            if (like1.isLike()) {
+                                holder.dislike.setImageResource(R.drawable.ic_dislike);
+                                holder.like.setImageResource(R.drawable.ic_like_used);
+
+                            } else {
+                                holder.dislike.setImageResource(R.drawable.ic_dislike_used);
+                                holder.like.setImageResource(R.drawable.ic_like);
+                            }
+                            return;
+                        }
+
+                    }
+                }
+
+            }
+        });
 
 
     }
@@ -107,7 +145,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_title, tv_title_cat;
-        ImageView img, img2;//,like, dislike;
+        ImageView img, img2, like, dislike;
         RelativeLayout cardView;
         LinearLayout profile, category;
         TextView name, date;
@@ -118,8 +156,8 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             tv_title = (TextView) itemView.findViewById(R.id.tv);
             img = (ImageView) itemView.findViewById(R.id.img);
             img2 = (ImageView) itemView.findViewById(R.id.img2);
-//            like = (ImageView) itemView.findViewById(R.id.img_like);
-//            dislike = (ImageView) itemView.findViewById(R.id.img_dislike);
+           // like = (ImageView) itemView.findViewById(R.id.img_like);
+           // dislike = (ImageView) itemView.findViewById(R.id.img_dislike);
             cardView = (RelativeLayout) itemView.findViewById(R.id.cardview);
             tv_title_cat = (TextView) itemView.findViewById(R.id.tv2);
             name = (TextView) itemView.findViewById(R.id.name);
@@ -130,3 +168,8 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
     }
 
 }
+
+
+
+
+
