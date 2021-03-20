@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,12 +21,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +56,9 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.w3c.dom.Text;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -58,15 +67,14 @@ import static android.app.ProgressDialog.show;
 
 public class editprofile extends AppCompatActivity {
 
-    ImageView uimage;
-    Button btnupdate;
+    Button btnupdate, deletAcc;
     DatabaseReference dbreference, reference;
     StorageReference storageReference;
-    Uri filepath;
     Bitmap bitmap;
     String UserID="";
     EditText profileFirstName,profileLastName,profileEmail,profilePassword,profileConfirmPass;
     ImageView backProfile;
+    String email, name, password;
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
@@ -77,13 +85,12 @@ public class editprofile extends AppCompatActivity {
         setContentView(R.layout.activity_editprofile);
         if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
         {
-            setApplicationLocale("ar");
+          setApplicationLocale("ar");
         }
         else
         {
-            setApplicationLocale("en");
+          setApplicationLocale("en");
         }
-        uimage=(ImageView)findViewById(R.id.ProfileImage);
         profileFirstName=(EditText) findViewById(R.id.EditFirstName);
         profileLastName=(EditText) findViewById(R.id.EditLastName);
         profileEmail=(EditText) findViewById(R.id.EditEmail);
@@ -91,6 +98,8 @@ public class editprofile extends AppCompatActivity {
         profileConfirmPass=(EditText) findViewById(R.id.EditConfirmPass);
         btnupdate=(Button)findViewById(R.id.SaveProfile);
         backProfile = findViewById(R.id.back);
+        deletAcc = (Button)findViewById(R.id.DeleteAcc);
+
 
 
 
@@ -105,9 +114,9 @@ public class editprofile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                String email=dataSnapshot.child("email").getValue().toString();
-                String name=dataSnapshot.child("name").getValue().toString();
-                String password=dataSnapshot.child("password").getValue().toString();
+                email=dataSnapshot.child("email").getValue().toString();
+                name=dataSnapshot.child("name").getValue().toString();
+                password=dataSnapshot.child("password").getValue().toString();
 
 
                 String[] parts = name.split(" ");
@@ -143,50 +152,93 @@ public class editprofile extends AppCompatActivity {
                 updatetofirebase();
             }
         });
-
-    }
-
-       /* uimage.setOnClickListener(new View.OnClickListener() {
+        // delete Account
+        deletAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dexter.withContext(getApplicationContext())
-                        .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        .withListener(new PermissionListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(editprofile.this);
+                builder.setMessage("Are you sure you want to delete your account?")
+                        .setCancelable(false)
+
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                Intent intent=new Intent();
-                                intent.setType("image/*");
-                                intent.setAction(Intent.ACTION_GET_CONTENT);
-                                startActivityForResult(Intent.createChooser(intent,"Please Select File"),101);
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                               DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
+                                dRec.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            // delete user's comments
+                                            DatabaseReference comment = dRec.child(ds.getKey()).child("comment");
+                                            comment.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (DataSnapshot ds : snapshot.getChildren()) {
+                                                        String uid_comp = snapshot.child(ds.getKey()).child("uid").getValue(String.class);
+                                                        if (uid_comp != null && UserID != null && uid_comp.equalsIgnoreCase(UserID)) {
+                                                            comment.child(ds.getKey()).removeValue();
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                            // delete user's recipes
+                                           String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
+                                            if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
+                                                dRec.child(ds.getKey()).removeValue();
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                                AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+
+                                // Prompt the user to re-provide their sign-in credentials
+                                if (user != null) {
+                                    user.reauthenticate(credential)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    user.delete()
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        reference.removeValue();
+                                                                        Log.d("TAG", "User account deleted.");
+                                                                        startActivity(new Intent(editprofile.this, LoginActivity.class));
+                                                                        Toast.makeText(editprofile.this, "Your Account had been deleted Successfully,", Toast.LENGTH_LONG).show();
+
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            });
+                                }
                             }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
                             }
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                                permissionToken.continuePermissionRequest();
-                            }
-                        }).check();
+                        });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
             }
-        });*/
-
-
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==101 && resultCode==RESULT_OK)
-        {
-            filepath=data.getData();
-            try {
-                InputStream inputStream=getContentResolver().openInputStream(filepath);
-                bitmap= BitmapFactory.decodeStream(inputStream);
-                uimage.setImageBitmap(bitmap);
-            }catch (Exception ex)
-            {
-                Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG).show();
-            }
-      */
-
+        }); // end
+    }
 
     public void updatetofirebase()
     {
@@ -238,30 +290,6 @@ public class editprofile extends AppCompatActivity {
         String lname=profileLastName.getText().toString();
         String Full_name= fname+" "+lname;
 
-
-
-
-      /*  final ProgressDialog pd=new ProgressDialog(this);
-        pd.setTitle("File Uploader");
-        pd.show();
-=======
-
-
-
-
-      /*  final ProgressDialog pd=new ProgressDialog(this);
-        pd.setTitle("File Uploader");
-        pd.show();
-
->>>>>>> b3721a3871a43c1dc96ab0661770455c1a861c2c
-        final StorageReference uploader=storageReference.child("profileimages/"+"img"+System.currentTimeMillis());
-        uploader.putFile(filepath)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {*/
         final Map<String,Object> map=new HashMap<>();
         // map.put("uimage",uri.toString());
         map.put("name",Full_name);
@@ -274,7 +302,7 @@ public class editprofile extends AppCompatActivity {
                 if(snapshot.exists()){
                     dbreference.child(UserID).updateChildren(map);
                     Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
-                }
+                 }
                 else
                     dbreference.child(UserID).setValue(map);
             }
@@ -283,20 +311,6 @@ public class editprofile extends AppCompatActivity {
             }
         });
 
-                             /*   pd.dismiss();
-                                Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                        float percent=(100*snapshot.getBytesTransferred())/snapshot.getTotalByteCount();
-                        pd.setMessage("Uploaded :"+(int)percent+"%");
-                    }
-                });
-*/
     }
     public void setApplicationLocale(String locale) {
         Resources resources = getResources();
