@@ -1,5 +1,6 @@
 package com.example.wasfah;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class RecipeInfo {
@@ -129,5 +130,19 @@ public class RecipeInfo {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public static Comparator<RecipeInfo> newest = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r1.getTimestamp().compareTo(r2.getTimestamp());
+        }
+    };
+
+    public static Comparator<RecipeInfo> alphabetically = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r1.getName().compareToIgnoreCase(r2.getName());
+        }
+    };
 
 }
