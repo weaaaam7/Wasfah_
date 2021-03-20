@@ -240,13 +240,30 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
-        for (int i=0;i<ingredients.size();i++){
-            ingeredientsStr+=(i+1)+"- "+ingredients.get(i).getFullName();
-            if(i<ingredients.size()-1) {
+        for (int i=0;i<ingredients.size();i++) {
+            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName()+".";
+            if (i < ingredients.size() - 1) {
                 ingeredientsStr += "\n\n";
             }
-
         }
+//        Set<Ingredients> ingredientsSet= new HashSet<>();
+//
+//        for (int i=0;i<ingredients.size();i++){
+//            ingredientsSet.add(ingredients.get(i));
+//        }
+//        JSONObject multiple = new JSONObject();
+//        // create a new Gson object
+//        Gson gson = new Gson();
+//
+//        // convert your set to json
+//        String jsonUsersSet = gson.toJson(ingredients);
+//
+//        // print your generated json
+//        System.out.println("jsonUsersSet: " + jsonUsersSet);
+//
+//        System.out.println("Multiple ingredients: " + multiple);
+//
+
         tv_ingrediants.setText(ingeredientsStr);
 
         for (int i=0;i<steps.size();i++){
@@ -394,18 +411,28 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
     private void subscribeObserverIngredients() {
 
 
-        translationViewModel.translateIngredients(ingeredientsStr);
-        translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
-                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-                    Log.d("ddddds222", "dddddd" + test);
+//        for (int i = 0; i < ingredients.size(); i++) {
+//            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName();
+//            if (i < ingredients.size() - 1) {
+//               // ingeredientsStr += "\n\n";
+//            }
+            translationViewModel.translateIngredients(ingeredientsStr);
+            translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
+                        String test = translationResponse.getData().getTranslations().get(0).getTranslatedText() + "\n \n";
+                        Log.d("ddddds222", "dddddd" + test);
 
-                    tv_ingrediants.setText(test);
+                        String [] text = test.split(".");
+                        for(int i=0; i<= text.length; i++){
+                            test+=text[i]+"\n";
+                            tv_ingrediants.setText(test);
+                        }
 
-                }
-        );
+
+                    }
+            );
+
+
     }
-
-
 
     private void subscribeObserverSteps() {
         translationViewModel.translateSteps(stepsStr);
