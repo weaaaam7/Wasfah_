@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +61,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
+    String keySubscibed= "";
     
 
 
@@ -67,7 +69,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
@@ -75,9 +76,14 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
+        String musername = intent.getExtras().getString("userMName");
+        String museremail = intent.getExtras().getString("userMEmail");
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
+        keySubscibed = musername+museremail;
+        Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
+
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
 
@@ -197,6 +203,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                         comment.setText("");
                         comment.setHint("Add comment");
                         addComment.setVisibility(View.VISIBLE);
+                        sendPushNotification(1);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -235,6 +242,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
         tv_steps.setText(str);
 
+    }
+
+    private void sendPushNotification(int category) {
+        String keyWord = keySubscibed;
+        Log.d("KEY", "sendPushNotification: "+keyWord);
     }
 
     @Override
