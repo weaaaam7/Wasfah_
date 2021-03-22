@@ -1,10 +1,10 @@
 package com.example.wasfah;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,15 +14,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.wasfah.translation.TranslationViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,25 +27,27 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-private TranslationViewModel translationViewModel;
+
     private TextView title_tv;
     private ImageView image,back;
-    private TextView tv_ingrediants,Ingred_label;
+    private TextView tv_ingrediants;
     private TextView tv_category;
-    private TextView tv_steps,Steps_label;
+    private TextView tv_steps;
     private TextView tv_timestamp;
-    private String ingeredientsStr="";
-    private String stepsStr="";
+    private String str="";
     private EditText comment;
-    private Button addComment,dots,deleteComment;
-    private TextView translateBtn;
+    private Button addComment,dots;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -63,22 +56,19 @@ private TranslationViewModel translationViewModel;
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
-    boolean commentedByUser=true;
-    List<Ingredients> ingredients;
-    List<Steps> steps;
+
     // favorite list
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
+    String keySubscibed= "";
+    
 
 
-
-    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
@@ -86,10 +76,14 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
+        String musername = intent.getExtras().getString("userMName");
+        String museremail = intent.getExtras().getString("userMEmail");
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
-        commentedByUser=intent.getExtras().getBoolean("commentedByUser");
+        keySubscibed = musername+museremail;
+        Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
+
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
 
@@ -105,11 +99,8 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
-        translateBtn=(TextView) findViewById(R.id.translateBtn);
-       // deleteComment=(Button)findViewById(R.id.delButton);;
-        Ingred_label=(TextView) findViewById(R.id.Ingred_label);
-        Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
+
 
         //hide and display 3 dots
 
@@ -122,49 +113,19 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         }
 
 
-
-
         back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            });
-        translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                Log.d("ddddd", "dddddd");
-                //translationViewModel.translateIngerediants(stepsStr);
-                subscribeObserver();
-                subscribeObserverIngredients();
-                subscribeObserverSteps();
-
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
-//        if (commentedByUser){
-//            deleteComment.setVisibility(View.VISIBLE);
-//
-//        }
-//        else{
-//            deleteComment.setVisibility(View.INVISIBLE);
-//        }
-//        deleteComment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DatabaseReference dComment = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId).child("comment");
-//                dComment.removeValue();
-//                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         //Firebase
 
-
-            fAuth=FirebaseAuth.getInstance();
+        fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
-        String uid = user.getUid();
+        String uid=user.getUid();
 
         // fav
 
@@ -190,62 +151,59 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             @Override
             public void onClick(View view) {
                 faved = true;
-                favList.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (faved) {
-                            if (snapshot.child(recpieId).hasChild(uid)) {
-                                favList.child(recpieId).child(uid).removeValue();
-                                showMessage("Removed your favorite list");
-                                faved = false;
-                            } else {
-                                favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        showMessage("Added to your favorite list");
-                                        faved = false;
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        showMessage("fail to add to your favorite list: " + e.getMessage());
-                                    }
-                                });
+                    favList.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (faved) {
+                                if (snapshot.child(recpieId).hasChild(uid)) {
+                                    favList.child(recpieId).child(uid).removeValue();
+                                    showMessage("Removed your favorite list");
+                                    faved = false;
+                                } else {
+                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            showMessage("Added to your favorite list");
+                                            faved = false;
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            showMessage("fail to add to your favorite list: " + e.getMessage());
+                                        }
+                                    });
 
-                                faved = false;
+                                    faved = false;
+                                }
                             }
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
 
             }
         });
-
 
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                String timestamp=String.valueOf(System.currentTimeMillis());
-                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-                HashMap<String,Object> hashmap=new HashMap<>();
-                hashmap.put("timestamp",timestamp);
-                hashmap.put("content",comment.getText().toString());
-                hashmap.put("uid",user.getUid());
-                hashmap.put("uname",userName);
-                hashmap.put("date",new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
+                String comment_content=comment.getText().toString();
+                String uName=userName;
+                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                Comment comment1= new Comment(comment_content,uid,uName,date);
 
-                commentRef.child(timestamp).setValue(hashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         showMessage("comment Added");
                         comment.setText("");
                         comment.setHint("Add comment");
                         addComment.setVisibility(View.VISIBLE);
+                        sendPushNotification(1);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -257,6 +215,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             }
         });
 
+
         //initi Recycler view
         initRvComment();
 
@@ -266,69 +225,36 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
-        for (int i=0;i<ingredients.size();i++) {
-            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName()+".";
-            if (i < ingredients.size() - 1) {
-                ingeredientsStr += "\n\n";
+        for (int i=0;i<ingredients.size();i++){
+            str+=(i+1)+"- "+ingredients.get(i).getFullName();
+            if(i<ingredients.size()-1) {
+                str += "\n\n";
             }
+
         }
-//        Set<Ingredients> ingredientsSet= new HashSet<>();
-//
-//        for (int i=0;i<ingredients.size();i++){
-//            ingredientsSet.add(ingredients.get(i));
-//        }
-//        JSONObject multiple = new JSONObject();
-//        // create a new Gson object
-//        Gson gson = new Gson();
-//
-//        // convert your set to json
-//        String jsonUsersSet = gson.toJson(ingredients);
-//
-//        // print your generated json
-//        System.out.println("jsonUsersSet: " + jsonUsersSet);
-//
-//        System.out.println("Multiple ingredients: " + multiple);
-//
-
-        tv_ingrediants.setText(ingeredientsStr);
-
+        tv_ingrediants.setText(str);
+        str="";
         for (int i=0;i<steps.size();i++){
-            stepsStr+=(i+1)+"- "+steps.get(i).getDescription();
+            str+=(i+1)+"- "+steps.get(i).getDescription();
             if(i<steps.size()-1) {
-                stepsStr += "\n\n";
+                str += "\n\n";
             }
         }
-        tv_steps.setText(stepsStr);
-
-
-
-
-
+        tv_steps.setText(str);
 
     }
 
-    private String getTranslatedText() {
-        List<String> translatedArray = new ArrayList<>();
-        translatedArray.add(String.valueOf(title_tv.getText()));
-        translatedArray.add(String.valueOf(tv_category.getText()));
-        translatedArray.add(String.valueOf(Ingred_label.getText()));
-        translatedArray.add(String.valueOf(Steps_label.getText()));
-
-        Log.d("ndlnjc","jfrhkjb"+String.valueOf(Steps_label.getText()));
-
-        return convertListToString(translatedArray);
-
+    private void sendPushNotification(int category) {
+        String keyWord = keySubscibed;
+        Log.d("KEY", "sendPushNotification: "+keyWord);
     }
 
-    private String convertListToString(List<String> translatedArray){
-        String listString = "";
-        for (String s : translatedArray)
-        {
-            listString += s + "#";
-        }
-
-        return listString;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_recepie_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
+
     //show popup
 
     public void showPopup(View v){
@@ -347,6 +273,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -383,113 +310,36 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
                 return true;
 
-            case R.id.fav:
-
-                return true;
-
-
             default:return false;
         }
 
     }
 
-    public void initRvComment() {
+    private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-       commentRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               listComment=new ArrayList<>();
-               for (DataSnapshot snap:snapshot.getChildren()){
-                   Comment comment=snap.getValue(Comment.class);
-                   listComment.add(comment);
-               }
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listComment=new ArrayList<>();
+                for (DataSnapshot snap:snapshot.getChildren()){
+                    Comment comment=snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+                adapter = new commentAdapter(getApplicationContext(),listComment);
+                RvComment.setAdapter(adapter);
+            }
 
-               RvComment.setAdapter(adapter);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-
-               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
-                   @Override
-                   public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                       return false;
-                   }
-
-                   @Override
-                   public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                     adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
-                     adapter.notifyDataSetChanged();
-                       Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
-                   }
-
-               }).attachToRecyclerView(RvComment);
-
-
-           }
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
-
-           }
-       });
+            }
+        });
     }
-
 
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
-    private void subscribeObserver() {
-        translationViewModel.translateText(getTranslatedText());
-        translationViewModel.translateText(getTranslatedText()).observe(this, translationResponse -> {
-                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-                    Log.d("ddddds", "dddddd" + test);
-                    List<String> items = Arrays.asList(test.split("\\s*#\\s*"));
-                    title_tv.setText(items.get(0));
-                    tv_category.setText(items.get(1));
-                    Ingred_label.setText(items.get(2));
-                    Steps_label.setText(items.get(3));
 
-                }
-        );
-    }
-    private void subscribeObserverIngredients() {
-
-
-//        for (int i = 0; i < ingredients.size(); i++) {
-//            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName();
-//            if (i < ingredients.size() - 1) {
-//               // ingeredientsStr += "\n\n";
-//            }
-            translationViewModel.translateIngredients(ingeredientsStr);
-            translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
-                        String test = translationResponse.getData().getTranslations().get(0).getTranslatedText() + "\n \n";
-                        Log.d("ddddds222", "dddddd" + test);
-
-                        String [] text = test.split(".");
-                        for(int i=0; i<= text.length; i++){
-                            test+=text[i]+"\n";
-                            tv_ingrediants.setText(test);
-                        }
-
-
-                    }
-            );
-
-
-    }
-
-    private void subscribeObserverSteps() {
-        translationViewModel.translateSteps(stepsStr);
-        translationViewModel.translateSteps(stepsStr).observe(this, translationResponse -> {
-                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-                    Log.d("ddddd123", "dddddd" + test);
-
-                    tv_steps.setText(test);
-                }
-
-
-
-        ); }
-
-    }
+}
