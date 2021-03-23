@@ -219,7 +219,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void editRecipe() {
         RecipeModel model = getRecipe();
-        model.setCreatedBy(recipeModel.getCreatedBy());
+        model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
         model.setTimestamp();
 

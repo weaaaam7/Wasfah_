@@ -14,8 +14,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wasfah.model.NotificationBody;
+import com.example.wasfah.model.NotificationResponse;
+import com.example.wasfah.services.ApiUtils;
+import com.example.wasfah.services.AppService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.core.ApiService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +41,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -62,13 +71,14 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     boolean faved = false;
     DatabaseReference favList;
     String keySubscibed= "";
-    
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
+
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
@@ -76,14 +86,16 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
+
+        //ADDED
         String musername = intent.getExtras().getString("userMName");
         String museremail = intent.getExtras().getString("userMEmail");
+
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
-        keySubscibed = musername+museremail;
+        keySubscibed = musername;
         Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
-
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
 
@@ -151,37 +163,37 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onClick(View view) {
                 faved = true;
-                    favList.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (faved) {
-                                if (snapshot.child(recpieId).hasChild(uid)) {
-                                    favList.child(recpieId).child(uid).removeValue();
-                                    showMessage("Removed your favorite list");
-                                    faved = false;
-                                } else {
-                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            showMessage("Added to your favorite list");
-                                            faved = false;
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            showMessage("fail to add to your favorite list: " + e.getMessage());
-                                        }
-                                    });
+                favList.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (faved) {
+                            if (snapshot.child(recpieId).hasChild(uid)) {
+                                favList.child(recpieId).child(uid).removeValue();
+                                showMessage("Removed your favorite list");
+                                faved = false;
+                            } else {
+                                favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        showMessage("Added to your favorite list");
+                                        faved = false;
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        showMessage("fail to add to your favorite list: " + e.getMessage());
+                                    }
+                                });
 
-                                    faved = false;
-                                }
+                                faved = false;
                             }
                         }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                    }
+                });
 
             }
         });
@@ -246,7 +258,84 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     private void sendPushNotification(int category) {
         String keyWord = keySubscibed;
-        Log.d("KEY", "sendPushNotification: "+keyWord);
+            keyWord =keyWord+"comment";
+            processPush(keyWord,"New Comment");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.edit:
+                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
+                startActivity(intent);
+                return true;
+
+
+            case R.id.delete:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete recipe?")
+                        .setCancelable(false)
+
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
+                                dRec.removeValue();
+                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        })
+
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void processPush(String keyWord , String word) {
+
+        AppService apiService;
+        apiService = ApiUtils.getApiService();
+        apiService.sendPushNotification(
+                new NotificationBody(word,""
+                        ,"AAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",
+                        keyWord,"New Notification")).enqueue(new Callback<NotificationResponse>() {
+            @Override
+            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                if (response.isSuccessful()){
+                    Log.d("NOTIFICATION", "onResponse: Notification was sent");
+                }else {
+                    Log.d("NOTIFICATION", "onResponse: Notification was not sent: "+response.errorBody());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                Log.d("NOTIFICATION", "onResponse: Notification was not sent: "+t.getMessage());
+
+
+            }
+        });
+
     }
 
     @Override
@@ -264,6 +353,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         popup.show();
 
     }
+
+
 
     @Override
     public boolean onMenuItemClick(MenuItem item){

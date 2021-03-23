@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    public static final int MAX_INGR_ITEMS =  10;
-    public static final int MAX_STEPS_COUNT = 10;
+    public static final int MAX_INGR_ITEMS =  15;
+    public static final int MAX_STEPS_COUNT = 20;
 
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
@@ -145,9 +145,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "The maximum number for ingredient is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
             return;
+        }else {
+            this.ingredientsList.remove(model);
         }
         this.ingredientsList.add(model);
-        this.setIngredientsListModel(this.ingredientsList);
+        this.setIngredientsListModel(ingredientsList);
     }
 
     private void setStepsListModel(List<StepModel> models)
