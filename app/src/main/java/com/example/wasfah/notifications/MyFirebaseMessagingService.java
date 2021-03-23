@@ -43,13 +43,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(remoteMessage.getNotification().getTitle())
-            .setContentText(remoteMessage.getNotification().getBody())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentText(remoteMessage.getNotification().getBody())
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
+// notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, builder.build());
 
     }
