@@ -16,11 +16,9 @@ import android.widget.Toast;
 
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
-import com.example.wasfah.services.ApiUtils;
-import com.example.wasfah.services.AppService;
+import com.example.wasfah.services.APIInterface;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.core.ApiService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +63,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+    APIInterface apiInterface;
 
     // favorite list
     private Button fav_r;
@@ -177,6 +176,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                                     public void onSuccess(Void aVoid) {
                                         showMessage("Added to your favorite list");
                                         faved = false;
+                                        int category = 0;
+                                        sendPushNotification(category);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -257,9 +258,19 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     }
 
     private void sendPushNotification(int category) {
+        // 0== liked,1 Commented
         String keyWord = keySubscibed;
-            keyWord =keyWord+"comment";
+        if (category ==0){
+            keyWord ="likes";
+
+            processPush(keyWord,"New Like");
+
+        } else {
+            keyWord ="comment";
             processPush(keyWord,"New Comment");
+        }
+
+
     }
 
     @Override
@@ -310,33 +321,35 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         return super.onOptionsItemSelected(item);
     }
 
-    private void processPush(String keyWord , String word) {
+    private void processPush(String keyWord, String new_like) {
+        NotificationBody body = new NotificationBody("AAAAliUqIFU:APA91bF9yLYTI2HHC9XS278uszsjllWfYFcuXhUyx2HlJbW3yYtXo66XVXtVJytYuK2A-2ftf-QAyQYh4q1eTAv524bhheYs9E-Okwyt5ArunlZWwkqVJxX9eSegVyFlvKgo-U5VZfoX",keyWord,"1",keyWord,new_like,"https://pbs.twimg.com/profile_images/1126153616405008384/56dB5ibb.png");
 
-        AppService apiService;
-        apiService = ApiUtils.getApiService();
-        apiService.sendPushNotification(
-                new NotificationBody(word,""
-                        ,"AAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",
-                        keyWord,"New Notification")).enqueue(new Callback<NotificationResponse>() {
+        Call<NotificationResponse> call1 = apiInterface.sendNotification(body);
+        call1.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                 if (response.isSuccessful()){
-                    Log.d("NOTIFICATION", "onResponse: Notification was sent");
+                    NotificationResponse res = response.body();
+
+                    Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
+
                 }else {
-                    Log.d("NOTIFICATION", "onResponse: Notification was not sent: "+response.errorBody());
+                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
                 }
             }
 
             @Override
             public void onFailure(Call<NotificationResponse> call, Throwable t) {
-                Log.d("NOTIFICATION", "onResponse: Notification was not sent: "+t.getMessage());
-
+                call.cancel();
+                Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
             }
         });
 
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

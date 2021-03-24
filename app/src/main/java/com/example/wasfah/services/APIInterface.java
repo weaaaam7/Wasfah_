@@ -7,9 +7,11 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface AppService {
-    @POST("noty.php")
-    Call<NotificationResponse> sendPushNotification(@Body NotificationBody notificationBody);
+public interface APIInterface {
+
+
+    @POST("androidpush/noty.php")
+    Call<NotificationResponse> sendNotification(@Body NotificationBody body);
 
 
 }
