@@ -2,11 +2,8 @@ package com.example.wasfah;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.opengl.ETC1;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +11,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,8 +23,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -127,20 +121,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-        public void startSignupActivity()
-        {
-            Intent i = new Intent(this, SignupActivity.class);
-            //no need to combe back to login
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        }
+    public void startSignupActivity()
+    {
+        Intent i = new Intent(this, SignupActivity.class);
+        //no need to combe back to login
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
 
-        public void startPublishActivity()
-        {
-            Intent i = new Intent(this, MainActivity.class);
-            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        }
+    public void startPublishActivity()
+    {
+        Intent i = new Intent(this, MainActivity.class);
+        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
 
     public void startResetActivity()
     {
@@ -150,4 +144,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    @Override
+    protected void onStart() {
+        if (fAuth.getCurrentUser()!=null){
+            startPublishActivity();
+
+        }
+        super.onStart();
     }
+}
