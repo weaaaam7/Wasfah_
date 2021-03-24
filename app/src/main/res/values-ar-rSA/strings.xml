@@ -40,5 +40,7 @@
 
     <string name="my_fav">مفضلتي</string>
     <string name="no_recipe">لا توجد وصفات</string>
+    <string name="Explore">" المستكشف"</string>
+    <string name="search...">بحث ....</string>
 
 </resources>

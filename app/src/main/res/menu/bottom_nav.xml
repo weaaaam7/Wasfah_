@@ -7,7 +7,7 @@
 
 
     <item android:id='@+id/mSearch'
-        android:title='@string/Search'
+        android:title="@string/Explore"
         android:icon="@drawable/ic_search" />
 
     <item android:id="@+id/placeholder"

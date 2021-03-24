@@ -98,7 +98,7 @@
 
                     android:text="dd/mm/yyyy" />
 
-              <!--  <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
@@ -117,7 +117,7 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_dislike" />
 
-                </LinearLayout>-->
+                </LinearLayout>
             </LinearLayout>
 
 

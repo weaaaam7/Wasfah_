@@ -65,19 +65,8 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
 
         holder.root.setOnClickListener(view -> {
 
-            Log.e("TAG-=-", "onClick: " + model.getImg());
-            Log.e("TAG-=-", "onClick: " + model.isPublishedByUser());
 
-            Log.e("TAG_title", model.getTitle());
-            Log.e("TAG_category", model.getCategory());
-            Log.e("TAG_ingredients", model.getIngredients().toString());
-//                Log.e("TAG_steps", model.getSteps().toString());
-            Log.e("TAG_img", model.getPicUri());
-            Log.e("TAG_userName", currentUser+" ");
-            Log.e("TAG_publishedByUser", model.isPublishedByUser() + "");
-            Log.e("TAG_recipeId", model.getRecipeId());
-            Log.e("TAG_timestamp", model.getTimestamp());
-            Log.e("TAG_isProfile", model.isProfile() + "");
+
 
             Intent inten = new Intent(mcontext, recepe.class);
             inten.putExtra("title", model.getTitle());
@@ -90,11 +79,14 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
             inten.putExtra("recipeId", model.getRecipeId());
             inten.putExtra("timestamp", model.getTimestamp());
             inten.putExtra("isProfile", model.isProfile());
-            inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             holder.root.getContext().startActivity(inten);
 
-        });
+
+        }
+        );
+
 
     }
 

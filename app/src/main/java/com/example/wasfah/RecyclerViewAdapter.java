@@ -2,10 +2,10 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,16 +14,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.wasfah.model.Like;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.bumptech.glide.Glide;
-import com.example.wasfah.model.RecipeModel;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
@@ -97,7 +100,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
 
             }
         });
-/*
+
 
         //like and dislike
         final Like[] like = new Like[1];
@@ -234,7 +237,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
                 }            }
 
         });
-*/
+
 
     }
 
@@ -245,6 +248,8 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView like;
+        ImageView dislike;
         TextView tv_title, tv_title_cat;
         ImageView img, img2;//,like, dislike;
         RelativeLayout cardView;
@@ -257,8 +262,8 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             tv_title = (TextView) itemView.findViewById(R.id.tv);
             img = (ImageView) itemView.findViewById(R.id.img);
             img2 = (ImageView) itemView.findViewById(R.id.img2);
-//            like = (ImageView) itemView.findViewById(R.id.img_like);
-//            dislike = (ImageView) itemView.findViewById(R.id.img_dislike);
+          like = (ImageView) itemView.findViewById(R.id.img_like);
+            dislike = (ImageView) itemView.findViewById(R.id.img_dislike);
             cardView = (RelativeLayout) itemView.findViewById(R.id.cardview);
             tv_title_cat = (TextView) itemView.findViewById(R.id.tv2);
             name = (TextView) itemView.findViewById(R.id.name);
