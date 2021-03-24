@@ -168,8 +168,8 @@ public class HealthyFragment extends Fragment {
 
         }
 
-        Collections.sort(recipieList, RecipeInfo.newest);
-        Collections.sort(recipieList, RecipeInfo.alphabetically);
+//        Collections.sort(recipieList, RecipeInfo.newest);
+//        Collections.sort(recipieList, RecipeInfo.alphabetically);
     }
     public void setApplicationLocale(String locale) {
         Resources resources = getResources();
