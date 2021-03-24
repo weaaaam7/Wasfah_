@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wasfah.api.APIClient;
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
 import com.example.wasfah.services.APIInterface;
@@ -77,6 +78,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
+        apiInterface = APIClient.getClient().create(APIInterface.class);
 
         //get Intent
         Intent intent = getIntent();
@@ -93,6 +95,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
+
         keySubscibed = musername;
         Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
@@ -322,7 +325,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     }
 
     private void processPush(String keyWord, String new_like) {
-        NotificationBody body = new NotificationBody("AAAAliUqIFU:APA91bF9yLYTI2HHC9XS278uszsjllWfYFcuXhUyx2HlJbW3yYtXo66XVXtVJytYuK2A-2ftf-QAyQYh4q1eTAv524bhheYs9E-Okwyt5ArunlZWwkqVJxX9eSegVyFlvKgo-U5VZfoX",keyWord,"1",keyWord,new_like,"https://pbs.twimg.com/profile_images/1126153616405008384/56dB5ibb.png");
+
+        NotificationBody body = new NotificationBody
+                ("AAAAliUqIFU:APA91bF9yLYTI2HHC9XS278uszsjllWfYFcuXhUyx2HlJbW3yYtXo66XVXtVJytYuK2A-2ftf-QAyQYh4q1eTAv524bhheYs9E-Okwyt5ArunlZWwkqVJxX9eSegVyFlvKgo-U5VZfoX",
+                        keyWord,"1"
+                        ,keyWord,new_like,"https://pasteboard.co/JU7YUBp.jpg");
 
         Call<NotificationResponse> call1 = apiInterface.sendNotification(body);
         call1.enqueue(new Callback<NotificationResponse>() {

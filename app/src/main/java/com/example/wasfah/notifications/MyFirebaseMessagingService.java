@@ -27,20 +27,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Toast.makeText(this, "Message: "+remoteMessage.getNotification().getBody(), Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(this, "Message: " + remoteMessage.getNotification().getBody(), Toast.LENGTH_SHORT).show();
 
 //        addNotification();
 
 
-        Log.d("RECIEVED", "onMessageReceived: "+remoteMessage.getNotification().getBody());
+        Log.d("RECIEVED", "onMessageReceived: " + remoteMessage.getNotification().getBody());
         //create the notification even on foreground
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(this, recepe.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
@@ -52,21 +53,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, builder.build());
 
-    }
-    private void addNotification() {
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher_round)
-                        .setContentTitle("Notifications Example")
-                        .setContentText("This is a test notification");
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
     }
 }
