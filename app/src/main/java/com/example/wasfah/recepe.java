@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.wasfah.api.APIClient;
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
+import com.example.wasfah.services.APIClient_N;
 import com.example.wasfah.services.APIInterface;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,8 +79,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-
+        apiInterface = APIClient_N.getClient().create(APIInterface.class);
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
