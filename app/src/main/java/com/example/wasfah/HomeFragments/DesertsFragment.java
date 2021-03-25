@@ -122,6 +122,7 @@ public class DesertsFragment extends Fragment  {
                                 recAdap = new RecyclerViewAdapter(getContext(),recipieList,currentUser);
                                 rs.setLayoutManager(new GridLayoutManager(getContext(),1));
                                 rs.setAdapter(recAdap);
+                                Collections.sort(recipieList, RecipeInfo.newest);
                                 recAdap.notifyDataSetChanged();
                             }
                             else {
