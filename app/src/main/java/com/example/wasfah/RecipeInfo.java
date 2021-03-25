@@ -135,18 +135,18 @@ public class RecipeInfo {
         this.category = category;
     }
 
-//    public static Comparator<RecipeInfo> newest = new Comparator<RecipeInfo>() {
-//        @Override
-//        public int compare(RecipeInfo r1, RecipeInfo r2) {
-//            return r1.getTimestamp().compareTo(r2.getTimestamp());
-//        }
-//    };
-//
-//    public static Comparator<RecipeInfo> alphabetically = new Comparator<RecipeInfo>() {
-//        @Override
-//        public int compare(RecipeInfo r1, RecipeInfo r2) {
-//            return r1.getName().compareToIgnoreCase(r2.getName());
-//        }
-//    };
+    public static Comparator<RecipeInfo> newest = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r2.getTimestamp().compareTo(r1.getTimestamp());
+        }
+    };
+
+    public static Comparator<RecipeInfo> alphabetically = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r1.getTitle().compareTo(r2.getTitle());
+        }
+    };
 
 }

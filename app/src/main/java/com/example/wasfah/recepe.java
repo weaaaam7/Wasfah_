@@ -400,7 +400,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
                                 dRec.removeValue();
-                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(recepe.this, "Recipe was deleted successfully", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
 
