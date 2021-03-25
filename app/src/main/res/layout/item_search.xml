@@ -9,26 +9,26 @@
     app:cardCornerRadius="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <LinearLayout
-            android:id="@+id/profile"
+    <LinearLayout
+        android:id="@+id/profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/img"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:layout_height="150dp"
+            android:scaleType="fitXY" />
 
-            <ImageView
-                android:id="@+id/img"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:id="@+id/tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="recipe title recipe title recipe title"
-                android:textColor="#474537"
-                android:textSize="13sp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="recipe title recipe title recipe title"
+            android:textColor="#474537"
+            android:textSize="13sp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

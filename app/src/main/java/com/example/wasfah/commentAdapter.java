@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,9 +44,15 @@ public class commentAdapter extends RecyclerView.Adapter<commentAdapter.CommentV
         return mData.size();
     }
 
+    public List<Object> getData() {
+        return null;
+    }
+
+
     public class CommentVewHolder extends RecyclerView.ViewHolder {
 
         TextView name,comment;
+        Button deleteComment;
         public CommentVewHolder(@NonNull View itemView) {
             super(itemView);
             name =(TextView) itemView.findViewById(R.id.textView5);
@@ -53,3 +60,4 @@ public class commentAdapter extends RecyclerView.Adapter<commentAdapter.CommentV
         }
     }
 }
+

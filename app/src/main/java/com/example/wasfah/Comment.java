@@ -1,13 +1,11 @@
 package com.example.wasfah;
 
-import com.google.firebase.database.ServerValue;
-
 public class Comment {
 
     private String content,uid,uimg,uname;
     private Object timestamp;
     private String date;
-
+    private boolean isCommentedByUser;
     public Comment() {
     }
 
@@ -19,11 +17,12 @@ public class Comment {
         this.date = date;
     }
 
-    public Comment(String content, String uid, String uname,String date) {
+    public Comment(String content, String uid, String uname,String date, boolean isCommentedByUser) {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
         this.date = date;
+        this.isCommentedByUser = isCommentedByUser;
     }
 
 
@@ -66,4 +65,8 @@ public class Comment {
     public void setTimestamp(Object timestamp) {
         this.timestamp = timestamp;
     }
+
+    public void setCommentedByUser(boolean commentedByUser) { isCommentedByUser = commentedByUser; }
+
+    public boolean isCommentedByUser() { return isCommentedByUser; }
 }

@@ -51,7 +51,7 @@ private TranslationViewModel translationViewModel;
     private String ingeredientsStr="";
     private String stepsStr="";
     private EditText comment;
-    private Button addComment,dots;
+    private Button addComment,dots,deleteComment;
     private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
@@ -61,12 +61,14 @@ private TranslationViewModel translationViewModel;
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+    boolean commentedByUser=true;
     List<Ingredients> ingredients;
     List<Steps> steps;
     // favorite list
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
+
 
 
     @SuppressLint("CutPasteId")
@@ -85,6 +87,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
+        commentedByUser=intent.getExtras().getBoolean("commentedByUser");
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
 
@@ -101,6 +104,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
         translateBtn=(TextView) findViewById(R.id.translateBtn);
+        deleteComment=(Button)findViewById(R.id.delButton);;
         Ingred_label=(TextView) findViewById(R.id.Ingred_label);
         Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
@@ -116,7 +120,9 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         }
 
 
-            back.setOnClickListener(new View.OnClickListener() {
+
+
+        back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -134,6 +140,22 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
             }
         });
+//        if (commentedByUser){
+//            deleteComment.setVisibility(View.VISIBLE);
+//
+//        }
+//        else{
+//            deleteComment.setVisibility(View.INVISIBLE);
+//        }
+        deleteComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference dComment = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId).child("comment");
+                dComment.removeValue();
+                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //Firebase
 
 
@@ -211,7 +233,8 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                 String uid=user.getUid();
                 String uName=userName;
                 String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                Comment comment1= new Comment(comment_content,uid,uName,date);
+                boolean isCommentedByUser= userName==uName;
+                Comment comment1= new Comment(comment_content,uid,uName,date,isCommentedByUser);
 
                 commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -381,6 +404,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
                adapter = new commentAdapter(getApplicationContext(),listComment);
                RvComment.setAdapter(adapter);
+
            }
 
            @Override
@@ -389,6 +413,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
            }
        });
     }
+
 
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();

@@ -24,13 +24,9 @@ public class RecipeInfo {
         isProfile = profile;
     }
 
-    public void setPublishedByUser(boolean publishedByUser) {
-        isPublishedByUser = publishedByUser;
-    }
+    public void setPublishedByUser(boolean publishedByUser) { isPublishedByUser = publishedByUser; }
 
-    public boolean isPublishedByUser() {
-        return isPublishedByUser;
-    }
+    public boolean isPublishedByUser() { return isPublishedByUser; }
 
     public String getName() {
         return name;
