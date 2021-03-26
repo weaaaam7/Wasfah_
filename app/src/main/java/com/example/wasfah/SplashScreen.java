@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -53,10 +54,14 @@ public class SplashScreen extends AppCompatActivity {
 
         }
         Log.d("TOPIC", "onCreate: "+username);
-        createNotificationChannel();
-        getToken();
-        subscribeToTopic1();
-        subscribeToTopic2();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser!=null){
+            createNotificationChannel();
+            getToken();
+            subscribeToTopic1();
+        }
+//        subscribeToTopic2();
 
         //Animation
         topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animation);
@@ -103,22 +108,23 @@ public class SplashScreen extends AppCompatActivity {
 
     //subscribe to a topic
     private void subscribeToTopic1(){
-        FirebaseMessaging.getInstance().subscribeToTopic("likes").addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                Log.d("USER", "onComplete: "+mAuth.getCurrentUser().getUid());
                 Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
 
             }
         });
     }
-    private void subscribeToTopic2(){
-        FirebaseMessaging.getInstance().subscribeToTopic("comments").addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
+//    private void subscribeToTopic2(){
+//        FirebaseMessaging.getInstance().subscribeToTopic("comments").addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+//    }
 }
 
