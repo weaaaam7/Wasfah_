@@ -14,7 +14,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wasfah.api.APIClient;
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
 import com.example.wasfah.services.APIClient_N;
@@ -79,7 +78,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-        apiInterface = APIClient_N.getClient().create(APIInterface.class);
+
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
@@ -88,6 +87,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
 
+
+
         //ADDED
         String musername = intent.getExtras().getString("userMName");
         String museremail = intent.getExtras().getString("userMEmail");
@@ -95,12 +96,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
-
         keySubscibed = musername;
         Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
-
+        apiInterface = APIClient_N.getClient().create(APIInterface.class);
         //Ininilize
         tv_ingrediants=(TextView) findViewById(R.id.Ingred_val);
         tv_steps=(TextView) findViewById(R.id.Steps_val);
@@ -264,13 +264,13 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         // 0== liked,1 Commented
         String keyWord = keySubscibed;
         if (category ==0){
-            keyWord ="likes";
+            keyWord ="You got a new Like";
 
-            processPush(keyWord,"New Like");
+            processPush(keyWord,"We wanted to let you know that Someone liked your Recipe");
 
-        } else {
-            keyWord ="comment";
-            processPush(keyWord,"New Comment");
+        }else {
+            keyWord ="You got a new Comment";
+            processPush(keyWord,"We wanted to let you know that Someone commented on your Recipe");
         }
 
 
@@ -324,15 +324,15 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         return super.onOptionsItemSelected(item);
     }
 
-    private void processPush(String keyWord, String new_like) {
+    private void processPush(String keyWord, String msg) {
+        String owner = getIntent().getExtras().getString("owner");
+        Log.d("OWNER", "processPush: "+owner);
+        Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
 
-        NotificationBody body = new NotificationBody
-                ("AAAAliUqIFU:APA91bF9yLYTI2HHC9XS278uszsjllWfYFcuXhUyx2HlJbW3yYtXo66XVXtVJytYuK2A-2ftf-QAyQYh4q1eTAv524bhheYs9E-Okwyt5ArunlZWwkqVJxX9eSegVyFlvKgo-U5VZfoX",
-                        keyWord,"1"
-                        ,keyWord,new_like,"https://pasteboard.co/JU7YUBp.jpg");
+        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,msg,"");
 
-        Call<NotificationResponse> call1 = apiInterface.sendNotification(body);
-        call1.enqueue(new Callback<NotificationResponse>() {
+        Call<NotificationResponse> call = apiInterface.sendNotification(body);
+        call.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                 if (response.isSuccessful()){
@@ -340,7 +340,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
                     Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
 
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
                 }
@@ -400,7 +400,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
                                 dRec.removeValue();
-                                Toast.makeText(recepe.this, "Recipe was deleted successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
 
