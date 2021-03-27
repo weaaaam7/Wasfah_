@@ -30,5 +30,46 @@
                 android:text="recipe title recipe title recipe title"
                 android:textColor="#474537"
                 android:textSize="13sp" />
+
         </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:paddingEnd="12dp"
+        android:layout_marginTop="180dp">
+        <TextView
+            android:id="@+id/likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="0dp"
+            android:text="45"
+
+            />
+        <ImageView
+            android:id="@+id/img_like"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_like" />
+        <TextView
+            android:text="45"
+            android:id="@+id/dislikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="0dp"
+
+            />
+
+
+        <ImageView
+            android:id="@+id/img_dislike"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_dislike" />
+
+
+    </LinearLayout>
     </androidx.cardview.widget.CardView>

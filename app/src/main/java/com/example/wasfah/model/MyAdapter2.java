@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.wasfah.R;
 import com.example.wasfah.recepe;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
 
     private String TAG="MyAdapter2";
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference recipeRef = database.getReference("Recipes");
 
     public MyAdapter2( Context c) {
         this.mcontext = c;
@@ -59,25 +63,21 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
 
         holder.name.setText(model.getTitle());
 
+
+
+           holder.likes.setText(""+model.getLikes());
+
+
+            holder.dislikes.setText(""+model.getDislikes());
+
         if (model.getPicUri() != null && !model.getPicUri().isEmpty())
             Glide.with(holder.img.getContext()).load(model.getPicUri()).into(holder.img);
 
 
         holder.root.setOnClickListener(view -> {
 
-            Log.e("TAG-=-", "onClick: " + model.getImg());
-            Log.e("TAG-=-", "onClick: " + model.isPublishedByUser());
 
-            Log.e("TAG_title", model.getTitle());
-            Log.e("TAG_category", model.getCategory());
-            Log.e("TAG_ingredients", model.getIngredients().toString());
-//                Log.e("TAG_steps", model.getSteps().toString());
-            Log.e("TAG_img", model.getPicUri());
-            Log.e("TAG_userName", currentUser+" ");
-            Log.e("TAG_publishedByUser", model.isPublishedByUser() + "");
-            Log.e("TAG_recipeId", model.getRecipeId());
-            Log.e("TAG_timestamp", model.getTimestamp());
-            Log.e("TAG_isProfile", model.isProfile() + "");
+
 
             Intent inten = new Intent(mcontext, recepe.class);
             inten.putExtra("title", model.getTitle());
@@ -90,13 +90,17 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
             inten.putExtra("recipeId", model.getRecipeId());
             inten.putExtra("timestamp", model.getTimestamp());
             inten.putExtra("isProfile", model.isProfile());
-            inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             holder.root.getContext().startActivity(inten);
 
-        });
+
+        }
+        );
+
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -107,14 +111,17 @@ public class MyAdapter2 extends RecyclerView.Adapter<MyAdapter2.MyViewHolder> {
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
-        TextView name;
+        TextView name ,likes ,dislikes;
         LinearLayout root;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             name = (TextView) itemView.findViewById(R.id.tv);
             root = (LinearLayout) itemView.findViewById(R.id.profile);
+            likes = (TextView) itemView.findViewById(R.id.likes);
+          dislikes = (TextView) itemView.findViewById(R.id.dislikes);
 
 
         }

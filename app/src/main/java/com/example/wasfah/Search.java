@@ -37,7 +37,7 @@ public class Search extends Fragment {
 
     RecyclerView recview;
     MyAdapter2 adapter;
-    SearchView searchView;
+    SearchView searchView ;
     ImageView search;
     ImageView backSearch;
     private static String TAG = "SearchRecipe";
@@ -68,7 +68,7 @@ public class Search extends Fragment {
 //        mLayoutManager.setReverseLayout(true);
 
         recview.setLayoutManager(mLayoutManager);
-        searchView = view.findViewById(R.id.fileName);
+       searchView = view.findViewById(R.id.fileName);;
         backSearch = view.findViewById(R.id.back);
 
         adapter = new MyAdapter2(getContext());

@@ -17,6 +17,7 @@
         <activity
             android:name=".editprofile"
             android:exported="true"
+            android:noHistory="false"
             android:configChanges="layoutDirection|locale"/>
         <activity android:name=".SignupActivity" />
         <activity android:name=".recepe" android:configChanges="layoutDirection|locale"/>
@@ -33,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".recepe"/>
+
 
         <meta-data
             android:name="preloaded_fonts"
