@@ -21,6 +21,8 @@ import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
 import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.home;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
