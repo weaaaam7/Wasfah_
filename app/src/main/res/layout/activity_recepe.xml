@@ -207,23 +207,24 @@
                     android:text="@string/Add"
                     android:textAllCaps="false"
                     android:textColor="#2B2B2B"
+                    android:layoutDirection="ltr"
+                    app:cornerRadius="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/editText"
-                    android:layout_marginRight="90dp"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/delButton"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="35dp"
-                    android:layout_height="54dp"
-                    android:supportsRtl="false"
+<!--                <Button-->
+<!--                    android:id="@+id/delButton"-->
+<!--                    style="@style/Widget.AppCompat.Button"-->
+<!--                    android:layout_width="35dp"-->
+<!--                    android:layout_height="54dp"-->
+<!--                    android:supportsRtl="false"-->
 
-                    android:background="@drawable/ic_baseline_delete_24"
-                    app:layout_constraintStart_toEndOf="@+id/button"
-                    app:backgroundTint="#F5D472"
-                    tools:ignore="MissingConstraints"></Button>
+<!--                    android:background="@drawable/ic_baseline_delete_24"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/button"-->
+<!--                    app:backgroundTint="#F5D472"-->
+<!--                    tools:ignore="MissingConstraints"></Button>-->
 
 
 
@@ -240,7 +241,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:id="@+id/commentRec"
-                    android:background="#f4f4f4">
+                    >
 
                 </androidx.recyclerview.widget.RecyclerView>
             </androidx.core.widget.NestedScrollView>

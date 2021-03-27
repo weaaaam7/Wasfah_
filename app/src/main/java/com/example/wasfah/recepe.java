@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,7 +106,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
         translateBtn=(TextView) findViewById(R.id.translateBtn);
-        deleteComment=(Button)findViewById(R.id.delButton);;
+       // deleteComment=(Button)findViewById(R.id.delButton);;
         Ingred_label=(TextView) findViewById(R.id.Ingred_label);
         Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
@@ -147,14 +149,14 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 //        else{
 //            deleteComment.setVisibility(View.INVISIBLE);
 //        }
-        deleteComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseReference dComment = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId).child("comment");
-                dComment.removeValue();
-                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        deleteComment.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DatabaseReference dComment = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId).child("comment");
+//                dComment.removeValue();
+//                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         //Firebase
 
@@ -228,15 +230,16 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
-                String comment_content=comment.getText().toString();
-                String uid=user.getUid();
-                String uName=userName;
-                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                boolean isCommentedByUser= userName==uName;
-                Comment comment1= new Comment(comment_content,uid,uName,date,isCommentedByUser);
+                String timestamp=String.valueOf(System.currentTimeMillis());
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
+                HashMap<String,Object> hashmap=new HashMap<>();
+                hashmap.put("timestamp",timestamp);
+                hashmap.put("content",comment.getText().toString());
+                hashmap.put("uid",user.getUid());
+                hashmap.put("uname",userName);
+                hashmap.put("date",new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
 
-                commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                commentRef.child(timestamp).setValue(hashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         showMessage("comment Added");
@@ -390,7 +393,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
     }
 
-    private void initRvComment() {
+    public void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
        commentRef.addValueEventListener(new ValueEventListener() {
@@ -402,8 +405,26 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                    listComment.add(comment);
                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment);
+               adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+
                RvComment.setAdapter(adapter);
+
+
+               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+                   @Override
+                   public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                       return false;
+                   }
+
+                   @Override
+                   public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                     adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
+                     adapter.notifyDataSetChanged();
+                       Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
+                   }
+
+               }).attachToRecyclerView(RvComment);
+
 
            }
 
@@ -424,7 +445,6 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                     String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
                     Log.d("ddddds", "dddddd" + test);
                     List<String> items = Arrays.asList(test.split("\\s*#\\s*"));
-
                     title_tv.setText(items.get(0));
                     tv_category.setText(items.get(1));
                     Ingred_label.setText(items.get(2));

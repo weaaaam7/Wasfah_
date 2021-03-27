@@ -3,7 +3,7 @@ package com.example.wasfah;
 public class Comment {
 
     private String content,uid,uimg,uname;
-    private Object timestamp;
+    private String timestamp;
     private String date;
     private boolean isCommentedByUser;
     public Comment() {
@@ -17,11 +17,12 @@ public class Comment {
         this.date = date;
     }
 
-    public Comment(String content, String uid, String uname,String date, boolean isCommentedByUser) {
+    public Comment(String content, String uid, String uname,String date, boolean isCommentedByUser,String timestamp) {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
         this.date = date;
+        this.timestamp=timestamp;
         this.isCommentedByUser = isCommentedByUser;
     }
 
@@ -58,11 +59,11 @@ public class Comment {
         this.uname = uname;
     }
 
-    public Object getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Object timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
