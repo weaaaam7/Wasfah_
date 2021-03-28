@@ -64,6 +64,8 @@ public class Fav extends Fragment  {
 
     private FloatingActionButton filter;
     private RecyclerView rs;
+
+    private String finalUserID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -115,6 +117,12 @@ public class Fav extends Fragment  {
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("======>111", String.valueOf(dataSnapshot.child(userID)));
+
+                    String tempAfter = substringAfter(String.valueOf(dataSnapshot.child(userID)), "key =");
+                    String[] split = tempAfter.split(", value =");
+                    finalUserID = split[0];
+
                     currentUser=dataSnapshot.child(userID).child("name").getValue(String.class);
                     userDataSnap=dataSnapshot;
                     favRef.addValueEventListener(new ValueEventListener() {
@@ -265,7 +273,7 @@ public class Fav extends Fragment  {
             Log.d("======>1", getFavoriteKey);
             for (DataSnapshot snap : userSnapShot.getChildren()) {
                 Log.d("=====>2", snap.getKey().toString());
-                if (getFavoriteKey.contains(snap.getKey().toString())) {
+                if (getFavoriteKey.contains(snap.getKey().toString()) && finalUserID.contains(snap.getKey().toString())) {
 
                     String tempAfter = substringAfter(String.valueOf(snapshot.child(ds.getKey())), "key =");
                     String[] split = tempAfter.split(", value =");
