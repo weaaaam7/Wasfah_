@@ -142,7 +142,7 @@ public class editprofile extends AppCompatActivity {
         backProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), ProfileView.class));
+                finish();
             }
         });
 
