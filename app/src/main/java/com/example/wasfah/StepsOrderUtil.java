@@ -9,8 +9,12 @@ import java.util.List;
 
 public class StepsOrderUtil {
 
-    public static List<StepModel> removeFromSteps(List<StepModel> modelList, String id)
+    public static List<StepModel> removeFromSteps(List<StepModel> modelList, int id)
     {
+
+
+
+
         List<StepModel> temp = new ArrayList<>();
         if(modelList == null || modelList.size() <= 0)
         {
@@ -38,29 +42,23 @@ public class StepsOrderUtil {
             }
         }
         //assuming only one step is removed.
-        for(int i = 0; i < modelList.size(); i++)
-        {
+        for(int i = 0; i < modelList.size(); i++) {
             Object obj = modelList.get(i);
             StepModel step = null;
-            if(obj instanceof HashMap)
-            {
+            if (obj instanceof HashMap) {
                 step = StepModelConverter.getStepModel(modelList.get(i));
-            }
-            else
-            {
+            } else {
                 step = modelList.get(i);
             }
 
-            if(step.getOrder() < removedOrder)
-            {
+            if (step.getOrder() < removedOrder) {
                 temp.add(step);
-            }
-            else if(step.getOrder() > removedOrder)
-            {
+            } else if (step.getOrder() > removedOrder) {
                 step.setOrder(step.getOrder() - 1);
                 temp.add(step);
             }
         }
+
 
         return temp;
     }

@@ -2,20 +2,14 @@ package com.example.wasfah;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.wasfah.translation.TranslationViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,8 +25,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private FirebaseAuth mAuth;
     private String name;
     private FloatingActionButton publishFB;
-   // private TranslationViewModel translationViewModel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +32,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView BN = findViewById(R.id.bottomNavigationView);
         BN.setBackground(null);
-        if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("true")) {
-            setApplicationLocale("ar");
-        } else {
-            setApplicationLocale("en");
-        }
+
 
         //loading the default fragment
         loadFragment(new home());
-
-//        Log.d("dddddd", "dddddddddddd :");
-//        translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
-//        subscribeUsersObserver();
 
         //getting bottom navigation view and attaching the listener.
 
@@ -67,23 +51,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 startPublishRecipeActivity();
             }
         });
-
     }
 
-
-//    private void subscribeUsersObserver() {
-//        Log.d("dddddd", "ddddd :");
-//        translationViewModel.translateText("hello").observe(this, translationResponse -> {
-//                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-//                    Log.d("dddddd", "ddddd :" + test);
-//                }
-//        );
-//
-//        translationViewModel.translateText("hello");
-//
-//    }
-
-    private void startPublishRecipeActivity() {
+    private void startPublishRecipeActivity()
+    {
         Intent i = new Intent(this, PublishRecipeActivity.class);
         startActivity(i);
     }
@@ -132,17 +103,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
         return loadFragment(fragment);
-    }
-
-    public void setApplicationLocale(String locale) {
-        Resources resources = getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(new Locale(locale.toLowerCase()));
-        } else {
-            config.locale = new Locale(locale.toLowerCase());
-        }
-        resources.updateConfiguration(config, dm);
     }
 }

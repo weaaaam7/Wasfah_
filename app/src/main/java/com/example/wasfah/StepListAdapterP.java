@@ -98,10 +98,19 @@ public class StepListAdapterP extends ArrayAdapter<StepModel> {
     }
     private void removeItemFromDS(String modelId)
     {
-        List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
-        this.dataSource.clear();
-        this.dataSource.addAll(temp);
-        notifyDataSetChanged();
+        for(StepModel myModel : this.dataSource)
+        {
+            if(modelId.equals(myModel.getModelId()))
+            {
+                this.dataSource.remove(myModel);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+//        List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
+//        this.dataSource.clear();
+//        this.dataSource.addAll(temp);
+//        notifyDataSetChanged();
     }
 
     private void moveItemUp(String modelId)

@@ -36,14 +36,6 @@ public class LocaleHelper {
 //        finish();
 //        startActivity(refresh);
     }
-        public Context setLocale (Context context, String lang){
-            if (Pref.getValue(context, "language_checked", "false").equalsIgnoreCase("true")) {
-                return updateResources(context, "ar");
-            } else {
-                return updateResources(context, "en");
-            }
-        }
-
 
     private static String getPersistedData(Context context, String defaultLanguage) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

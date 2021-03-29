@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.example.wasfah.PublishRecipeActivity.MAX_INGR_ITEMS;
+
 public class EditRecipeActivity extends AppCompatActivity  {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
@@ -112,7 +114,6 @@ public class EditRecipeActivity extends AppCompatActivity  {
                     currentModelPic = recipeModel.getPicUri();
                     recipeModel.setCategory((String) vals.get("category"));
                     recipeModel.setCreatedBy((String) vals.get("createdBy"));
-                    recipeModel.setCurrentUserId((String)vals.get("currentUserId"));
                     recipeModel.setPreparationSteps((List<StepModel>) vals.get("preparationSteps"));
                     recipeModel.setIngredients((List<IngredientModel>) vals.get("ingredients"));
                     Picasso.get().load(recipeModel.getPicUri()).into(picture);
@@ -140,8 +141,8 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
         addIngrButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                addIngredientRow(v);
+            public void onClick(View view) {
+                addIngredientRow(view);
             }
         });
 
@@ -171,7 +172,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
@@ -220,8 +221,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void editRecipe() {
         RecipeModel model = getRecipe();
-        model.setCreatedBy(recipeModel.getCreatedBy());
-        model.setCurrentUserId(recipeModel.getCurrentUserId());
+        model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
         model.setTimestamp();
 
@@ -323,12 +323,10 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void setIngredientsListModel(List<IngredientModel> models)
     {
-        ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view_er);
-        IngredientsListAdapter adapter = new IngredientsListAdapter(this,
+        ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
+        IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
-        ingredientsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
+        ingredientsListView .setAdapter(adapter);
     }
 
     public void addStepRow(View view)
@@ -339,15 +337,15 @@ public class EditRecipeActivity extends AppCompatActivity  {
 
     private void addBlankIngredientToListView(IngredientModel model)
     {
-        if(this.ingredientsList.size()  > PublishRecipeActivity.MAX_INGR_ITEMS)
+        if(this.ingredientsList.size() >= MAX_INGR_ITEMS)
         {
-            String msg = "The maximum number for ingredients is = "
-                    + PublishRecipeActivity.MAX_INGR_ITEMS;
-            Toast.makeText(this,  msg, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "The maximum number for ingredient is " + MAX_INGR_ITEMS, Toast.LENGTH_LONG).show();
             return;
+        }else {
+            this.ingredientsList.remove(model);
         }
         this.ingredientsList.add(model);
-        this.setIngredientsListModel(this.ingredientsList);
+        this.setIngredientsListModel(ingredientsList);
     }
 
     private void setStepsListModel(List<StepModel> models)
@@ -363,7 +361,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private void addBlankStepToListView(StepModel model)
     {
         int order = StepsOrderUtil.getNextStepOrder(this.stepsList);
-        if (order > PublishRecipeActivity.MAX_STEPS_COUNT) {
+        if (order >= PublishRecipeActivity.MAX_STEPS_COUNT) {
             String msg = "The maximum number for steps is " + PublishRecipeActivity.MAX_STEPS_COUNT;
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             return;

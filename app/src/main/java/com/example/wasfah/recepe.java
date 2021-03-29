@@ -71,7 +71,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     boolean faved = false;
     DatabaseReference favList;
     String keySubscibed= "";
-
+    
 
 
     @Override
@@ -165,39 +165,39 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onClick(View view) {
                 faved = true;
-                favList.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (faved) {
-                            if (snapshot.child(recpieId).hasChild(uid)) {
-                                favList.child(recpieId).child(uid).removeValue();
-                                showMessage("Removed your favorite list");
-                                faved = false;
-                            } else {
-                                favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        showMessage("Added to your favorite list");
-                                        faved = false;
-                                        int category = 0;
-                                        sendPushNotification(category);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        showMessage("fail to add to your favorite list: " + e.getMessage());
-                                    }
-                                });
+                    favList.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (faved) {
+                                if (snapshot.child(recpieId).hasChild(uid)) {
+                                    favList.child(recpieId).child(uid).removeValue();
+                                    showMessage("Removed your favorite list");
+                                    faved = false;
+                                } else {
+                                    favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            showMessage("Added to your favorite list");
+                                            faved = false;
+                                            int category = 0;
+                                            sendPushNotification(category);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            showMessage("fail to add to your favorite list: " + e.getMessage());
+                                        }
+                                    });
 
-                                faved = false;
+                                    faved = false;
+                                }
                             }
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
 
             }
         });

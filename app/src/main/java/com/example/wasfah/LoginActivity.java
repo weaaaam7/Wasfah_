@@ -121,20 +121,21 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void startSignupActivity()
-    {
-        Intent i = new Intent(this, SignupActivity.class);
-        //no need to combe back to login
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-    }
+        public void startSignupActivity()
+        {
+            Intent i = new Intent(this, SignupActivity.class);
+            //no need to combe back to login
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
 
-    public void startPublishActivity()
-    {
-        Intent i = new Intent(this, MainActivity.class);
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-    }
+        public void startPublishActivity()
+        {
+            Intent i = new Intent(this, MainActivity.class);
+            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
 
     public void startResetActivity()
     {

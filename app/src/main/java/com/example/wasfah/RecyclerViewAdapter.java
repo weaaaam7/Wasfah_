@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -89,10 +90,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 inten.putExtra("steps", (Serializable) mData.get(position).getSteps());
                 inten.putExtra("img",mData.get(position).getImg());
                 inten.putExtra("userName",currentUser);
+                inten.putExtra("userMName",mData.get(position).getName());
+                inten.putExtra("userMEmail",mData.get(position).getEmail());
                 inten.putExtra("publishedByUser",mData.get(position).isPublishedByUser());
                 inten.putExtra("recipeId",mData.get(position).getRecipeId());
                 inten.putExtra("timestamp",mData.get(position).getTimestamp());
                 inten.putExtra("isProfile",mData.get(position).isProfile());
+                inten.putExtra("owner",mData.get(position).getCurrentUserId());
                 mcontext.startActivity(inten);
 
             }

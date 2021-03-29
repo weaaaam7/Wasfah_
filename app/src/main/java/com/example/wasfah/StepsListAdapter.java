@@ -30,7 +30,7 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
     private Context context;
     private int itemPosition;
-    private List<StepModel> dataSource;
+    private final List<StepModel> dataSource;
 
     public StepsListAdapter(@NonNull Context context, int resource, @NonNull List<StepModel> objects) {
         super(context, resource, objects);
@@ -47,18 +47,23 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
         }
         this.itemPosition = position;
+        int orderno =  this.itemPosition+1;
         StepModel model = this.getStepModel(position);
 
         if(model!=null)
         {
             TextView orderTextView = (TextView) convertView.findViewById(R.id.step_order_tv);
-            orderTextView.setText(model.getOrder() + "");
             EditText descEditText = (EditText) convertView.findViewById(R.id.step_desc_et);
+
+            orderTextView.setText(""+orderno);
             descEditText.setText(model.getDescription());
+
+
+
             descEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    model.setDescription(s.toString());
+//                    model.setDescription(s.toString());
                 }
 
                 @Override
@@ -68,15 +73,23 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    StepModel model = getStepModel(itemPosition);
                     model.setDescription(s.toString());
+
+
+
+
+
+
                 }
             });
+
 
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.image_remove_step);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    removeItemFromDS(model.getModelId());
+                    removeItemFromDS(itemPosition);
                 }
             });
 
@@ -117,12 +130,14 @@ public class StepsListAdapter extends ArrayAdapter<StepModel>  {
 
         return  model;
     }
-    private void removeItemFromDS(String modelId)
+    private void removeItemFromDS(int modelId)
     {
+
         List<StepModel> temp = StepsOrderUtil.removeFromSteps(this.dataSource,modelId);
         this.dataSource.clear();
         this.dataSource.addAll(temp);
         notifyDataSetChanged();
+
     }
 
     private void moveItemUp(String modelId)

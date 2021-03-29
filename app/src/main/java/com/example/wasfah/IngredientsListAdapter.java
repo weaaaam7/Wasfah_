@@ -60,6 +60,7 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    IngredientModel model = getItem(itemPosition);
 
                     model.setName(s.toString());
                 }
@@ -80,7 +81,7 @@ public class IngredientsListAdapter extends ArrayAdapter<IngredientModel>  {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    //IngredientModel model = getItem(itemPosition);
+                    IngredientModel model = getItem(itemPosition);
                     try {
                         model.setQuantity(Double.parseDouble(s.toString()));
                     }catch(Exception ex)

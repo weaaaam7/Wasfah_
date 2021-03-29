@@ -100,7 +100,7 @@
             </LinearLayout>
 
             <ListView
-                android:id="@+id/ingredients_list_view"
+                android:id="@+id/ingredients_list_"
                 android:layout_width="match_parent" android:background="@drawable/border_grey"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
