@@ -60,6 +60,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private FirebaseUser user;
     private FirebaseDatabase db;
     RecyclerView RvComment;
+    String tilte;
     commentAdapter adapter;
     List<Comment> listComment;
     String recpieId;
@@ -82,7 +83,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
-        String tilte = intent.getExtras().getString("title");
+        tilte = intent.getExtras().getString("title");
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
@@ -179,8 +180,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                                     public void onSuccess(Void aVoid) {
                                         showMessage("Added to your favorite list");
                                         faved = false;
-                                        int category = 0;
-                                        sendPushNotification(category);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -263,15 +262,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void sendPushNotification(int category) {
         // 0== liked,1 Commented
         String keyWord = keySubscibed;
-        if (category ==0){
-            keyWord ="You got a new Like";
 
-            processPush(keyWord,"We wanted to let you know that Someone liked your Recipe");
-
-        }else {
-            keyWord ="You got a new Comment";
-            processPush(keyWord,"We wanted to let you know that Someone commented on your Recipe");
-        }
+            keyWord ="New Comment";
+            processPush(keyWord,tilte + " Got a new comment");
 
 
     }
@@ -324,12 +317,12 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         return super.onOptionsItemSelected(item);
     }
 
-    private void processPush(String keyWord, String msg) {
+    private void processPush(String keyWord, String new_like) {
         String owner = getIntent().getExtras().getString("owner");
         Log.d("OWNER", "processPush: "+owner);
-        Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
 
-        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,msg,"");
+        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,new_like,"");
 
         Call<NotificationResponse> call = apiInterface.sendNotification(body);
         call.enqueue(new Callback<NotificationResponse>() {
@@ -338,10 +331,10 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 if (response.isSuccessful()){
                     NotificationResponse res = response.body();
 
-                    Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+                }else {
+                    //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -349,7 +342,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onFailure(Call<NotificationResponse> call, Throwable t) {
                 call.cancel();
-                Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
             }
         });

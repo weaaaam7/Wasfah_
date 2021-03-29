@@ -26,6 +26,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,8 +41,8 @@ import java.util.regex.Pattern;
 public class PublishRecipeActivity extends AppCompatActivity {
 
     public static final int GALLERY_ACT_REQ_CODE = 2;
-    public static final int MAX_INGR_ITEMS =  10;
-    public static final int MAX_STEPS_COUNT = 10;
+    public static final int MAX_INGR_ITEMS =  15;
+    public static final int MAX_STEPS_COUNT = 20;
 
     private Button publishButton;
     private static DatabaseReference db = FirebaseDatabase.getInstance("https://wasfah-126bf-default-rtdb.firebaseio.com").getReference().child("Recipes");
@@ -132,7 +134,6 @@ public class PublishRecipeActivity extends AppCompatActivity {
         ListView ingredientsListView = (ListView) findViewById(R.id.ingredients_list_view);
         IngredientListAdapterP adapter = new IngredientListAdapterP(this,
                 R.layout.row_add, models);
-
         ingredientsListView .setAdapter(adapter);
     }
     public void addIngredientRow(View view)
@@ -222,9 +223,13 @@ public class PublishRecipeActivity extends AppCompatActivity {
 
     public void publishRecipe()
     {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userID = user.getUid();
+        AuthenticationManager.CURRENT_USER_EMAIL = user.getEmail();
         RecipeModel model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
+        model.setCurrentUserId(userID);
         model.setTimestamp();
         if(this.validateModel(model)) {
             db.child(model.getRecipeId()).setValue(model)
