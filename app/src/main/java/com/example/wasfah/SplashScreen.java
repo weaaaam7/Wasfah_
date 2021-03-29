@@ -61,6 +61,7 @@ public class SplashScreen extends AppCompatActivity {
             getToken();
             subscribeToTopic1();
         }
+//        subscribeToTopic2();
 
         //Animation
         topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animation);
@@ -111,10 +112,19 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("USER", "onComplete: "+mAuth.getCurrentUser().getUid());
-               // Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
 
             }
         });
     }
+//    private void subscribeToTopic2(){
+//        FirebaseMessaging.getInstance().subscribeToTopic("comments").addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+//    }
 }
 
