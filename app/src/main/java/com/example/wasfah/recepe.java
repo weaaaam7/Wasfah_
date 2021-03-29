@@ -259,12 +259,20 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     }
 
+
+
     private void sendPushNotification(int category) {
         // 0== liked,1 Commented
         String keyWord = keySubscibed;
+        if (category ==0){
+            keyWord ="New Like";
 
+            processPush(keyWord,"We wanted to let you know that Someone liked your Recipe !!!");
+
+        }else {
             keyWord ="New Comment";
-            processPush(keyWord,tilte + " Got a new comment");
+            processPush(keyWord,"We wanted to let you know that Someone commented on your Recipe");
+        }
 
 
     }
