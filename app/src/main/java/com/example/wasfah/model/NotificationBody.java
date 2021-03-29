@@ -2,7 +2,7 @@ package com.example.wasfah.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-//json to pojo model
+
 public class NotificationBody {
 
 @SerializedName("myKey")
