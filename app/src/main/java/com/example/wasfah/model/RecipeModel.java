@@ -19,10 +19,20 @@ public class RecipeModel {
     private String createdBy;
     private String picUri;
     private String timestamp;
+    private String currentUserId;
+
 
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
+
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(String currentUserId) {
+        this.currentUserId = userID;
+    }
 
     public String getTimestamp() {
         return timestamp;
