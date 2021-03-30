@@ -3,6 +3,7 @@ package com.example.wasfah;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,6 +43,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 private TranslationViewModel translationViewModel;
@@ -70,6 +74,7 @@ private TranslationViewModel translationViewModel;
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
+    private String deletedComment= null;
 
 
 
@@ -410,7 +415,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                RvComment.setAdapter(adapter);
 
 
-               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
                    @Override
                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                        return false;
@@ -423,6 +428,16 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                        Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
                    }
 
+                   @Override
+                   public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                       new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                               .addBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red))
+                               .addActionIcon(R.drawable.ic_baseline_delete_24)
+                               .create()
+                               .decorate();
+
+                       super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                   }
                }).attachToRecyclerView(RvComment);
 
 

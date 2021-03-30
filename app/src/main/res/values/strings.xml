@@ -56,9 +56,11 @@
 
     <string name="publish_recipe">Publish recipe</string>
     <string name="publish">Publish</string>
-    <string name="Editـprofile">Edit profile</string>
+    <string name="Edit_profile">Edit profile</string>
     <string name="logout">Logout</string>
     <string name="title">Title</string>
+    <string name="Step">Step</string>
+    <string name="Ingredient">Ingredient</string>
 
     <string name="Editـrecipe">Edit Recipe</string>
     <string name="delete_recipe">Delete Recipe</string>

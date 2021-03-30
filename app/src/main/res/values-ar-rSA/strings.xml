@@ -31,9 +31,11 @@
 
     <string name="publish_recipe">نشر وصفة</string>
     <string name="publish">نشر</string>
-    <string name="Editـprofile">تعديل الصفحة الشخصية</string>
-    <string name="logout">خروج</string>
+    <string name="Edit_profile">تعديل الصفحة الشخصية</string>
+    <string name="logout">تسجيل الخروج</string>
     <string name="title">عنوان الوصفة</string>
+    <string name="Step">خطوة</string>
+    <string name="Ingredient">مكون</string>
 
     <string name="Editـrecipe">تعديل الوصفة</string>
     <string name="delete_recipe">حذف الوصفة</string>
@@ -41,5 +43,6 @@
 
     <string name="my_fav">مفضلتي</string>
     <string name="no_recipe">لا توجد وصفات</string>
+    <string name="delete_comment">حذف التعليق</string>
 
 </resources>

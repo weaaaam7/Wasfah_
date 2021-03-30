@@ -25,7 +25,7 @@
         android:layout_height="50dp"
         android:layout_weight="6.8"
         android:ems="10"
-        android:hint="Step"
+        android:hint="@string/Step"
         android:paddingVertical="10dp"
         android:inputType="textMultiLine"/>
     <ImageButton

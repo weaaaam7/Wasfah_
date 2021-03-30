@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:paddingRight="10dp"
                 android:switchPadding="13sp"
-                android:text="ع"
+                android:text="عربي"
                 android:thumb="@drawable/thumb"
                 android:track="@drawable/thumb_track" />
 
