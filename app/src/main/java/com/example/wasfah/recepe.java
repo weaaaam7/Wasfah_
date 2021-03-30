@@ -65,6 +65,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     String recpieId;
     boolean publishedByUser=true;
     APIInterface apiInterface;
+    String t;
 
     // favorite list
     private Button fav_r;
@@ -83,6 +84,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
         String tilte = intent.getExtras().getString("title");
+        t = tilte;
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
@@ -130,7 +132,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         });
 
@@ -261,18 +263,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     }
 
     private void sendPushNotification(int category) {
-        // 0== liked,1 Commented
-        String keyWord = keySubscibed;
-        if (category ==0){
-            keyWord ="You got a new Like";
 
-            processPush(keyWord,"We wanted to let you know that Someone liked your Recipe !!!");
-
-        }else {
-            keyWord ="You got a new Comment";
-            processPush(keyWord,"We wanted to let you know that Someone commented on your Recipe");
-        }
-
+            String keyWord ="New Comment";
+            processPush(keyWord,"" + t + " got a new comment");
 
     }
 
@@ -327,9 +320,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void processPush(String keyWord, String new_like) {
         String owner = getIntent().getExtras().getString("owner");
         Log.d("OWNER", "processPush: "+owner);
-        Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
 
-        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,new_like,"https://cdn1.iconfinder.com/data/icons/twitter-ui-glyph/48/Sed-23-512.png");
+        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,new_like,"");
 
         Call<NotificationResponse> call = apiInterface.sendNotification(body);
         call.enqueue(new Callback<NotificationResponse>() {
@@ -338,10 +331,10 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 if (response.isSuccessful()){
                     NotificationResponse res = response.body();
 
-                    Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }else {
-                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -349,7 +342,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onFailure(Call<NotificationResponse> call, Throwable t) {
                 call.cancel();
-                Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
             }
         });
