@@ -114,22 +114,24 @@ public class editprofile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                email=dataSnapshot.child("email").getValue().toString();
-                name=dataSnapshot.child("name").getValue().toString();
-                password=dataSnapshot.child("password").getValue().toString();
+                if (dataSnapshot.exists()) {
 
+                    email = dataSnapshot.child("email").getValue(String.class);
+                    name = dataSnapshot.child("name").getValue(String.class);
+                    password = dataSnapshot.child("password").getValue(String.class);
 
-                String[] parts = name.split(" ");
-                String part1 = parts[0];
-                String part2 = parts[1];
+                    String[] parts = name.split(" ");
+                    String part1 = parts[0];
+                    String part2 = parts[1];
 
-
-                profileEmail.setText(email);
-                profileFirstName.setText(part1);
-                profileLastName.setText(part2);
-                profilePassword.setText(password);
-                profileConfirmPass.setText(password);
-
+                    profileEmail.setText(email);
+                    profileFirstName.setText(part1);
+                    profileLastName.setText(part2);
+                    profilePassword.setText(password);
+                    profileConfirmPass.setText(password);
+                } else {
+                    startActivity(new Intent(editprofile.this, LoginActivity.class));
+                }
 
             }
 
@@ -207,7 +209,6 @@ public class editprofile extends AppCompatActivity {
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(editprofile.this, "Your Account had been deleted Successfully,", Toast.LENGTH_LONG).show();
                                                     user.delete()
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
@@ -216,7 +217,6 @@ public class editprofile extends AppCompatActivity {
                                                                         reference.removeValue();
                                                                         Log.d("TAG", "User account deleted.");
                                                                         startActivity(new Intent(editprofile.this, LoginActivity.class));
-
                                                                     }
                                                                 }
                                                             });
