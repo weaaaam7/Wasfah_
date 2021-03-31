@@ -1,5 +1,7 @@
 package com.example.wasfah.model;
 
+import android.os.Parcel;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -17,9 +19,15 @@ public class RecipeModel {
     private List<IngredientModel> ingredients;
     private List<StepModel> preparationSteps;
     private String createdBy;
+    //like
+    private long likes;
+    private long dislikes;
     private String picUri;
     private String timestamp;
-    private String currentUserId;
+    private String img;
+    private List<Steps> steps;
+    private boolean isPublishedByUser;
+    private boolean isProfile;
 
 
 
@@ -36,7 +44,6 @@ public class RecipeModel {
 
     public void setCurrentUserId(String currentUserId) {
         this.currentUserId = currentUserId;
-<<<<<<< HEAD
     }
 
     protected RecipeModel(Parcel in) {
@@ -53,8 +60,6 @@ public class RecipeModel {
         isProfile = in.readByte() != 0;
         user = in.readParcelable(FirebaseUser.class.getClassLoader());
         userID = in.readString();
-=======
->>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
     }
 
     public String getTimestamp() {
@@ -125,11 +130,93 @@ public class RecipeModel {
     public void setPicUri(String picUri) {
         this.picUri = picUri;
     }
-<<<<<<< HEAD
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public FirebaseUser getUser() {
+        return user;
+    }
+
+    public void setUser(FirebaseUser user) {
+        this.user = user;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public long getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(long dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public boolean isPublishedByUser() {
+        return isPublishedByUser;
+    }
+
+    public void setPublishedByUser(boolean publishedByUser) {
+        isPublishedByUser = publishedByUser;
+    }
+
+    public List<Steps> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Steps> steps) {
+        this.steps = steps;
+    }
+
+    public boolean isProfile() {
+        return isProfile;
+    }
+
+    public void setProfile(boolean profile) {
+        isProfile = profile;
+    }
+
+    public RecipeModel(String recipeId, String title, String category, List<IngredientModel> ingredients, List<StepModel> preparationSteps, String createdBy, long likes, long dislikes, String picUri, String timestamp, String img, List<Steps> steps, boolean isPublishedByUser, boolean isProfile, FirebaseUser user, String userID) {
+        this.recipeId = recipeId;
+        this.title = title;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.preparationSteps = preparationSteps;
+        this.createdBy = createdBy;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.picUri = picUri;
+        this.timestamp = timestamp;
+        this.img = img;
+        this.steps = steps;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
+        this.user = user;
+        this.userID = userID;
+    }
 
 
 }
-=======
-}
-
->>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
