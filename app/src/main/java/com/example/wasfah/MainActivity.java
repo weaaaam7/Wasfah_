@@ -39,6 +39,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BN.setBackground(null);
         if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("true")) {
             setApplicationLocale("ar");
+//            Intent i = new Intent(this, MainActivity.class);
+//            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(i);
+
         } else {
             setApplicationLocale("en");
         }
