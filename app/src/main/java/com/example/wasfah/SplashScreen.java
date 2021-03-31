@@ -112,7 +112,7 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("USER", "onComplete: "+mAuth.getCurrentUser().getUid());
-                Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SplashScreen.this, "Subscribed successfully", Toast.LENGTH_SHORT).show();
 
             }
         });
