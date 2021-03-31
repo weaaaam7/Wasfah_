@@ -235,13 +235,16 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
-                String comment_content=comment.getText().toString();
-                String uName=userName;
-                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                Comment comment1= new Comment(comment_content,uid,uName,date);
+                String timestamp=String.valueOf(System.currentTimeMillis());
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
+                HashMap<String,Object> hashmap=new HashMap<>();
+                hashmap.put("timestamp",timestamp);
+                hashmap.put("content",comment.getText().toString());
+                hashmap.put("uid",user.getUid());
+                hashmap.put("uname",userName);
+                hashmap.put("date",new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
 
-                commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                commentRef.child(timestamp).setValue(hashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         showMessage("comment Added");
@@ -458,7 +461,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                     listComment.add(comment);
                 }
 
-                adapter = new commentAdapter(getApplicationContext(),listComment);
+                adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
                 RvComment.setAdapter(adapter);
             }
 
