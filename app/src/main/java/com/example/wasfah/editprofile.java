@@ -207,6 +207,7 @@ public class editprofile extends AppCompatActivity {
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
+                                                    Toast.makeText(editprofile.this, "Your Account had been deleted Successfully,", Toast.LENGTH_LONG).show();
                                                     user.delete()
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
@@ -215,7 +216,6 @@ public class editprofile extends AppCompatActivity {
                                                                         reference.removeValue();
                                                                         Log.d("TAG", "User account deleted.");
                                                                         startActivity(new Intent(editprofile.this, LoginActivity.class));
-                                                                        Toast.makeText(editprofile.this, "Your Account had been deleted Successfully,", Toast.LENGTH_LONG).show();
 
                                                                     }
                                                                 }
