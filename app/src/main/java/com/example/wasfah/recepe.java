@@ -235,16 +235,13 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             @Override
             public void onClick(View view) {
                 addComment.setVisibility(View.INVISIBLE);
-                String timestamp=String.valueOf(System.currentTimeMillis());
-                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-                HashMap<String,Object> hashmap=new HashMap<>();
-                hashmap.put("timestamp",timestamp);
-                hashmap.put("content",comment.getText().toString());
-                hashmap.put("uid",user.getUid());
-                hashmap.put("uname",userName);
-                hashmap.put("date",new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment").push();
+                String comment_content=comment.getText().toString();
+                String uName=userName;
+                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                Comment comment1= new Comment(comment_content,uid,uName,date);
 
-                commentRef.child(timestamp).setValue(hashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                commentRef.setValue(comment1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         showMessage("comment Added");
@@ -291,6 +288,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_steps.setText(str);
 
     }
+<<<<<<< HEAD
 
     private void sendPushNotification(int category) {
 
@@ -334,6 +332,61 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                                 dialogInterface.cancel();
                             }
                         });
+=======
+
+    private void sendPushNotification(int category) {
+
+        String keyWord ="New Comment";
+        processPush(keyWord,"" + t + " got a new comment");
+>>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
+
+    }
+
+<<<<<<< HEAD
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+=======
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.edit:
+                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
+                startActivity(intent);
+                return true;
+>>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
+
+                return true;
+
+<<<<<<< HEAD
+=======
+            case R.id.delete:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete recipe?")
+                        .setCancelable(false)
+
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
+                                dRec.removeValue();
+                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        })
+
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
 
 
                 AlertDialog alertDialog = builder.create();
@@ -343,6 +396,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
                 return true;
 
+>>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
         }
         return super.onOptionsItemSelected(item);
     }
@@ -461,7 +515,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                     listComment.add(comment);
                 }
 
+<<<<<<< HEAD
                 adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+=======
+                adapter = new commentAdapter(getApplicationContext(),listComment);
+>>>>>>> 19a7570bd3a1c3dd635c6fe4feaf81c1ab6cf472
                 RvComment.setAdapter(adapter);
             }
 
