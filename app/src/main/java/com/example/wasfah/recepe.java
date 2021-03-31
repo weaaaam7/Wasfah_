@@ -16,10 +16,13 @@ import android.widget.Toast;
 
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
+import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.services.APIClient_N;
 import com.example.wasfah.services.APIInterface;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,6 +76,10 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     boolean faved = false;
     DatabaseReference favList;
     String keySubscibed= "";
+
+    // Notification
+    String owner;
+    RecipeModel recipeModel;
     
 
 
@@ -204,6 +212,25 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             }
         });
 
+        // Notifications
+
+        db.getReference("Recipes").child(recpieId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    HashMap vals = (HashMap) task.getResult().getValue();
+                    recipeModel = new RecipeModel();
+                    recipeModel.setCurrentUserId((String)vals.get("currentUserId"));
+                    owner = recipeModel.getCurrentUserId();
+
+                }
+            }
+        });
+
+
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -318,7 +345,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     }
 
     private void processPush(String keyWord, String new_like) {
-        String owner = getIntent().getExtras().getString("owner");
+        //String owner = getIntent().getExtras().getString("owner");
         Log.d("OWNER", "processPush: "+owner);
         //Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
 
