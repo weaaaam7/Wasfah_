@@ -3,7 +3,6 @@ package com.example.wasfah;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -116,7 +115,7 @@ recipieList=new ArrayList<>();
                     else {
                         rs.setVisibility(View.GONE);
                         TextView tv_noRecipe=(TextView) RootView.findViewById(R.id.tv_noRecipe);
-                        tv_noRecipe.setVisibility(View.VISIBLE);
+
 
 
                     }

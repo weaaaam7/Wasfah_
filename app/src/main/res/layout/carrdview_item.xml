@@ -7,7 +7,7 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
 
-    >
+    android:focusable="true">
 
     <androidx.cardview.widget.CardView
         android:layout_width="120dp"
@@ -98,18 +98,34 @@
 
                     android:text="dd/mm/yyyy" />
 
-              <!--  <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="12dp">
+                <TextView
+                    android:id="@+id/likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
 
+                    />
                     <ImageView
                         android:id="@+id/img_like"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_like" />
+                <TextView
+                    android:id="@+id/dislikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+
+                     />
+
 
                     <ImageView
                         android:id="@+id/img_dislike"
@@ -117,7 +133,8 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_dislike" />
 
-                </LinearLayout>-->
+
+                </LinearLayout>
             </LinearLayout>
 
 

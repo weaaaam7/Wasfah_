@@ -20,21 +20,21 @@ public class RecipeInfo {
     private boolean isPublishedByUser;
     private boolean isProfile;
 
-    public RecipeInfo(String title, String category, String img, String email, List<IngredientModel> ingredients, List<Steps> steps, String recipeId, String timestamp, long likes, long dislikes, String name, boolean isPublishedByUser, boolean isProfile) {
-        this.title = title;
-        this.category = category;
-        this.img = img;
-        this.email = email;
-        this.ingredients = ingredients;
-        this.steps = steps;
-        this.recipeId = recipeId;
-        this.timestamp = timestamp;
-        this.likes = likes;
-        this.dislikes = dislikes;
-        this.name = name;
-        this.isPublishedByUser = isPublishedByUser;
-        this.isProfile = isProfile;
-    }
+//    public RecipeInfo(String title, String category, String img, String email, List<IngredientModel> ingredients, List<Steps> steps, String recipeId, String timestamp, long likes, long dislikes, String name, boolean isPublishedByUser, boolean isProfile) {
+//        this.title = title;
+//        this.category = category;
+//        this.img = img;
+//        this.email = email;
+//        this.ingredients = ingredients;
+//        this.steps = steps;
+//        this.recipeId = recipeId;
+//        this.timestamp = timestamp;
+//        this.likes = likes;
+//        this.dislikes = dislikes;
+//        this.name = name;
+//        this.isPublishedByUser = isPublishedByUser;
+//        this.isProfile = isProfile;
+//    }
 
     public boolean isProfile() {
         return isProfile;
@@ -77,7 +77,7 @@ public class RecipeInfo {
     }
 
     public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
-        this.title = title;
+     this.title = title;
         this.img = img;
         this.category = category;
         this.ingredients = ingredients;
@@ -86,10 +86,12 @@ public class RecipeInfo {
         this.timestamp = timestamp;
         this.isPublishedByUser = true;
         this.isProfile = true;
+        this.likes = likes;
+        this.dislikes = dislikes;
     }
 
-    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile) {
-        this.title = title;
+    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile, long likes, long dislikes) {
+    this.title = title;
         this.img = img;
         this.category = category;
         this.ingredients = ingredients;
@@ -99,6 +101,10 @@ public class RecipeInfo {
         this.name = name;
         this.isPublishedByUser = isPublishedByUser;
         this.isProfile = isProfile;
+        this.likes = likes;
+        this.dislikes = dislikes;
+
+
     }
 
 
@@ -158,7 +164,7 @@ public class RecipeInfo {
         return likes;
     }
 
-    public void setLikes(long likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 

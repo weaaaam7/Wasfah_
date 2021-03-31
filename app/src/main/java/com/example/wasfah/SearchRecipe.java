@@ -2,11 +2,11 @@ package com.example.wasfah;
 
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +33,7 @@ public class SearchRecipe extends AppCompatActivity {
     RecyclerView recview;
     MyAdapter2 adapter;
     SearchView searchView;
+    TextView textView7;
     ImageView search;
     ImageView backSearch;
     private static String TAG = "SearchRecipe";
@@ -46,6 +47,8 @@ public class SearchRecipe extends AppCompatActivity {
     private ArrayList<RecipeModel> recipeModels = new ArrayList<>();
     @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +61,9 @@ public class SearchRecipe extends AppCompatActivity {
 //        mLayoutManager.setReverseLayout(true);
 
         recview.setLayoutManager(mLayoutManager);
-        searchView = findViewById(R.id.fileName);
+//        searchView = findViewById(R.id.fileName);
         backSearch = findViewById(R.id.back);
+
 
         adapter = new MyAdapter2(getApplicationContext());
         recview.setAdapter(adapter);
@@ -106,7 +110,7 @@ public class SearchRecipe extends AppCompatActivity {
             }
         });
 
-        backSearch.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), MainActivity.class)));
+        backSearch.setOnClickListener(view -> super.onBackPressed());
 
     }
 
@@ -154,7 +158,7 @@ public class SearchRecipe extends AppCompatActivity {
 
     private void allData() {
         FirebaseDatabase.getInstance().getReference()
-                .child("Recipes").orderByChild("likes").limitToFirst(10).addValueEventListener(new ValueEventListener() {
+                .child("Recipes").orderByChild("likes").limitToFirst(15).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 

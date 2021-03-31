@@ -4,27 +4,23 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.wasfah.Ingredients;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wasfah.Pref;
 import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
 import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.home;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -162,7 +158,7 @@ public class JapaneseFragment extends Fragment {
                 else {
                     isPublishedByUser=false;
                 }
-                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false);
+                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false,ds.child("likes").getValue(Long.class),ds.child("dislikes").getValue(Long.class));
                 recipieList.add(recipe);
 
             }

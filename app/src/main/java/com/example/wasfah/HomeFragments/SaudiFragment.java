@@ -4,27 +4,23 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.wasfah.Ingredients;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wasfah.Pref;
 import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
 import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.home;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -157,6 +153,8 @@ public class SaudiFragment extends Fragment {
             if (Category != null &&Category.equalsIgnoreCase("Saudi")) {
                 List<IngredientModel> ingredients=new ArrayList<>();
                 List<Steps> steps=new ArrayList<>();
+                Long likes = ds.child("likes").getValue(Long.class);
+                Long dislikes = ds.child("dislikes").getValue(Long.class);
                 for (DataSnapshot ds2: ds.child("ingredients").getChildren())
                 {
                     IngredientModel ingredients1=new IngredientModel(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
@@ -176,7 +174,21 @@ public class SaudiFragment extends Fragment {
                 else {
                     isPublishedByUser=false;
                 }
-                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false);
+                if (likes!=null  )
+                {
+                    likes = ds.child("likes").getValue(Long.class);
+                }
+                else {
+                    likes = Long.valueOf(0);
+                }
+                if (dislikes!=null  )
+                {
+                    dislikes = ds.child("dislikes").getValue(Long.class);
+                }
+                else {
+                    dislikes = Long.valueOf(0);
+                }
+                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false,likes,dislikes);
                 recipieList.add(recipe);
 
             }

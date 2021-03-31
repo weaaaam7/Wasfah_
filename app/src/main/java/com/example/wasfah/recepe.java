@@ -37,12 +37,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView title_tv;
@@ -112,12 +106,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
 
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
+        back.setOnClickListener(view -> finish());
 
         //Firebase
 
