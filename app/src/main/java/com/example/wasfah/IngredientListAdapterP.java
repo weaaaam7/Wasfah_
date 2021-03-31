@@ -44,7 +44,10 @@ public class IngredientListAdapterP extends ArrayAdapter<IngredientModel> {
         if(model!=null)
         {
             EditText nameView = (EditText) convertView.findViewById(R.id.ingredient_name_lv);
+            EditText qtyView = (EditText) convertView.findViewById(R.id.ingredient_qty_lv);
+
             nameView.setText(model.getName());
+            qtyView.setText(""+model.getQuantity());
             nameView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -63,12 +66,10 @@ public class IngredientListAdapterP extends ArrayAdapter<IngredientModel> {
                 }
             });
 
-            EditText qtyView = (EditText) convertView.findViewById(R.id.ingredient_qty_lv);
-            qtyView.setText(model.getQuantity() + "");
+
             qtyView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 }
 
                 @Override
@@ -78,13 +79,8 @@ public class IngredientListAdapterP extends ArrayAdapter<IngredientModel> {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    //IngredientModel model = getItem(itemPosition);
-                    try {
-                        model.setQuantity(Double.parseDouble(s.toString()));
-                    }catch(Exception ex)
-                    {
-                        model.setQuantity(0);
-                    }
+                    IngredientModel model = getItem(itemPosition);
+                    model.setQuantity(Double.parseDouble(s.toString()));
                 }
             });
 

@@ -2,18 +2,25 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.wasfah.model.RecipeModel;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.bumptech.glide.Glide;
 import com.example.wasfah.model.Like;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,27 +30,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    private String TAG = "RecyclerViewAdapter";
-    private Context mcontext;
-    private List<RecipeInfo> mData;
-    private String name;
-    private String currentUser;
-    private String recipeId;
-    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference recipeRef = database.getReference("Recipes");
+     private Context mcontext;
+     private List<RecipeInfo> mData;
+     private String name;
+     private String currentUser;
+     private String recipeId;
+     private Button mLikeButton;
 
-    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData, String currentUser) {
+    public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String currentUser) {
         this.mcontext = mcontext;
         this.mData = mData;
-        this.currentUser = currentUser;
+        this.currentUser=currentUser;
     }
 
     public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData) {
@@ -57,7 +62,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mcontext);
-        view = mInflater.inflate(R.layout.carrdview_item, parent, false);
+        view=mInflater.inflate(R.layout.carrdview_item,parent,false);
 
 
         return new MyViewHolder(view);
@@ -66,10 +71,12 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        if (mData.get(position).isProfile()) {
-            holder.profile.setVisibility(View.VISIBLE);
-            holder.category.setVisibility(View.GONE);
-        } else {
+        if (mData.get(position).isProfile())
+        {
+           holder.profile.setVisibility(View.VISIBLE);
+           holder.category.setVisibility(View.GONE);
+        }
+        else {
 
             holder.profile.setVisibility(View.GONE);
             holder.category.setVisibility(View.VISIBLE);
@@ -87,18 +94,16 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
             @Override
             public void onClick(View view) {
                 Intent inten = new Intent(mcontext, recepe.class);
-                inten.putExtra("title", mData.get(position).getTitle());
-                inten.putExtra("category", mData.get(position).getCategory());
-                inten.putExtra("ingredients",( (  (Serializable) mData.get(position).getIngredients())));
+                inten.putExtra("title",mData.get(position).getTitle());
+                inten.putExtra("category",mData.get(position).getCategory());
+                inten.putExtra("ingredients", (Serializable) mData.get(position).getIngredients());
                 inten.putExtra("steps", (Serializable) mData.get(position).getSteps());
-                inten.putExtra("img", mData.get(position).getImg());
-                inten.putExtra("userName", currentUser);
-                inten.putExtra("publishedByUser", mData.get(position).isPublishedByUser());
-                inten.putExtra("recipeId", mData.get(position).getRecipeId());
-                inten.putExtra("timestamp", mData.get(position).getTimestamp());
-                inten.putExtra("isProfile", mData.get(position).isProfile());
-
-
+                inten.putExtra("img",mData.get(position).getImg());
+                inten.putExtra("userName",currentUser);
+                inten.putExtra("publishedByUser",mData.get(position).isPublishedByUser());
+                inten.putExtra("recipeId",mData.get(position).getRecipeId());
+                inten.putExtra("timestamp",mData.get(position).getTimestamp());
+                inten.putExtra("isProfile",mData.get(position).isProfile());
                 mcontext.startActivity(inten);
 
             }
@@ -287,7 +292,7 @@ public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends Recy
         return mData.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         ImageView like;
         ImageView dislike;

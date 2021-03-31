@@ -112,6 +112,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
                     currentModelPic = recipeModel.getPicUri();
                     recipeModel.setCategory((String) vals.get("category"));
                     recipeModel.setCreatedBy((String) vals.get("createdBy"));
+                    recipeModel.setCurrentUserId((String)vals.get("currentUserId"));
                     recipeModel.setPreparationSteps((List<StepModel>) vals.get("preparationSteps"));
                     recipeModel.setIngredients((List<IngredientModel>) vals.get("ingredients"));
                     Picasso.get().load(recipeModel.getPicUri()).into(picture);
@@ -170,7 +171,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         });
 
@@ -220,6 +221,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private void editRecipe() {
         RecipeModel model = getRecipe();
         model.setCreatedBy(recipeModel.getCreatedBy());
+        model.setCurrentUserId(recipeModel.getCurrentUserId());
         model.setPicUri(currentModelPic);
         model.setTimestamp();
 

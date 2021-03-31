@@ -1,7 +1,6 @@
 package com.example.wasfah;
 
-import com.example.wasfah.model.IngredientModel;
-
+import java.util.Comparator;
 import java.util.List;
 
 public class RecipeInfo {
@@ -10,31 +9,13 @@ public class RecipeInfo {
     private String category;
     private String img;
     private String email;
-    private List<IngredientModel> ingredients;
+    private List<Ingredients> ingredients;
     private List<Steps> steps;
     private String recipeId;
     private String timestamp;
-    private long likes;
-    private long dislikes;
     private String name;
     private boolean isPublishedByUser;
     private boolean isProfile;
-
-//    public RecipeInfo(String title, String category, String img, String email, List<IngredientModel> ingredients, List<Steps> steps, String recipeId, String timestamp, long likes, long dislikes, String name, boolean isPublishedByUser, boolean isProfile) {
-//        this.title = title;
-//        this.category = category;
-//        this.img = img;
-//        this.email = email;
-//        this.ingredients = ingredients;
-//        this.steps = steps;
-//        this.recipeId = recipeId;
-//        this.timestamp = timestamp;
-//        this.likes = likes;
-//        this.dislikes = dislikes;
-//        this.name = name;
-//        this.isPublishedByUser = isPublishedByUser;
-//        this.isProfile = isProfile;
-//    }
 
     public boolean isProfile() {
         return isProfile;
@@ -44,13 +25,9 @@ public class RecipeInfo {
         isProfile = profile;
     }
 
-    public void setPublishedByUser(boolean publishedByUser) {
-        isPublishedByUser = publishedByUser;
-    }
+    public void setPublishedByUser(boolean publishedByUser) { isPublishedByUser = publishedByUser; }
 
-    public boolean isPublishedByUser() {
-        return isPublishedByUser;
-    }
+    public boolean isPublishedByUser() { return isPublishedByUser; }
 
     public String getName() {
         return name;
@@ -76,8 +53,8 @@ public class RecipeInfo {
         this.email = email;
     }
 
-    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp) {
-     this.title = title;
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp) {
+        this.title = title;
         this.img = img;
         this.category = category;
         this.ingredients = ingredients;
@@ -90,8 +67,8 @@ public class RecipeInfo {
         this.dislikes = dislikes;
     }
 
-    public RecipeInfo(String title, String category, String img, List<IngredientModel>  ingredients,List<Steps> steps,String recipeId,String timestamp,String name,boolean isPublishedByUser,boolean isProfile, long likes, long dislikes) {
-    this.title = title;
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile) {
+        this.title = title;
         this.img = img;
         this.category = category;
         this.ingredients = ingredients;
@@ -128,11 +105,11 @@ public class RecipeInfo {
         this.steps = steps;
     }
 
-    public List<IngredientModel> getIngredients() {
+    public List<Ingredients> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<IngredientModel> ingredients) {
+    public void setIngredients(List<Ingredients> ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -167,6 +144,19 @@ public class RecipeInfo {
     public void setLikes(int likes) {
         this.likes = likes;
     }
+    public static Comparator<RecipeInfo> newest = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r2.getTimestamp().compareTo(r1.getTimestamp());
+        }
+    };
+
+    public static Comparator<RecipeInfo> alphabetically = new Comparator<RecipeInfo>() {
+        @Override
+        public int compare(RecipeInfo r1, RecipeInfo r2) {
+            return r1.getTitle().compareTo(r2.getTitle());
+        }
+    };
 
     public long getDislikes() {
         return dislikes;

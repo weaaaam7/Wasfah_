@@ -1,18 +1,11 @@
 package com.example.wasfah;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.firebase.database.ServerValue;
-
-import java.io.Serializable;
-
-public class Comment implements Serializable, Parcelable {
+public class Comment {
 
     private String content,uid,uimg,uname;
-    private Object timestamp;
+    private String timestamp;
     private String date;
-
+    private boolean isCommentedByUser;
     public Comment() {
     }
 
@@ -24,32 +17,15 @@ public class Comment implements Serializable, Parcelable {
         this.date = date;
     }
 
-    public Comment(String content, String uid, String uname,String date) {
+    public Comment(String content, String uid, String uname,String date, boolean isCommentedByUser,String timestamp) {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
         this.date = date;
+        this.timestamp=timestamp;
+        this.isCommentedByUser = isCommentedByUser;
     }
 
-
-    protected Comment(Parcel in) {
-        content = in.readString();
-        uid = in.readString();
-        uimg = in.readString();
-        uname = in.readString();
-    }
-
-    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
-        @Override
-        public Comment createFromParcel(Parcel in) {
-            return new Comment(in);
-        }
-
-        @Override
-        public Comment[] newArray(int size) {
-            return new Comment[size];
-        }
-    };
 
     public String getContent() {
         return content;
@@ -83,24 +59,15 @@ public class Comment implements Serializable, Parcelable {
         this.uname = uname;
     }
 
-    public Object getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Object timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    public void setCommentedByUser(boolean commentedByUser) { isCommentedByUser = commentedByUser; }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(content);
-        parcel.writeString(uid);
-        parcel.writeString(uimg);
-        parcel.writeString(uname);
-    }
+    public boolean isCommentedByUser() { return isCommentedByUser; }
 }

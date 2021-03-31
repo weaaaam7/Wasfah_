@@ -12,21 +12,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wasfah.model.IngredientModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -108,7 +114,7 @@ recipieList=new ArrayList<>();
                     RecyclerView rs=(RecyclerView) RootView.findViewById(R.id.rv);
                     if (recipieList.size()>0)
                     {
-                        RecyclerViewAdapter<RecyclerView.ViewHolder> recAdap = new RecyclerViewAdapter<RecyclerView.ViewHolder>(getContext(),recipieList,name11);
+                        RecyclerViewAdapter recAdap = new RecyclerViewAdapter(getContext(),recipieList,name11);
                         rs.setLayoutManager(new GridLayoutManager(getContext(),3));
                         rs.setAdapter(recAdap);
                     }
@@ -169,11 +175,11 @@ recipieList=new ArrayList<>();
         for (DataSnapshot ds : snapshot.getChildren()) {
             String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
             if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
-                List<IngredientModel> ingredients=new ArrayList<>();
+                List<Ingredients> ingredients=new ArrayList<>();
                 List<Steps> steps=new ArrayList<>();
                 for (DataSnapshot ds2: ds.child("ingredients").getChildren())
                 {
-                    IngredientModel ingredients1=new IngredientModel(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
+                    Ingredients ingredients1=new Ingredients(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
                    ingredients.add(ingredients1);
                 }
 

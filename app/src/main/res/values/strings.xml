@@ -87,5 +87,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search...">search...</string>
+    <string name="firebasenotif_channel">MyNotifChannel</string>
+    <string name="channel_description">MyNotifDescription</string>
 
 </resources>

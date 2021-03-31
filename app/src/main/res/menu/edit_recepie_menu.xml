@@ -2,19 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/edit"
+        android:orderInCategory="100"
+        android:title="@string/Editـrecipe"
+        app:showAsAction="never"/>
 
-            <item
-                android:id="@+id/edit"
-                android:title="Edit Recipe"
-                android:icon="@drawable/ic_edit_recipe"
-                app:showAsAction="always"/>
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="100"
+        android:title="@string/delete_recipe"
+        android:icon="@drawable/ic_baseline_more_horiz_24"
+        app:showAsAction="never"/>
 
-            <item
-                android:id="@+id/delete"
-                android:title="Delete Recipe"
-                android:icon="@drawable/ic_delete_recipe"
-                app:showAsAction="always"/>
-
-
+    <item
+        android:id="@+id/fav"
+        android:orderInCategory="100"
+        android:title="@string/add_to_my_fav"
+        android:icon="@drawable/ic_baseline_more_horiz_24"
+        app:showAsAction="never"/>
 
 </menu>

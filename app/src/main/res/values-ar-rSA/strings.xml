@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">وصفة</string>
     <string name="title_activity_recepe">وصفة</string>
     <string name="Ingredients">المقادير</string>
