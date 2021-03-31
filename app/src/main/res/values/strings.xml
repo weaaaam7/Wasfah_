@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Wasfah</string>
+
     <string-array name="ingredient_categories">
         <item>@string/Healthy</item>
         <item>@string/Italian</item>
@@ -54,7 +55,7 @@
     <string name="Profile">profile</string>
     <string name="fav">Favorite</string>
 
-    <string name="publish_recipe">Publish recipe</string>
+    <string name="publish_recipe">Publish Recipe</string>
     <string name="publish">Publish</string>
     <string name="Editـprofile">Edit profile</string>
     <string name="logout">Logout</string>
@@ -84,6 +85,7 @@
     <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="delete_comment">Delete Comment</string>
+    <string name="firebasenotif_channel">MyNotifChannel</string>
+    <string name="channel_description">MyNotifDescription</string>
 
 </resources>
