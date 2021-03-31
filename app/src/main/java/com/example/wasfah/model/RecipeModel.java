@@ -31,7 +31,7 @@ public class RecipeModel {
     }
 
     public void setCurrentUserId(String currentUserId) {
-        this.currentUserId = userID;
+        this.currentUserId = currentUserId;
     }
 
     public String getTimestamp() {
