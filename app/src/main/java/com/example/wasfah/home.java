@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.wasfah.HomeFragments.AmericanFragment;
 import com.example.wasfah.HomeFragments.BakeriesFragment;
 import com.example.wasfah.HomeFragments.ChineseFragment;
@@ -24,17 +28,9 @@ import com.example.wasfah.HomeFragments.ItalianFragment;
 import com.example.wasfah.HomeFragments.JapaneseFragment;
 import com.example.wasfah.HomeFragments.OthersFragment;
 import com.example.wasfah.HomeFragments.SaudiFragment;
-import com.example.wasfah.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 
 public class home extends Fragment {
@@ -84,13 +80,16 @@ public class home extends Fragment {
 
                 if(s.isChecked()){
                     Pref.setValue(getContext(),"language_checked", "true");
-                    setApplicationLocale("ar");                }
+                    setApplicationLocale("ar"); }
                 else {
                     Pref.setValue(getContext(),"language_checked", "false");
 
                     setApplicationLocale("en");
 
                 }
+                Intent i = new Intent(requireContext(), MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
 
             }
         });

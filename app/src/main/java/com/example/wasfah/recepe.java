@@ -55,6 +55,7 @@ private TranslationViewModel translationViewModel;
     private TextView tv_steps,Steps_label;
     private TextView tv_timestamp;
     private String ingeredientsStr="";
+    private String tilte = "";
     private String stepsStr="";
     private EditText comment;
     private Button addComment,dots,deleteComment;
@@ -308,18 +309,25 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
 
 
-
-
     }
 
     private String getTranslatedText() {
         List<String> translatedArray = new ArrayList<>();
         translatedArray.add(String.valueOf(title_tv.getText()));
         translatedArray.add(String.valueOf(tv_category.getText()));
+        Log.d("hhduj","sswd"+Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false"));
+        if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false")) {
+
         translatedArray.add(String.valueOf(Ingred_label.getText()));
         translatedArray.add(String.valueOf(Steps_label.getText()));
+        }
+
+//
+//        translatedArray.add(String.valueOf(Ingred_label.getText()));
+//        translatedArray.add(String.valueOf(Steps_label.getText()));
 
         Log.d("ndlnjc","jfrhkjb"+String.valueOf(Steps_label.getText()));
+
 
         return convertListToString(translatedArray);
 
@@ -327,10 +335,12 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
     private String convertListToString(List<String> translatedArray){
         String listString = "";
-        for (String s : translatedArray)
-        {
-            listString += s + "#";
+        for(int i=0;i< translatedArray.size();i++){
+            listString+= translatedArray.get(i);
+            if(i<translatedArray.size()-1)
+            listString+=':';
         }
+
 
         return listString;
     }
@@ -459,11 +469,13 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         translationViewModel.translateText(getTranslatedText()).observe(this, translationResponse -> {
                     String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
                     Log.d("ddddds", "dddddd" + test);
-                    List<String> items = Arrays.asList(test.split("\\s*#\\s*"));
+                    List<String> items = Arrays.asList(test.split("\\s*:\\s*"));
                     title_tv.setText(items.get(0));
                     tv_category.setText(items.get(1));
-                    Ingred_label.setText(items.get(2));
-                    Steps_label.setText(items.get(3));
+                    if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false")) {
+                        Ingred_label.setText(items.get(2));
+                        Steps_label.setText(items.get(3));
+                    }
 
                 }
         );
@@ -476,20 +488,20 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 //            if (i < ingredients.size() - 1) {
 //               // ingeredientsStr += "\n\n";
 //            }
-            translationViewModel.translateIngredients(ingeredientsStr);
-            translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
-                        String test = translationResponse.getData().getTranslations().get(0).getTranslatedText() + "\n \n";
-                        Log.d("ddddds222", "dddddd" + test);
+        translationViewModel.translateIngredients(ingeredientsStr);
+        translationViewModel.translateIngredients(ingeredientsStr).observe(this, translationResponse -> {
+                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
 
-                        String [] text = test.split(".");
-                        for(int i=0; i<= text.length; i++){
-                            test+=text[i]+"\n";
-                            tv_ingrediants.setText(test);
-                        }
-
-
+                    test.replace("  ","           ");
+                    String[] text = test.split("\\.");
+                    test = "";
+                    for (int i = 0; i < text.length; i++) {
+                        test += text[i];
                     }
-            );
+                    tv_ingrediants.setText(test);
+                }
+        );
+
 
 
     }
@@ -506,5 +518,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
 
         ); }
+
+
 
     }

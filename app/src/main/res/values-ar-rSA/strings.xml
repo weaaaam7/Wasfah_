@@ -44,5 +44,15 @@
     <string name="my_fav">مفضلتي</string>
     <string name="no_recipe">لا توجد وصفات</string>
     <string name="delete_comment">حذف التعليق</string>
+    <string-array name="uoms">
+        <item>كج</item>
+        <item>GM</item>
+        <item>لتر</item>
+        <item>مل لتر</item>
+        <item>مل متر</item>
+        <item>قطعة</item>
+        <item>ملعقة صغيرة</item>
+        <item>ملعقة كبيرة</item>
+    </string-array>
 
 </resources>
