@@ -46,7 +46,7 @@
     <string name="delete_comment">حذف التعليق</string>
     <string-array name="uoms">
         <item>كج</item>
-        <item>GM</item>
+        <item>جرام</item>
         <item>لتر</item>
         <item>مل لتر</item>
         <item>مل متر</item>

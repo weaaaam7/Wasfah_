@@ -1,5 +1,6 @@
 package com.example.wasfah;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -24,12 +25,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wasfah.translation.TranslationViewModel;
 import com.example.wasfah.model.NotificationBody;
 import com.example.wasfah.model.NotificationResponse;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.services.APIClient_N;
 import com.example.wasfah.services.APIInterface;
+import com.example.wasfah.translation.TranslationViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,30 +46,25 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
-
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private TranslationViewModel translationViewModel;
     private TextView title_tv;
     private ImageView image,back;
-    private TextView tv_ingrediants;
+    private TextView tv_ingrediants,Ingred_label;
     private TextView tv_category;
-    private TextView tv_steps;
+    private TextView tv_steps,Steps_label;
     private TextView tv_timestamp;
     private String ingeredientsStr="";
     private String tilte = "";
@@ -76,6 +72,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private String str="";
     private EditText comment;
     private Button addComment,dots;
+    private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -84,26 +81,31 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
+    boolean commentedByUser=true;
+    List<Ingredients> ingredients;
+    List<Steps> steps;
     APIInterface apiInterface;
     String t;
+    private String deletedComment= null;
 
     // favorite list
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
     String keySubscibed= "";
-    private String deletedComment= null;
+
 
     // Notification
     String owner;
     RecipeModel recipeModel;
 
 
-
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
+        translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
 
         //get Intent
         Intent intent = getIntent();
@@ -140,6 +142,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
+        translateBtn=(TextView) findViewById(R.id.translateBtn);
+        Ingred_label=(TextView) findViewById(R.id.Ingred_label);
+        Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
 
 
@@ -157,9 +162,22 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
+
+        translateBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            Log.d("ddddd", "dddddd");
+            //translationViewModel.translateIngerediants(stepsStr);
+            subscribeObserver();
+            subscribeObserverIngredients();
+            subscribeObserverSteps();
+
+        }
+    });
 
         //Firebase
 
@@ -220,6 +238,10 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                             }
                         }
                     }
+
+                    private void showMessage(String removed_your_favorite_list) {
+                    }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
@@ -290,24 +312,112 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
-        for (int i=0;i<ingredients.size();i++){
-            str+=(i+1)+"- "+ingredients.get(i).getFullName();
-            if(i<ingredients.size()-1) {
-                str += "\n\n";
+        for (int i=0;i<ingredients.size();i++) {
+            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName()+".";
+            if (i < ingredients.size() - 1) {
+                ingeredientsStr += "\n\n";
             }
+        }
+        tv_ingrediants.setText(ingeredientsStr);
 
-        }
-        tv_ingrediants.setText(str);
-        str="";
         for (int i=0;i<steps.size();i++){
-            str+=(i+1)+"- "+steps.get(i).getDescription();
+            stepsStr+=(i+1)+"- "+steps.get(i).getDescription();
             if(i<steps.size()-1) {
-                str += "\n\n";
+                stepsStr += "\n\n";
             }
         }
-        tv_steps.setText(str);
+        tv_steps.setText(stepsStr);
+
+
 
     }
+    private String getTranslatedText() {
+        List<String> translatedArray = new ArrayList<>();
+        translatedArray.add(String.valueOf(title_tv.getText()));
+        translatedArray.add(String.valueOf(tv_category.getText()));
+        Log.d("hhduj", "sswd" + Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false"));
+        if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false")) {
+
+            translatedArray.add(String.valueOf(Ingred_label.getText()));
+            translatedArray.add(String.valueOf(Steps_label.getText()));
+        }
+        //
+//        translatedArray.add(String.valueOf(Ingred_label.getText()));
+//        translatedArray.add(String.valueOf(Steps_label.getText()));
+
+        Log.d("ndlnjc","jfrhkjb"+String.valueOf(Steps_label.getText()));
+
+
+        return convertListToString(translatedArray);
+
+    }
+
+    private String convertListToString(List<String> translatedArray){
+        String listString = "";
+        for(int i=0;i< translatedArray.size();i++){
+            listString+= translatedArray.get(i);
+            if(i<translatedArray.size()-1)
+                listString+=':';
+        }
+        return listString;
+
+    }
+    public void showPopup(View v){
+        PopupMenu popup = new PopupMenu(this,v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.edit_recepie_menu);
+        popup.show();
+
+    }
+
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.edit:
+                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec", this.recpieId);
+                startActivity(intent);
+                return true;
+
+
+            case R.id.delete:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete recipe?")
+                        .setCancelable(false)
+
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
+                                dRec.removeValue();
+                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        })
+
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                return true;
+
+            default: return false;
+        }
+    }
+
+
+
 
     private void sendPushNotification(int category) {
 
@@ -315,7 +425,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         processPush(keyWord,"" + t + " got a new comment");
 
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -360,20 +469,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         }
     }
 
-    private String getTranslatedText() {
-        List<String> translatedArray = new ArrayList<>();
-        translatedArray.add(String.valueOf(title_tv.getText()));
-        translatedArray.add(String.valueOf(tv_category.getText()));
-        Log.d("hhduj","sswd"+Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false"));
-        if (Pref.getValue(getApplicationContext(), "language_checked", "false").equalsIgnoreCase("false")) {
 
-        translatedArray.add(String.valueOf(Ingred_label.getText()));
-        translatedArray.add(String.valueOf(Steps_label.getText()));
-        }
-
-//
-//        translatedArray.add(String.valueOf(Ingred_label.getText()));
-//        translatedArray.add(String.valueOf(Steps_label.getText()));
     private void processPush(String keyWord, String new_like) {
         //String owner = getIntent().getExtras().getString("owner");
         Log.d("OWNER", "processPush: "+owner);
@@ -396,8 +492,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                 }
             }
 
-
-        return convertListToString(translatedArray);
             @Override
             public void onFailure(Call<NotificationResponse> call, Throwable t) {
                 call.cancel();
@@ -405,14 +499,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
             }
         });
-
-    private String convertListToString(List<String> translatedArray){
-        String listString = "";
-        for(int i=0;i< translatedArray.size();i++){
-            listString+= translatedArray.get(i);
-            if(i<translatedArray.size()-1)
-            listString+=':';
-        }
 
 
     }
@@ -424,125 +510,65 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         return super.onCreateOptionsMenu(menu);
     }
 
-    //show popup
-
-    public void showPopup(View v){
-        PopupMenu popup = new PopupMenu(this,v);
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.edit_recepie_menu);
-        popup.show();
-
-    }
 
 
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item){
+            public void initRvComment() {
+                RvComment.setLayoutManager(new LinearLayoutManager(this));
+                DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
+                commentRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listComment=new ArrayList<>();
+                        for (DataSnapshot snap:snapshot.getChildren()){
+                            Comment comment=snap.getValue(Comment.class);
+                            listComment.add(comment);
+                        }
 
-        switch (item.getItemId())
-        {
-            case R.id.edit:
-                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
-                intent.putExtra("rec",this.recpieId);
-                startActivity(intent);
-                return true;
+                        adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+
+                        RvComment.setAdapter(adapter);
 
 
-            case R.id.delete:
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to delete recipe?")
-                        .setCancelable(false)
-
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
-                                dRec.removeValue();
-                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
-                                finish();
+                            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                                return false;
                             }
 
-                        })
-
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
+                            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                                adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
                             }
-                        });
+
+                            @Override
+                            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                                        .addBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red))
+                                        .addActionIcon(R.drawable.ic_baseline_delete_24)
+                                        .create()
+                                        .decorate();
+
+                                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                            }
+                        }).attachToRecyclerView(RvComment);
 
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                    }
 
-                return true;
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            default:return false;
-        }
-
-    }
-
-    private void initRvComment() {
-        RvComment.setLayoutManager(new LinearLayoutManager(this));
-        DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-        commentRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listComment=new ArrayList<>();
-                for (DataSnapshot snap:snapshot.getChildren()){
-                    Comment comment=snap.getValue(Comment.class);
-                    listComment.add(comment);
-                }
-
-                adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
-                RvComment.setAdapter(adapter);
+                    }
+                });
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
-                   @Override
-                   public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                       return false;
-                   }
-
-                   @Override
-                   public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                     adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
-                     adapter.notifyDataSetChanged();
-                       Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
-                   }
-
-                   @Override
-                   public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                       new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                               .addBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red))
-                               .addActionIcon(R.drawable.ic_baseline_delete_24)
-                               .create()
-                               .decorate();
-
-                       super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                   }
-               }).attachToRecyclerView(RvComment);
-
-
-           }
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
-
+            private void showMessage(String msg) {
+                Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
             }
-        });
-    }
-
-    private void showMessage(String msg) {
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
-    }
     private void subscribeObserver() {
         translationViewModel.translateText(getTranslatedText());
         translationViewModel.translateText(getTranslatedText()).observe(this, translationResponse -> {
@@ -585,20 +611,19 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
     }
 
-    private void subscribeObserverSteps() {
-        translationViewModel.translateSteps(stepsStr);
-        translationViewModel.translateSteps(stepsStr).observe(this, translationResponse -> {
-                    String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
-                    Log.d("ddddd123", "dddddd" + test);
 
-                    tv_steps.setText(test);
-                }
+            private void subscribeObserverSteps() {
+                translationViewModel.translateSteps(stepsStr);
+                translationViewModel.translateSteps(stepsStr).observe(this, translationResponse -> {
+                            String test = translationResponse.getData().getTranslations().get(0).getTranslatedText();
+                            Log.d("ddddd123", "dddddd" + test);
+
+                            tv_steps.setText(test);
+                        }
 
 
 
-        ); }
+                ); }
 
 }
 
-
-    }
