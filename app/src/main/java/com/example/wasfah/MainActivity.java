@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private FirebaseAuth mAuth;
     private String name;
     private FloatingActionButton publishFB;
-   // private TranslationViewModel translationViewModel;
+    // private TranslationViewModel translationViewModel;
 
 
     @Override
