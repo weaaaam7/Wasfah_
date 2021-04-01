@@ -2,18 +2,16 @@ package com.example.wasfah.model;
 
 import android.os.Parcel;
 
-import com.example.wasfah.Steps;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class RecipeModel implements Serializable {
+public class RecipeModel {
 
     private String recipeId;
     private String title;
@@ -33,8 +31,20 @@ public class RecipeModel implements Serializable {
 
 
 
+    private String currentUserId;
+
+
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
+
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(String currentUserId) {
+        this.currentUserId = currentUserId;
+    }
 
     protected RecipeModel(Parcel in) {
         recipeId = in.readString();
@@ -58,42 +68,10 @@ public class RecipeModel implements Serializable {
 
     public void setTimestamp() {
         String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        this.timestamp = date;
+        this.timestamp =  date;
     }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public List<Steps> getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List<Steps> steps) {
-        this.steps = steps;
-    }
-
-    public boolean isPublishedByUser() {
-        return isPublishedByUser;
-    }
-
-    public void setPublishedByUser(boolean publishedByUser) {
-        isPublishedByUser = publishedByUser;
-    }
-
-    public boolean isProfile() {
-        return isProfile;
-    }
-
-    public void setProfile(boolean profile) {
-        isProfile = profile;
-    }
-
-    public RecipeModel() {
+    public RecipeModel()
+    {
         this.recipeId = UUID.randomUUID().toString();
     }
 
@@ -146,15 +124,11 @@ public class RecipeModel implements Serializable {
     }
 
     public String getPicUri() {
-        return this.picUri ;//= "https://realfood.tesco.com/media/images/RFO-October2020-65809-Tesco-LetsCook-Oct20-65850-SpicedChickenGreenBeans1400x919-38f3e9b0-7241-49a3-83fe-fcc38d2c24be-0-1400x919.jpg";
-    }
-
-    public String getPicUri2() {
-        return "https://1.bp.blogspot.com/-eDCzOgLuiTg/XkMKlPN0hhI/AAAAAAAABJ8/aUWdGB_87EAagPAQhLvKs2RaICBjkasOwCLcBGAsYHQ/s1600/WhatsApp%2BImage%2B2020-02-11%2Bat%2B8.31.27%2BPM%2B%25281%2529.jpeg";
+        return picUri;
     }
 
     public void setPicUri(String picUri) {
-        this.picUri = picUri;//"https://realfood.tesco.com/media/images/RFO-October2020-65809-Tesco-LetsCook-Oct20-65850-SpicedChickenGreenBeans1400x919-38f3e9b0-7241-49a3-83fe-fcc38d2c24be-0-1400x919.jpg";
+        this.picUri = picUri;
     }
 
     public long getLikes() {
@@ -193,6 +167,38 @@ public class RecipeModel implements Serializable {
         this.dislikes = dislikes;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public boolean isPublishedByUser() {
+        return isPublishedByUser;
+    }
+
+    public void setPublishedByUser(boolean publishedByUser) {
+        isPublishedByUser = publishedByUser;
+    }
+
+    public List<Steps> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Steps> steps) {
+        this.steps = steps;
+    }
+
+    public boolean isProfile() {
+        return isProfile;
+    }
+
+    public void setProfile(boolean profile) {
+        isProfile = profile;
+    }
+
     public RecipeModel(String recipeId, String title, String category, List<IngredientModel> ingredients, List<StepModel> preparationSteps, String createdBy, long likes, long dislikes, String picUri, String timestamp, String img, List<Steps> steps, boolean isPublishedByUser, boolean isProfile, FirebaseUser user, String userID) {
         this.recipeId = recipeId;
         this.title = title;
@@ -214,3 +220,4 @@ public class RecipeModel implements Serializable {
 
 
 }
+

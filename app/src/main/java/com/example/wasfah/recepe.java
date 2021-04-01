@@ -1,11 +1,11 @@
 package com.example.wasfah;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,8 +25,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wasfah.translation.TranslationViewModel;
+import com.example.wasfah.model.NotificationBody;
+import com.example.wasfah.model.NotificationResponse;
+import com.example.wasfah.model.RecipeModel;
+import com.example.wasfah.services.APIClient_N;
+import com.example.wasfah.services.APIInterface;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,28 +45,37 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-private TranslationViewModel translationViewModel;
+
     private TextView title_tv;
     private ImageView image,back;
-    private TextView tv_ingrediants,Ingred_label;
+    private TextView tv_ingrediants;
     private TextView tv_category;
-    private TextView tv_steps,Steps_label;
+    private TextView tv_steps;
     private TextView tv_timestamp;
     private String ingeredientsStr="";
     private String tilte = "";
     private String stepsStr="";
+    private String str="";
     private EditText comment;
-    private Button addComment,dots,deleteComment;
-    private TextView translateBtn;
+    private Button addComment,dots;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase db;
@@ -68,37 +84,50 @@ private TranslationViewModel translationViewModel;
     List<Comment> listComment;
     String recpieId;
     boolean publishedByUser=true;
-    boolean commentedByUser=true;
-    List<Ingredients> ingredients;
-    List<Steps> steps;
+    APIInterface apiInterface;
+    String t;
+
     // favorite list
     private Button fav_r;
     boolean faved = false;
     DatabaseReference favList;
+    String keySubscibed= "";
     private String deletedComment= null;
 
+    // Notification
+    String owner;
+    RecipeModel recipeModel;
 
 
-    @SuppressLint("CutPasteId")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
-translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
+
         //get Intent
         Intent intent = getIntent();
         String img = intent.getExtras().getString("img");
         String tilte = intent.getExtras().getString("title");
+        t = tilte;
         String category = intent.getExtras().getString("category");
         String userName = intent.getExtras().getString("userName");
         String timestamp = intent.getExtras().getString("timestamp");
+
+
+
+        //ADDED
+        String musername = intent.getExtras().getString("userMName");
+        String museremail = intent.getExtras().getString("userMEmail");
+
         boolean isProfile = intent.getExtras().getBoolean("isProfile");
         recpieId = intent.getExtras().getString("recipeId");
         publishedByUser=intent.getExtras().getBoolean("publishedByUser");
-        commentedByUser=intent.getExtras().getBoolean("commentedByUser");
+        keySubscibed = musername;
+        Log.d("PUBLISHER", "on Navigate: Key Subsribedto:"+musername+museremail);
         List<Ingredients> ingredients= (List<Ingredients>) intent.getSerializableExtra("ingredients");
         List<Steps> steps= (List<Steps>) intent.getSerializableExtra("steps");
-
+        apiInterface = APIClient_N.getClient().create(APIInterface.class);
         //Ininilize
         tv_ingrediants=(TextView) findViewById(R.id.Ingred_val);
         tv_steps=(TextView) findViewById(R.id.Steps_val);
@@ -111,11 +140,8 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
         back=(ImageView) findViewById(R.id.back);
-        translateBtn=(TextView) findViewById(R.id.translateBtn);
-       // deleteComment=(Button)findViewById(R.id.delButton);;
-        Ingred_label=(TextView) findViewById(R.id.Ingred_label);
-        Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
+
 
         //hide and display 3 dots
 
@@ -128,49 +154,19 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         }
 
 
-
-
         back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-            });
-        translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                Log.d("ddddd", "dddddd");
-                //translationViewModel.translateIngerediants(stepsStr);
-                subscribeObserver();
-                subscribeObserverIngredients();
-                subscribeObserverSteps();
-
+            public void onClick(View view) {
+                finish();
             }
         });
-//        if (commentedByUser){
-//            deleteComment.setVisibility(View.VISIBLE);
-//
-//        }
-//        else{
-//            deleteComment.setVisibility(View.INVISIBLE);
-//        }
-//        deleteComment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DatabaseReference dComment = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId).child("comment");
-//                dComment.removeValue();
-//                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         //Firebase
 
-
-            fAuth=FirebaseAuth.getInstance();
+        fAuth=FirebaseAuth.getInstance();
         user=fAuth.getCurrentUser();
         db=FirebaseDatabase.getInstance();
-        String uid = user.getUid();
+        String uid=user.getUid();
 
         // fav
 
@@ -210,6 +206,8 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                                     public void onSuccess(Void aVoid) {
                                         showMessage("Added to your favorite list");
                                         faved = false;
+                                        int category = 0;
+                                        sendPushNotification(category);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -228,6 +226,24 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                     }
                 });
 
+            }
+        });
+
+        // Notifications
+
+        db.getReference("Recipes").child(recpieId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    HashMap vals = (HashMap) task.getResult().getValue();
+                    recipeModel = new RecipeModel();
+                    recipeModel.setCurrentUserId((String)vals.get("currentUserId"));
+                    owner = recipeModel.getCurrentUserId();
+
+                }
             }
         });
 
@@ -252,6 +268,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
                         comment.setText("");
                         comment.setHint("Add comment");
                         addComment.setVisibility(View.VISIBLE);
+                        sendPushNotification(1);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -263,6 +280,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             }
         });
 
+
         //initi Recycler view
         initRvComment();
 
@@ -272,43 +290,74 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
         tv_category.setText(category);
         Picasso.get().load(img).into(image);
-        for (int i=0;i<ingredients.size();i++) {
-            ingeredientsStr += (i + 1) + "- " + ingredients.get(i).getFullName()+".";
-            if (i < ingredients.size() - 1) {
-                ingeredientsStr += "\n\n";
+        for (int i=0;i<ingredients.size();i++){
+            str+=(i+1)+"- "+ingredients.get(i).getFullName();
+            if(i<ingredients.size()-1) {
+                str += "\n\n";
             }
+
         }
-//        Set<Ingredients> ingredientsSet= new HashSet<>();
-//
-//        for (int i=0;i<ingredients.size();i++){
-//            ingredientsSet.add(ingredients.get(i));
-//        }
-//        JSONObject multiple = new JSONObject();
-//        // create a new Gson object
-//        Gson gson = new Gson();
-//
-//        // convert your set to json
-//        String jsonUsersSet = gson.toJson(ingredients);
-//
-//        // print your generated json
-//        System.out.println("jsonUsersSet: " + jsonUsersSet);
-//
-//        System.out.println("Multiple ingredients: " + multiple);
-//
-
-        tv_ingrediants.setText(ingeredientsStr);
-
+        tv_ingrediants.setText(str);
+        str="";
         for (int i=0;i<steps.size();i++){
-            stepsStr+=(i+1)+"- "+steps.get(i).getDescription();
+            str+=(i+1)+"- "+steps.get(i).getDescription();
             if(i<steps.size()-1) {
-                stepsStr += "\n\n";
+                str += "\n\n";
             }
         }
-        tv_steps.setText(stepsStr);
+        tv_steps.setText(str);
+
+    }
+
+    private void sendPushNotification(int category) {
+
+        String keyWord ="New Comment";
+        processPush(keyWord,"" + t + " got a new comment");
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit:
+                //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec", this.recpieId);
+                startActivity(intent);
+                return true;
 
 
+            case R.id.delete:
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete recipe?")
+                        .setCancelable(false)
 
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes").child(recpieId);
+                                dRec.removeValue();
+                                Toast.makeText(recepe.this, "Recipe is deleted", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        })
+
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+                return true;
+
+            default: return false;
+        }
     }
 
     private String getTranslatedText() {
@@ -325,13 +374,37 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 //
 //        translatedArray.add(String.valueOf(Ingred_label.getText()));
 //        translatedArray.add(String.valueOf(Steps_label.getText()));
+    private void processPush(String keyWord, String new_like) {
+        //String owner = getIntent().getExtras().getString("owner");
+        Log.d("OWNER", "processPush: "+owner);
+        //Toast.makeText(this, "CurrentUserId:"+owner, Toast.LENGTH_SHORT).show();
 
-        Log.d("ndlnjc","jfrhkjb"+String.valueOf(Steps_label.getText()));
+        NotificationBody body = new NotificationBody("AAAA0FWvXwY:APA91bH2-tAgwCrU_v6zTGyw8tOA6y7Z9soyHM5Js8cQpSZ1knSikWQt1B8kdBdRPWrLtevQjntTnTXDPhQq5o-SeGwh5fu76qpSXfjTpCxC4EuqXVYidSxXSxlqqaCvgDdcU3bmrc5J",owner,"1",keyWord,new_like,"");
+
+        Call<NotificationResponse> call = apiInterface.sendNotification(body);
+        call.enqueue(new Callback<NotificationResponse>() {
+            @Override
+            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                if (response.isSuccessful()){
+                    NotificationResponse res = response.body();
+
+                    //Toast.makeText(getApplicationContext(), res.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }else {
+                    //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+
+                }
+            }
 
 
         return convertListToString(translatedArray);
+            @Override
+            public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                call.cancel();
+                //Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
 
-    }
+            }
+        });
 
     private String convertListToString(List<String> translatedArray){
         String listString = "";
@@ -342,8 +415,15 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
         }
 
 
-        return listString;
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_recepie_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     //show popup
 
     public void showPopup(View v){
@@ -354,6 +434,8 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
     }
 
+
+
     @Override
     public boolean onMenuItemClick(MenuItem item){
 
@@ -362,6 +444,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
             case R.id.edit:
                 //Toast.makeText(this,"Edit recepe is clicked",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EditRecipeActivity.class);
+                intent.putExtra("rec",this.recpieId);
                 startActivity(intent);
                 return true;
 
@@ -398,32 +481,29 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
                 return true;
 
-            case R.id.fav:
-
-                return true;
-
-
             default:return false;
         }
 
     }
 
-    public void initRvComment() {
+    private void initRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference commentRef=db.getReference("Recipes").child(recpieId).child("comment");
-       commentRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               listComment=new ArrayList<>();
-               for (DataSnapshot snap:snapshot.getChildren()){
-                   Comment comment=snap.getValue(Comment.class);
-                   listComment.add(comment);
-               }
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listComment=new ArrayList<>();
+                for (DataSnapshot snap:snapshot.getChildren()){
+                    Comment comment=snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-               adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+                adapter = new commentAdapter(getApplicationContext(),listComment,listComment,publishedByUser);
+                RvComment.setAdapter(adapter);
+            }
 
-               RvComment.setAdapter(adapter);
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
                new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
                    @Override
@@ -456,10 +536,9 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
            @Override
            public void onCancelled(@NonNull DatabaseError error) {
 
-           }
-       });
+            }
+        });
     }
-
 
     private void showMessage(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
@@ -519,6 +598,7 @@ translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.clas
 
         ); }
 
+}
 
 
     }
