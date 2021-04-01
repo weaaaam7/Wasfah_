@@ -26,6 +26,7 @@ import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
+import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.home;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -176,6 +177,8 @@ public class HealthyFragment extends Fragment  {
 
             if (Category != null &&Category.equalsIgnoreCase("Healthy")) {
                 List<Ingredients> ingredients=new ArrayList<>();
+                Long likes = ds.child("likes").getValue(Long.class);
+                Long dislikes = ds.child("dislikes").getValue(Long.class);
                 List<Steps> steps=new ArrayList<>();
                 for (DataSnapshot ds2: ds.child("ingredients").getChildren())
                 {
@@ -196,8 +199,23 @@ public class HealthyFragment extends Fragment  {
                 else {
                     isPublishedByUser=false;
                 }
-                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false);
-                recipieList.add(recipe);
+
+                if (likes!=null  )
+                {
+                   likes = ds.child("likes").getValue(Long.class);
+                }
+                else {
+                    likes = Long.valueOf(0);
+                }
+                if (dislikes!=null  )
+                {
+                    dislikes = ds.child("dislikes").getValue(Long.class);
+                }
+                else {
+                    dislikes = Long.valueOf(0);
+                }
+                    RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false,likes,dislikes);
+                    recipieList.add(recipe);
 
             }
 

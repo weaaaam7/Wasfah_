@@ -13,6 +13,8 @@ public class RecipeInfo {
     private List<Steps> steps;
     private String recipeId;
     private String timestamp;
+    private long likes;
+    private long dislikes;
     private String name;
     private boolean isPublishedByUser;
     private boolean isProfile;
@@ -63,6 +65,25 @@ public class RecipeInfo {
         this.timestamp = timestamp;
         this.isPublishedByUser = true;
         this.isProfile = true;
+        this.likes = likes;
+        this.dislikes = dislikes;
+    }
+
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile, long likes, long dislikes) {
+        this.title = title;
+        this.img = img;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.name = name;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
+        this.likes = likes;
+        this.dislikes = dislikes;
+
+
     }
 
     public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile) {
@@ -76,6 +97,10 @@ public class RecipeInfo {
         this.name = name;
         this.isPublishedByUser = isPublishedByUser;
         this.isProfile = isProfile;
+        this.likes = likes;
+        this.dislikes = dislikes;
+
+
     }
 
 
@@ -131,6 +156,13 @@ public class RecipeInfo {
         this.category = category;
     }
 
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
     public static Comparator<RecipeInfo> newest = new Comparator<RecipeInfo>() {
         @Override
         public int compare(RecipeInfo r1, RecipeInfo r2) {
@@ -145,4 +177,11 @@ public class RecipeInfo {
         }
     };
 
+    public long getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(long dislikes) {
+        this.dislikes = dislikes;
+    }
 }

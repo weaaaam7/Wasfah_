@@ -12,24 +12,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
-        <activity android:name=".SearchRecipe" />
-        <activity android:name=".ProfileView" />
+        <activity android:name=".SearchRecipe" android:configChanges="layoutDirection|locale" />
+        <activity android:name=".ProfileView" android:configChanges="layoutDirection|locale"/>
         <activity
             android:name=".editprofile"
-            android:exported="true" />
+            android:exported="true"
+            android:noHistory="false"
+            android:configChanges="layoutDirection|locale"/>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".recepe" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".recepe" android:configChanges="layoutDirection|locale"/>
+        <activity android:name=".MainActivity" android:configChanges="layoutDirection|locale"/>
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".PublishRecipeActivity" />
-        <activity android:name=".EditRecipeActivity"/>
+        <activity android:name=".EditRecipeActivity" />
+        <activity android:name=".PublishRecipeActivity" android:configChanges="layoutDirection|locale" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
 
         <meta-data
@@ -43,5 +46,10 @@
             </intent-filter>
         </service>
     </application>
-
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true"
+        />
 </manifest>

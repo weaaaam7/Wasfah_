@@ -65,18 +65,22 @@ import java.util.regex.Pattern;
 
 import static android.app.ProgressDialog.show;
 
+
 public class editprofile extends AppCompatActivity {
 
     Button btnupdate, deletAcc;
     DatabaseReference dbreference, reference;
     StorageReference storageReference;
+    Uri filepath;
     Bitmap bitmap;
-    String UserID="";
-    EditText profileFirstName,profileLastName,profileEmail,profilePassword,profileConfirmPass;
+    String UserID = "", oldPassword = "", oldEmail = "";
+    EditText profileFirstName, profileLastName, profileEmail, profilePassword, profileConfirmPass;
     ImageView backProfile;
     String email, name, password;
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+    FirebaseAuth fAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -255,7 +259,7 @@ public class editprofile extends AppCompatActivity {
             return;
         }
 
-        if (!checkFName.matches("^[a-zA-Z]*$")) {
+        /*if (!checkFName.matches("^[a-zA-Z]*$")) {
             profileFirstName.setError("Invalid first name.");
             profileFirstName.setText("");
             return;
@@ -266,8 +270,8 @@ public class editprofile extends AppCompatActivity {
             profileLastName.setText("");
             return;
         }
-
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(checkEmail).matches()) {
+*/
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(checkEmail).matches()) {
             profileEmail.setError("Invalid email.");
             profileEmail.setText("");
             return;

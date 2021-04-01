@@ -26,6 +26,7 @@ import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
+import com.example.wasfah.model.IngredientModel;
 import com.example.wasfah.home;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -196,7 +197,7 @@ public class DrinksFragment extends Fragment  {
                 else {
                     isPublishedByUser=false;
                 }
-                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false);
+                RecipeInfo recipe = new RecipeInfo(ds.child("title").getValue(String.class), ds.child("category").getValue(String.class), ds.child("picUri").getValue(String.class), ingredients, steps, ds.child("recipeId").getValue(String.class), ds.child("timestamp").getValue(String.class), name,isPublishedByUser,false,ds.child("likes").getValue(Long.class),ds.child("dislikes").getValue(Long.class));
                 recipieList.add(recipe);
 
             }

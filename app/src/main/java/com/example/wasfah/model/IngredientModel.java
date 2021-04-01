@@ -10,6 +10,13 @@ public class IngredientModel {
     private double quantity;
     private String unitOfMeasure;
 
+    public IngredientModel(String name, double quantity, String unitOfMeasure) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unitOfMeasure = unitOfMeasure;
+    }
+
+
     public IngredientModel()
     {
         this.modelId = UUID.randomUUID().toString();
