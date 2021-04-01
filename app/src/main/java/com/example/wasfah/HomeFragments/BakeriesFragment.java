@@ -4,15 +4,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,14 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wasfah.Ingredients;
 import com.example.wasfah.Pref;
 import com.example.wasfah.R;
 import com.example.wasfah.RecipeInfo;
 import com.example.wasfah.RecyclerViewAdapter;
 import com.example.wasfah.Steps;
-import com.example.wasfah.model.IngredientModel;
-import com.example.wasfah.home;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -176,11 +172,11 @@ public class BakeriesFragment extends Fragment  {
 
 
             if (Category != null &&Category.equalsIgnoreCase("Bakeries")) {
-                List<IngredientModel> ingredients=new ArrayList<>();
+                List<Ingredients> ingredients=new ArrayList<>();
                 List<Steps> steps=new ArrayList<>();
                 for (DataSnapshot ds2: ds.child("ingredients").getChildren())
                 {
-                    IngredientModel ingredients1=new IngredientModel(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
+                    Ingredients ingredients1=new Ingredients(ds2.child("name").getValue(String.class),ds2.child("quantity").getValue(long.class),ds2.child("unitOfMeasure").getValue(String.class));
                     ingredients.add(ingredients1);
                 }
 

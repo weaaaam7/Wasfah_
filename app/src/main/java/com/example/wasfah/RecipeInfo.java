@@ -13,6 +13,8 @@ public class RecipeInfo {
     private List<Steps> steps;
     private String recipeId;
     private String timestamp;
+    private long likes;
+    private long dislikes;
     private String name;
     private boolean isPublishedByUser;
     private boolean isProfile;
@@ -65,6 +67,23 @@ public class RecipeInfo {
         this.isProfile = true;
         this.likes = likes;
         this.dislikes = dislikes;
+    }
+
+    public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile, long likes, long dislikes) {
+        this.title = title;
+        this.img = img;
+        this.category = category;
+        this.ingredients = ingredients;
+        this.steps = steps;
+        this.recipeId = recipeId;
+        this.timestamp = timestamp;
+        this.name = name;
+        this.isPublishedByUser = isPublishedByUser;
+        this.isProfile = isProfile;
+        this.likes = likes;
+        this.dislikes = dislikes;
+
+
     }
 
     public RecipeInfo(String title, String category, String img, List<Ingredients> ingredients, List<Steps> steps, String recipeId, String timestamp, String name, boolean isPublishedByUser, boolean isProfile) {

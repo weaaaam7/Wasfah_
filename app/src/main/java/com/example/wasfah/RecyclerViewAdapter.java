@@ -2,25 +2,18 @@ package com.example.wasfah;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.wasfah.model.RecipeModel;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.bumptech.glide.Glide;
 import com.example.wasfah.model.Like;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,20 +23,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapter<M extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-     private Context mcontext;
-     private List<RecipeInfo> mData;
-     private String name;
-     private String currentUser;
-     private String recipeId;
-     private Button mLikeButton;
+    private String TAG = "RecyclerViewAdapter";
+    private Context mcontext;
+    private List<RecipeInfo> mData;
+    private String name;
+    private String currentUser;
+    private String recipeId;
+    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference recipeRef = database.getReference("Recipes");
 
     public RecyclerViewAdapter(Context mcontext, List<RecipeInfo> mData,String currentUser) {
         this.mcontext = mcontext;
