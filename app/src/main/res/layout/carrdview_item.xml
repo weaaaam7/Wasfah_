@@ -79,7 +79,7 @@
                     android:layout_margin="10dp"
                     android:text="Recipe name"
                     android:textColor="#474537"
-                    android:textSize="25sp"
+                    android:textSize="21dp"
                     android:textStyle="bold" />
 
                 <TextView
