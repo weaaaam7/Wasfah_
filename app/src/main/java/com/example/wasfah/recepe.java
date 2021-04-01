@@ -216,13 +216,13 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                         if (faved) {
                             if (snapshot.child(recpieId).hasChild(uid)) {
                                 favList.child(recpieId).child(uid).removeValue();
-                                showMessage("Removed your favorite list");
+                                Toast.makeText(recepe.this, "Removed from your favorite list", Toast.LENGTH_SHORT).show();
                                 faved = false;
                             } else {
                                 favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        showMessage("Added to your favorite list");
+                                        Toast.makeText(recepe.this, "Added to your favorite list", Toast.LENGTH_SHORT).show();
                                         faved = false;
                                         int category = 0;
                                         sendPushNotification(category);
