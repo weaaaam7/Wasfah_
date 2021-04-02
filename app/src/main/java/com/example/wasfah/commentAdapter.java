@@ -72,7 +72,7 @@ public class commentAdapter extends RecyclerView.Adapter<commentAdapter.CommentV
                         dRec.child(mData.get(position).getTimestamp()).removeValue();
                     }
                     else if (!publishedByUser|| !userID.equalsIgnoreCase(mData.get(position).getUid())) {
-                        Toast.makeText(mContext, "you are not authorized to delete this comment", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "you are not authorized to delete this comment!", Toast.LENGTH_SHORT).show();
 
                     }
 

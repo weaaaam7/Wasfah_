@@ -555,7 +555,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                                 adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
                                 adapter.notifyDataSetChanged();
-                                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(recepe.this, "Comment is deleted.", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
