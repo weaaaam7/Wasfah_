@@ -71,7 +71,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private String stepsStr="";
     private String str="";
     private EditText comment;
-    private Button addComment,dots;
+    private Button addComment,dots, share;
     private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
@@ -146,6 +146,21 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         Ingred_label=(TextView) findViewById(R.id.Ingred_label);
         Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
+
+        // share
+        share = (Button) findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = "Checkout this recipe! ";
+                String shareSub = t;
+                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share using"));
+            }
+        });
 
 
         //hide and display 3 dots

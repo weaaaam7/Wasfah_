@@ -106,12 +106,23 @@
                 android:text=" category"
                 android:textSize="16sp" />
 
+            <Button
+                android:id="@+id/share"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_baseline_share_24"
+                app:backgroundTint="#F5D472"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="0dp"
+                android:onClick="showPopup"
+                />
 
             <TextView
                 android:id="@+id/Ingred_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/Ingredients"
                 android:textAllCaps="false"
                 android:textSize="18sp"
