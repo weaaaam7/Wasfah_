@@ -54,5 +54,7 @@
         <item>ملعقة صغيرة</item>
         <item>ملعقة كبيرة</item>
     </string-array>
+    <string name="firebasenotif_channel">قناة التنبيهات</string>
+    <string name="channel_description">وصف التنبيهات</string>
 
 </resources>
