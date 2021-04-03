@@ -25,9 +25,9 @@
 
 
     <string name="Home">الرئيسية</string>
-    <string name="Search">بحث</string>
+    <string name="Explore">بحث</string>
     <string name="Profile">صفحة شخصية</string>
-    <string name="fav">المفضله</string>
+    <string name="fav">المفضلة</string>
 
     <string name="publish_recipe">نشر وصفة</string>
     <string name="publish">نشر</string>
@@ -36,7 +36,7 @@
     <string name="title">عنوان الوصفة</string>
     <string name="Step">خطوة</string>
     <string name="Ingredient">مكون</string>
-
+    <string name="search...">بحث...</string>
     <string name="Editـrecipe">تعديل الوصفة</string>
     <string name="delete_recipe">حذف الوصفة</string>
     <string name="add_to_my_fav">+ مفضلتي</string>

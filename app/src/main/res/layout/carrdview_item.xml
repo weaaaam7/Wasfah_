@@ -1,103 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/cardview"
-   android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
 
->
-<androidx.cardview.widget.CardView
-    android:layout_width="120dp"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="5dp"
-    android:layout_margin="5dp">
-    <LinearLayout
-        android:id="@+id/profile"
+    android:focusable="true">
+
+    <androidx.cardview.widget.CardView
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:orientation="vertical">
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:scaleType="fitXY"
-            android:background="#9A9A9A"/>
-
-        <TextView
-            android:id="@+id/tv"
-            android:textSize="13sp"
-            android:textColor="#474537"
-            android:gravity="center"
-            android:text="recipe title recipe title recipe title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
-
-
-
-<androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-android:layout_margin="10dp"
-    app:cardElevation="10dp"
-    app:cardCornerRadius="10dp">
-    <LinearLayout
-        android:id="@+id/category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-
-        <ImageView
-            android:id="@+id/img2"
-            android:layout_width="140dp"
-            android:layout_height="160dp"
-            android:scaleType="centerCrop"
-            android:background="#9A9A9A"
-            android:layout_margin="10dp"
-            android:src="@drawable/images"/>
+        android:layout_margin="5dp"
+        app:cardCornerRadius="5dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <TextView
+            android:id="@+id/profile"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Recipe name"
-                android:textStyle="bold"
-                android:textSize="25sp"
+                android:layout_height="160dp"
+                android:background="#9A9A9A"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="recipe title recipe title recipe title"
                 android:textColor="#474537"
-                android:id="@+id/tv2"/>
+                android:textSize="13sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <LinearLayout
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="140dp"
+                android:layout_height="160dp"
                 android:layout_margin="10dp"
-                android:text="by:"
+                android:background="#9A9A9A"
+                android:scaleType="centerCrop"
+                android:src="@drawable/images" />
 
-                android:id="@+id/name"/>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="dd/mm/yyyy"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                android:id="@+id/date"/>
+                <TextView
+                    android:id="@+id/tv2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Recipe name"
+                    android:textColor="#474537"
+                    android:textSize="21dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+
+                    android:text="by:" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+
+                    android:text="dd/mm/yyyy" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="12dp">
+                <TextView
+                    android:id="@+id/likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+
+                    />
+                    <ImageView
+                        android:id="@+id/img_like"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_like" />
+                <TextView
+                    android:id="@+id/dislikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+
+                     />
+
+
+                    <ImageView
+                        android:id="@+id/img_dislike"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_dislike" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
 
         </LinearLayout>
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </RelativeLayout>

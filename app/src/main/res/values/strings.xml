@@ -51,7 +51,7 @@
 
 
     <string name="Home">Home</string>
-    <string name="Search">Search</string>
+    <string name="Explore">Explore</string>
     <string name="Profile">profile</string>
     <string name="fav">Favorite</string>
 
@@ -62,6 +62,7 @@
     <string name="title">Title</string>
     <string name="Step">Step</string>
     <string name="Ingredient">Ingredient</string>
+    <string name="search...">search...</string>
 
     <string name="Editـrecipe">Edit Recipe</string>
     <string name="delete_recipe">Delete Recipe</string>

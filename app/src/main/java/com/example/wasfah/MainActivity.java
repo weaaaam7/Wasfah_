@@ -125,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
 
             case R.id.mSearch:
-                Intent intent1 = new Intent(this, SearchRecipe.class);
-                this.startActivity(intent1);
+                fragment = new Search();
                 break;
         }
 

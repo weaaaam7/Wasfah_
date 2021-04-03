@@ -71,7 +71,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private String stepsStr="";
     private String str="";
     private EditText comment;
-    private Button addComment,dots;
+    private Button addComment,dots, share;
     private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
@@ -147,6 +147,21 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         Steps_label=(TextView) findViewById(R.id.Steps_label);
         fav_r = (Button) findViewById(R.id.fav_r);
 
+        // share
+        share = (Button) findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = "Checkout this recipe! ";
+                String shareSub = t;
+                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share using"));
+            }
+        });
+
 
         //hide and display 3 dots
 
@@ -216,13 +231,13 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                         if (faved) {
                             if (snapshot.child(recpieId).hasChild(uid)) {
                                 favList.child(recpieId).child(uid).removeValue();
-                                showMessage("Removed your favorite list");
+                                Toast.makeText(recepe.this, "Removed from your favorite list", Toast.LENGTH_SHORT).show();
                                 faved = false;
                             } else {
                                 favList.child(recpieId).child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        showMessage("Added to your favorite list");
+                                        Toast.makeText(recepe.this, "Added to your favorite list", Toast.LENGTH_SHORT).show();
                                         faved = false;
                                         int category = 0;
                                         sendPushNotification(category);
@@ -540,7 +555,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
                             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                                 adapter.deleteComment(viewHolder.getAdapterPosition(),recpieId);
                                 adapter.notifyDataSetChanged();
-                                Toast.makeText(recepe.this, "Comment is deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(recepe.this, "Comment is deleted.", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
