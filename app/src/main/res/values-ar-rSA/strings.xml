@@ -44,6 +44,8 @@
     <string name="my_fav">مفضلتي</string>
     <string name="no_recipe">لا توجد وصفات</string>
     <string name="delete_comment">حذف التعليق</string>
+    <string name="Delete_Account">حذف الحساب</string>
+    <string name="Save_Changes">حفظ التغييرات</string>
     <string-array name="uoms">
         <item>كج</item>
         <item>جرام</item>
