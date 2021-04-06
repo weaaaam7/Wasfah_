@@ -3,7 +3,9 @@ package com.example.wasfah;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -44,6 +46,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +102,10 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     String owner;
     RecipeModel recipeModel;
 
+    // share
+    Uri link;
+    String linkStr;
+
 
     @SuppressLint("CutPasteId")
     @Override
@@ -106,6 +113,9 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
         translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
+        link = getIntent().getData();
+        if (link != null)
+        linkStr = link.toString();
 
         //get Intent
         Intent intent = getIntent();
@@ -154,11 +164,11 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             public void onClick(View view) {
                 Intent myIntent = new Intent(Intent.ACTION_SEND);
                 myIntent.setType("text/plain");
-                String shareBody = "Checkout this recipe! ";
+                String shareBody = "Checkout this recipe! " + linkStr;
                 String shareSub = t;
                 myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
                 myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(myIntent, "Share using"));
+                startActivity(Intent.createChooser(myIntent, "Share via"));
             }
         });
 
