@@ -44,6 +44,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -113,9 +115,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
         translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
-        link = getIntent().getData();
-        if (link != null)
-        linkStr = link.toString();
 
         //get Intent
         Intent intent = getIntent();
@@ -158,6 +157,28 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         fav_r = (Button) findViewById(R.id.fav_r);
 
         // share
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        link = null;
+                        if (pendingDynamicLinkData != null) {
+                            link = pendingDynamicLinkData.getLink();
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAG", "getDynamicLink:onFailure", e);
+                    }
+                });
+
+        if (link != null)
+            linkStr = link.toString();
+
         share = (Button) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
