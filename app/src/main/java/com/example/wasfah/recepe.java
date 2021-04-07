@@ -183,13 +183,16 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Uri data = intent.getData();
+                //data.getQueryParameter("key");
+
                 Intent myIntent = new Intent(Intent.ACTION_SEND);
                 myIntent.setType("text/plain");
                 String shareBody = "Checkout this recipe! " + linkStr;
                 String shareSub = t;
                 myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
                 myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(myIntent, "Share via"));
+                startActivity(Intent.createChooser(myIntent, "Share via..."));
             }
         });
 
