@@ -63,6 +63,15 @@
                     android:onClick="showPopup"
                     />
 
+                <Button
+                    android:id="@+id/chat"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="7dp"
+                    android:background="@drawable/ic_baseline_chat_bubble_outline_24"
+                    app:backgroundTint="#F5D472"></Button>
+
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"

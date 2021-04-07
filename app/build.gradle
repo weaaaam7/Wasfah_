@@ -102,6 +102,7 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compile 'io.paperdb:paperdb:2.5'
 }
 repositories {
     mavenCentral()
@@ -109,6 +110,7 @@ repositories {
             {
                 url "https://jitpack.io"
             }
+
 }
 
 

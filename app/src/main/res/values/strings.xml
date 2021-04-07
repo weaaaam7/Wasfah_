@@ -70,6 +70,8 @@
     <string name="my_fav">My Favorite</string>
     <string name="no_recipe">There is no recipes yet</string>
     <string name="delete_comment">Delete Comment</string>
+    <string name="Delete_Account">Delete Account</string>
+    <string name="Save_Changes">Save Changes</string>
 
 
 
