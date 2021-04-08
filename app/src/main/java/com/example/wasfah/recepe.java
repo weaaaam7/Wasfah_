@@ -183,13 +183,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(Intent.ACTION_SEND);
-                myIntent.setType("text/plain");
-                String shareBody = "Checkout this recipe! " + linkStr;
-                String shareSub = t;
-                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
-                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(myIntent, "Share via"));
+                shareThisItem(t);
             }
         });
 
@@ -377,6 +371,19 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
 
 
     }
+
+    private void shareThisItem(String t) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String mesage = "Checkout on "+t+"\n\n" +
+                "Download this app via:\n\n " +
+                "https://play.google.com/store/apps/details?id=com.example.wasfah";
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mesage);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
     private String getTranslatedText() {
         List<String> translatedArray = new ArrayList<>();
         translatedArray.add(String.valueOf(title_tv.getText()));
