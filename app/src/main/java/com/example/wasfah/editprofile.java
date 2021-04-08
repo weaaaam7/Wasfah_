@@ -261,6 +261,41 @@ public class editprofile extends AppCompatActivity {
                                 ProgressDialog pd = new ProgressDialog(editprofile.this);
                                 pd.setTitle("Deleting Account");
                                 pd.setMessage("Please wait as we delete your Account");
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
+                                dRec.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            // delete user's comments
+                                            DatabaseReference comment = dRec.child(ds.getKey()).child("comment");
+                                            comment.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (DataSnapshot ds : snapshot.getChildren()) {
+                                                        String uid_comp = snapshot.child(ds.getKey()).child("uid").getValue(String.class);
+                                                        if (uid_comp != null && UserID != null && uid_comp.equalsIgnoreCase(UserID)) {
+                                                            comment.child(ds.getKey()).removeValue();
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                            // delete user's recipes
+                                           String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
+                                            if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
+                                                dRec.child(ds.getKey()).removeValue();
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                                 ref.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

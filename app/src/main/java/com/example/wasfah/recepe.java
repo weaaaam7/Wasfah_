@@ -108,7 +108,6 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     Uri link;
     String linkStr;
 
-
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,8 +374,8 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private void shareThisItem(String t) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        String mesage = "Checkout on "+t+"\n\n" +
-                "Download this app via:\n\n " +
+        String mesage = "Checkout this "+t+" recipe!\n" +
+                "Download Wasfah app via:\n\n " +
                 "https://play.google.com/store/apps/details?id=com.example.wasfah";
         sendIntent.putExtra(Intent.EXTRA_TEXT, mesage);
         sendIntent.setType("text/plain");
