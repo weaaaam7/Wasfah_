@@ -12,27 +12,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +43,7 @@ public class profile extends Fragment {
     String img;
     private String recipeId;
     private ImageView imageView;
+    private Button chat;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Users");
@@ -78,6 +72,7 @@ recipieList=new ArrayList<>();
       nameTv=(TextView) RootView.findViewById(R.id.name);
       logout=(Button) RootView.findViewById(R.id.logout);
         edit=(Button) RootView.findViewById(R.id.edit);
+        chat=(Button) RootView.findViewById(R.id.edit);
 //        imageView=(ImageView) RootView.findViewById(R.id.imageView);
         if (user != null) {
             // Read from the database
@@ -161,6 +156,15 @@ recipieList=new ArrayList<>();
             }
         });
 
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getContext(), ChatActivity.class);
+                startActivity(intent);
+
+            }
+        });
         // Inflate the layout for this fragment
         // layout
         return RootView;
