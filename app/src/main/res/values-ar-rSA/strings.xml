@@ -37,6 +37,8 @@
     <string name="Step">خطوة</string>
     <string name="Ingredient">مكون</string>
     <string name="search...">بحث...</string>
+    <string name="type_message_here">اكتب رسالتك هنا</string>
+    <string name="My_Chats">رسائلي</string>
     <string name="Editـrecipe">تعديل الوصفة</string>
     <string name="delete_recipe">حذف الوصفة</string>
     <string name="add_to_my_fav">+ مفضلتي</string>

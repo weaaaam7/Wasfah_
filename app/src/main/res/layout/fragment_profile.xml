@@ -19,9 +19,30 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="178dp"
+            android:layout_height="198dp"
             android:background="@drawable/profile_bg"
             android:orientation="vertical">
+
+
+            <Button
+                android:id="@+id/chatHistory"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="55dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/ic_baseline_message_24"
+                android:supportsRtl="false"
+                android:layoutDirection="ltr"
+                app:backgroundTint="#B1A378"></Button>
+
+            <ImageView
+                android:id="@+id/dot2"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/circle"
+                android:backgroundTint="#07980D" />
 
             <ImageView
                 android:id="@+id/logo"

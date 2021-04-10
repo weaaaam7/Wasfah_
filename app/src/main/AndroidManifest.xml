@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +19,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasfah">
+        <activity android:name=".ChatActivity"></activity>
+
+
+        <activity android:name=".ChatInboxActivity"></activity>
         <activity
             android:name=".SearchRecipe"
             android:configChanges="layoutDirection|locale" />
@@ -21,14 +31,15 @@
             android:configChanges="layoutDirection|locale" />
         <activity
             android:name=".editprofile"
+            android:configChanges="layoutDirection|locale"
             android:exported="true"
-            android:noHistory="false"
-            android:configChanges="layoutDirection|locale" />
+            android:noHistory="false" />
         <activity android:name=".SignupActivity" />
         <activity
             android:name=".recepe"
             android:configChanges="layoutDirection|locale">
             <tools:validation testUrl="https://wasfah444.000webhostapp.com/recipe" />
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -36,9 +47,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="wasfah444.000webhostapp.com"
-                    android:pathPattern="/recipe" />
+                    android:pathPattern="/recipe"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -53,14 +64,15 @@
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">
@@ -69,9 +81,5 @@
             </intent-filter>
         </service>
     </application>
-    <supports-screens
-        android:smallScreens="true"
-        android:normalScreens="true"
-        android:largeScreens="true"
-        android:anyDensity="true" />
+
 </manifest>

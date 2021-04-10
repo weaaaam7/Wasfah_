@@ -71,7 +71,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     private String stepsStr="";
     private String str="";
     private EditText comment;
-    private Button addComment,dots, share;
+    private Button addComment,dots, share,chat;
     private TextView translateBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
@@ -94,7 +94,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     DatabaseReference favList;
     String keySubscibed= "";
 
-
+private String who;
     // Notification
     String owner;
     RecipeModel recipeModel;
@@ -105,6 +105,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepe);
+
         translationViewModel = ViewModelProviders.of(this).get(TranslationViewModel.class);
 
         //get Intent
@@ -138,6 +139,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         image=(ImageView) findViewById(R.id.img2);
         comment=(EditText) findViewById(R.id.editText);
         addComment=(Button) findViewById(R.id.button);
+        chat=(Button) findViewById(R.id.chat);
         RvComment=(RecyclerView) findViewById(R.id.commentRec);
         tv_timestamp=(TextView) findViewById(R.id.date);
         dots=(Button) findViewById(R.id.bU1);
@@ -181,6 +183,35 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
             }
         });
 
+
+        DatabaseReference productsref = FirebaseDatabase.getInstance().getReference().child("Recipes");
+        productsref.child(recpieId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    RecipeModel users= dataSnapshot.getValue(RecipeModel.class);
+                    who=users.getCurrentUserId();
+                   }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+  chat.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          Intent intent = new Intent(recepe.this,ChatActivity.class);
+
+          intent.putExtra("senderId",who);
+          intent.putExtra("recieverId",FirebaseAuth.getInstance().getCurrentUser().getUid());
+          intent.putExtra("productId",recpieId);
+
+          startActivity(intent);
+      }
+  });
         translateBtn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {

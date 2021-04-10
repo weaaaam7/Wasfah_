@@ -63,7 +63,8 @@
     <string name="Step">Step</string>
     <string name="Ingredient">Ingredient</string>
     <string name="search...">search...</string>
-
+    <string name="type_message_here">type a message here</string>
+    <string name="My_Chats">My Chats</string>
     <string name="Editـrecipe">Edit Recipe</string>
     <string name="delete_recipe">Delete Recipe</string>
     <string name="add_to_my_fav">+ My Favorite</string>
@@ -72,13 +73,6 @@
     <string name="delete_comment">Delete Comment</string>
     <string name="Delete_Account">Delete Account</string>
     <string name="Save_Changes">Save Changes</string>
-
-
-
-
-
-
-
 
 
     <!-- Strings used for fragments for navigation -->

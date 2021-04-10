@@ -12,37 +12,32 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import model.Myhomestatus;
 
 public class profile extends Fragment {
 
 
 
     private TextView nameTv;
-    private Button logout;
+    private Button logout,chatinbox;
     private Button edit;
    private String email;
     List<RecipeInfo> recipieList;
@@ -78,6 +73,35 @@ recipieList=new ArrayList<>();
       nameTv=(TextView) RootView.findViewById(R.id.name);
       logout=(Button) RootView.findViewById(R.id.logout);
         edit=(Button) RootView.findViewById(R.id.edit);
+        chatinbox=(Button) RootView.findViewById(R.id.chatHistory);
+        imageView=(ImageView)RootView.findViewById(R.id.dot2) ;
+        imageView.setVisibility(View.INVISIBLE);
+
+
+
+        DatabaseReference homestatusref = FirebaseDatabase.getInstance().getReference().child("Myhomestatus");
+        homestatusref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+
+                    Myhomestatus myhomestatus = dataSnapshot.getValue(Myhomestatus.class);
+                    String hs = myhomestatus.getHomestatus();
+                    if (hs.equals("unseen")) {
+                        imageView.setVisibility(View.VISIBLE);
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
 //        imageView=(ImageView) RootView.findViewById(R.id.imageView);
         if (user != null) {
             // Read from the database
@@ -141,6 +165,7 @@ recipieList=new ArrayList<>();
 
 
         }
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +175,13 @@ recipieList=new ArrayList<>();
 
             }
         });
-
+        chatinbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ChatInboxActivity.class);
+                startActivity(intent);
+            }
+        });
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
