@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
 import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.ModelRecipe;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,7 +55,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     private ImageView picture;
     private EditText titleEdit;
     private Spinner catSpinner;
-    private RecipeModel recipeModel;
+    private ModelRecipe recipeModel;
     private List<IngredientModel> ingredientsList = new ArrayList<>();
     private List<StepModel> stepsList = new ArrayList<>();
 
@@ -105,7 +106,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
                 }
                 else {
                     HashMap vals = (HashMap) task.getResult().getValue();
-                    recipeModel = new RecipeModel() ;
+                    recipeModel = new ModelRecipe() ;
                     recipeModel.setRecipeId((String) vals.get("recipeId"));
                     recipeModel.setTitle((String) vals.get("title"));
                     recipeModel.setPicUri((String) vals.get("picUri"));
@@ -219,11 +220,13 @@ public class EditRecipeActivity extends AppCompatActivity  {
     }
 
     private void editRecipe() {
-        RecipeModel model = getRecipe();
+        ModelRecipe model = getRecipe();
         model.setCreatedBy(recipeModel.getCreatedBy());
         model.setCurrentUserId(recipeModel.getCurrentUserId());
         model.setPicUri(currentModelPic);
         model.setTimestamp();
+        model.setDislikes(0);
+        model.setLikes(0);
 
         if(this.validateModel(model)) {
             db.getReference("Recipes").child(recipeModel.getRecipeId()).setValue(model)
@@ -242,9 +245,9 @@ public class EditRecipeActivity extends AppCompatActivity  {
         }
     }
 
-    private RecipeModel getRecipe()
+    private ModelRecipe getRecipe()
     {
-        RecipeModel model = new RecipeModel();
+        ModelRecipe model = new ModelRecipe();
         Spinner catSpinner = findViewById(R.id.cats_spinner_er);
         EditText titleEdit = findViewById(R.id.recipe_title_er);
 
@@ -374,7 +377,7 @@ public class EditRecipeActivity extends AppCompatActivity  {
     }
 
 
-    private boolean validateModel(RecipeModel model)
+    private boolean validateModel(ModelRecipe model)
     {
         boolean isValid = true;
         //validations
