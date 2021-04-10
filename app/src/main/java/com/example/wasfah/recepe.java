@@ -3,7 +3,9 @@ package com.example.wasfah;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -42,8 +44,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +104,9 @@ private String who;
     String owner;
     RecipeModel recipeModel;
 
+    // share
+    Uri link;
+    String linkStr;
 
     @SuppressLint("CutPasteId")
     @Override
@@ -150,17 +158,33 @@ private String who;
         fav_r = (Button) findViewById(R.id.fav_r);
 
         // share
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        link = null;
+                        if (pendingDynamicLinkData != null) {
+                            link = pendingDynamicLinkData.getLink();
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAG", "getDynamicLink:onFailure", e);
+                    }
+                });
+
+        if (link != null)
+            linkStr = link.toString();
+
         share = (Button) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(Intent.ACTION_SEND);
-                myIntent.setType("text/plain");
-                String shareBody = "Checkout this recipe! ";
-                String shareSub = t;
-                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
-                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(myIntent, "Share using"));
+                shareThisItem(t);
             }
         });
 
@@ -179,7 +203,7 @@ private String who;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         });
 
@@ -377,6 +401,19 @@ private String who;
 
 
     }
+
+    private void shareThisItem(String t) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String mesage = "Checkout this "+t+" recipe!\n" + "Ingredients: \n" + ingeredientsStr + "\nSteps: \n" + stepsStr + "\n" +
+                "Download Wasfah app via: https://play.google.com/store/apps/details?id=com.example.wasfah";
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mesage);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, t);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
     private String getTranslatedText() {
         List<String> translatedArray = new ArrayList<>();
         translatedArray.add(String.valueOf(title_tv.getText()));

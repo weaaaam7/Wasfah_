@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.wasfah.database.AuthenticationManager;
 import com.example.wasfah.model.IngredientModel;
+import com.example.wasfah.model.ModelRecipe;
 import com.example.wasfah.model.RecipeModel;
 import com.example.wasfah.model.StepModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -226,11 +227,13 @@ public class PublishRecipeActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userID = user.getUid();
         AuthenticationManager.CURRENT_USER_EMAIL = user.getEmail();
-        RecipeModel model = getRecipe();
+        ModelRecipe model = getRecipe();
         model.setCreatedBy(AuthenticationManager.CURRENT_USER_EMAIL);
         model.setPicUri(currentModelPic);
         model.setCurrentUserId(userID);
         model.setTimestamp();
+        model.setLikes(0);
+        model.setDislikes(0);
         if(this.validateModel(model)) {
             db.child(model.getRecipeId()).setValue(model)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -248,12 +251,11 @@ public class PublishRecipeActivity extends AppCompatActivity {
         }
     }
 
-    private RecipeModel getRecipe()
+    private ModelRecipe getRecipe()
     {
-        RecipeModel model = new RecipeModel();
+        ModelRecipe model = new ModelRecipe();
         Spinner catSpinner = findViewById(R.id.cats_spinner);
         EditText titleEdit = findViewById(R.id.recipe_title);
-
 
         String category = (String)catSpinner.getSelectedItem();
         String title = getTextOrEmpty(titleEdit);
@@ -265,7 +267,7 @@ public class PublishRecipeActivity extends AppCompatActivity {
     }
 
 
-    private boolean validateModel(RecipeModel model)
+    private boolean validateModel(ModelRecipe model)
     {
         boolean isValid = true;
 

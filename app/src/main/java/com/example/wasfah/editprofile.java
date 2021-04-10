@@ -69,6 +69,8 @@ import static android.app.ProgressDialog.show;
 public class editprofile extends AppCompatActivity {
 
     Button btnupdate, deletAcc;
+    //added these
+    private DatabaseReference ref;
     DatabaseReference dbreference, reference;
     StorageReference storageReference;
     Uri filepath;
@@ -89,11 +91,11 @@ public class editprofile extends AppCompatActivity {
         setContentView(R.layout.activity_editprofile);
         if (Pref.getValue(getApplicationContext(),"language_checked", "false").equalsIgnoreCase("true"))
         {
-          setApplicationLocale("ar");
+            setApplicationLocale("ar");
         }
         else
         {
-          setApplicationLocale("en");
+            setApplicationLocale("en");
         }
         profileFirstName=(EditText) findViewById(R.id.EditFirstName);
         profileLastName=(EditText) findViewById(R.id.EditLastName);
@@ -109,6 +111,8 @@ public class editprofile extends AppCompatActivity {
 
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         UserID=user.getUid();
+        UserID=user.getUid();
+        ref = FirebaseDatabase.getInstance().getReference("Users").child(UserID);
 
         dbreference=FirebaseDatabase.getInstance().getReference().child("Users");
         storageReference= FirebaseStorage.getInstance().getReference();
@@ -134,7 +138,8 @@ public class editprofile extends AppCompatActivity {
                     profilePassword.setText(password);
                     profileConfirmPass.setText(password);
                 } else {
-                    startActivity(new Intent(editprofile.this, LoginActivity.class));
+//                    startActivity(new Intent(editprofile.this, LoginActivity.class));
+//                    finish();
                 }
 
             }
@@ -159,17 +164,104 @@ public class editprofile extends AppCompatActivity {
             }
         });
         // delete Account
+//        deletAcc.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(editprofile.this);
+//                builder.setMessage("Are you sure you want to delete your account?")
+//                        .setCancelable(false)
+//
+//                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                               DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
+//                                dRec.addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                        for (DataSnapshot ds : snapshot.getChildren()) {
+//                                            // delete user's comments
+//                                            DatabaseReference comment = dRec.child(ds.getKey()).child("comment");
+//                                            comment.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                    for (DataSnapshot ds : snapshot.getChildren()) {
+//                                                        String uid_comp = snapshot.child(ds.getKey()).child("uid").getValue(String.class);
+//                                                        if (uid_comp != null && UserID != null && uid_comp.equalsIgnoreCase(UserID)) {
+//                                                            comment.child(ds.getKey()).removeValue();
+//                                                        }
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                                }
+//                                            });
+//                                            // delete user's recipes
+//                                           String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
+//                                            if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
+//                                                dRec.child(ds.getKey()).removeValue();
+//                                            }
+//                                        }
+//                                    }
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                    }
+//                                });
+//
+//                                AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+//
+//                                // Prompt the user to re-provide their sign-in credentials
+//                                if (user != null) {
+//                                    user.reauthenticate(credential)
+//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                    user.delete()
+//                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                @Override
+//                                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                                    if (task.isSuccessful()) {
+//                                                                        reference.removeValue();
+//                                                                        Log.d("TAG", "User account deleted.");
+//                                                                        startActivity(new Intent(editprofile.this, LoginActivity.class));
+//                                                                    }
+//                                                                }
+//                                                            });
+//                                                }
+//                                            });
+//                                }
+//                            }
+//                        })
+//                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                dialogInterface.cancel();
+//                            }
+//                        });
+//
+//                AlertDialog alertDialog = builder.create();
+//                alertDialog.show();
+//                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.yellow2));
+//                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.yellow2));
+//            }
+//        }); // end
+//    }
+        // delete Account
         deletAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(editprofile.this);
                 builder.setMessage("Are you sure you want to delete your account?")
                         .setCancelable(false)
-
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                               DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
+                                ProgressDialog pd = new ProgressDialog(editprofile.this);
+                                pd.setTitle("Deleting Account");
+                                pd.setMessage("Please wait as we delete your Account");
+                                DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
                                 dRec.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -204,29 +296,75 @@ public class editprofile extends AppCompatActivity {
 
                                     }
                                 });
+                                ref.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            finalizeDelete(pd);
+                                        }
+                                    }
+                                });
 
-                                AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+                                pd.show();
 
-                                // Prompt the user to re-provide their sign-in credentials
-                                if (user != null) {
-                                    user.reauthenticate(credential)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    user.delete()
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        reference.removeValue();
-                                                                        Log.d("TAG", "User account deleted.");
-                                                                        startActivity(new Intent(editprofile.this, LoginActivity.class));
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            });
-                                }
+//                               DatabaseReference dRec = FirebaseDatabase.getInstance().getReference("Recipes");
+//                                dRec.addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                        for (DataSnapshot ds : snapshot.getChildren()) {
+//                                            // delete user's comments
+//                                            DatabaseReference comment = dRec.child(ds.getKey()).child("comment");
+//                                            comment.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                    for (DataSnapshot ds : snapshot.getChildren()) {
+//                                                        String uid_comp = snapshot.child(ds.getKey()).child("uid").getValue(String.class);
+//                                                        if (uid_comp != null && UserID != null && uid_comp.equalsIgnoreCase(UserID)) {
+//                                                            comment.child(ds.getKey()).removeValue();
+//                                                        }
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                                }
+//                                            });
+//                                            // delete user's recipes
+//                                           String email2 = snapshot.child(ds.getKey()).child("createdBy").getValue(String.class);
+//                                            if (email2 != null && email != null && email2.equalsIgnoreCase(email)) {
+//                                                dRec.child(ds.getKey()).removeValue();
+//                                            }
+//                                        }
+//                                    }
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                    }
+//                                });
+//
+//                                AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+//
+//                                // Prompt the user to re-provide their sign-in credentials
+//                                if (user != null) {
+//                                    user.reauthenticate(credential)
+//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                    user.delete()
+//                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                @Override
+//                                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                                    if (task.isSuccessful()) {
+//                                                                        reference.removeValue();
+//                                                                        Log.d("TAG", "User account deleted.");
+//                                                                        startActivity(new Intent(editprofile.this, LoginActivity.class));
+//                                                                    }
+//                                                                }
+//                                                            });
+//                                                }
+//                                            });
+//                                }
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -244,6 +382,28 @@ public class editprofile extends AppCompatActivity {
         }); // end
     }
 
+    private void finalizeDelete(ProgressDialog pd) {
+        pd.setMessage("Finishing Up");
+        pd.setTitle("Almost");
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        assert currentUser != null;
+        currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    pd.dismiss();
+                    Log.d("DELETE", "onComplete: TASK DONE");
+                    startActivity(new Intent(editprofile.this,SplashScreen.class));
+                    finish();
+                }else {
+                    pd.dismiss();
+                    Log.d("DELETE", "onComplete: TASK NOT DONE"+task.getException().getMessage());
+
+                }
+            }
+        });
+    }
     public void updatetofirebase()
     {
 
@@ -306,7 +466,7 @@ public class editprofile extends AppCompatActivity {
                 if(snapshot.exists()){
                     dbreference.child(UserID).updateChildren(map);
                     Toast.makeText(getApplicationContext(),"Updated Successfully",Toast.LENGTH_LONG).show();
-                 }
+                }
                 else
                     dbreference.child(UserID).setValue(map);
             }

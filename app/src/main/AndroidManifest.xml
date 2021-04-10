@@ -41,15 +41,15 @@
             <tools:validation testUrl="https://wasfah444.000webhostapp.com/recipe" />
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:host="wasfah444.000webhostapp.com"
                     android:pathPattern="/recipe"
                     android:scheme="https" />
+                    android:host="wasfah.com"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
