@@ -377,6 +377,7 @@ public class recepe extends AppCompatActivity implements PopupMenu.OnMenuItemCli
         String mesage = "Checkout this "+t+" recipe!\n" + "Ingredients: \n" + ingeredientsStr + "\nSteps: \n" + stepsStr + "\n" +
                 "Download Wasfah app via: https://play.google.com/store/apps/details?id=com.example.wasfah";
         sendIntent.putExtra(Intent.EXTRA_TEXT, mesage);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, t);
         sendIntent.setType("text/plain");
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
