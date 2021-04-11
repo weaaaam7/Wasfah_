@@ -57,6 +57,7 @@ dependencies {
     // Dexter runtime permissions
     implementation 'com.karumi:dexter:6.2.1'
     implementation 'com.google.firebase:firebase-dynamic-links:19.1.1'
+    implementation 'com.google.firebase:firebase-invites:17.0.0'
     annotationProcessor'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
